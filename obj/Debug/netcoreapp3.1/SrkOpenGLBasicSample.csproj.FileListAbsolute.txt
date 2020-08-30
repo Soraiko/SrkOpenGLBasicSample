@@ -1,3 +1,0 @@
-E:\Users\Soraiko\source\repos\SrkOpenGLBasicSample\bin\Debug\netcoreapp3.1\SrkOpenGLBasicSample.exe
-E:\Users\Soraiko\source\repos\SrkOpenGLBasicSample\obj\Debug\netcoreapp3.1\SrkOpenGLBasicSample.AssemblyInfoInputs.cache
-E:\Users\Soraiko\source\repos\SrkOpenGLBasicSample\obj\Debug\netcoreapp3.1\SrkOpenGLBasicSample.AssemblyInfo.cs
