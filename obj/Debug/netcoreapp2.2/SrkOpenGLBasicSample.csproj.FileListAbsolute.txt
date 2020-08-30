@@ -1,0 +1,12 @@
+E:\Users\Soraiko\source\repos\SrkOpenGLBasicSample\obj\Debug\netcoreapp2.2\SrkOpenGLBasicSample.csprojAssemblyReference.cache
+E:\Users\Soraiko\source\repos\SrkOpenGLBasicSample\obj\Debug\netcoreapp2.2\SrkOpenGLBasicSample.csproj.CoreCompileInputs.cache
+E:\Users\Soraiko\source\repos\SrkOpenGLBasicSample\obj\Debug\netcoreapp2.2\SrkOpenGLBasicSample.AssemblyInfoInputs.cache
+E:\Users\Soraiko\source\repos\SrkOpenGLBasicSample\obj\Debug\netcoreapp2.2\SrkOpenGLBasicSample.AssemblyInfo.cs
+E:\Users\Soraiko\source\repos\SrkOpenGLBasicSample\bin\Debug\netcoreapp2.2\SrkOpenGLBasicSample.deps.json
+E:\Users\Soraiko\source\repos\SrkOpenGLBasicSample\bin\Debug\netcoreapp2.2\SrkOpenGLBasicSample.runtimeconfig.json
+E:\Users\Soraiko\source\repos\SrkOpenGLBasicSample\bin\Debug\netcoreapp2.2\SrkOpenGLBasicSample.runtimeconfig.dev.json
+E:\Users\Soraiko\source\repos\SrkOpenGLBasicSample\bin\Debug\netcoreapp2.2\SrkOpenGLBasicSample.dll
+E:\Users\Soraiko\source\repos\SrkOpenGLBasicSample\bin\Debug\netcoreapp2.2\SrkOpenGLBasicSample.pdb
+E:\Users\Soraiko\source\repos\SrkOpenGLBasicSample\obj\Debug\netcoreapp2.2\SrkOpenGLBasicSample.dll
+E:\Users\Soraiko\source\repos\SrkOpenGLBasicSample\obj\Debug\netcoreapp2.2\SrkOpenGLBasicSample.pdb
+E:\Users\Soraiko\source\repos\SrkOpenGLBasicSample\obj\Debug\netcoreapp2.2\SrkOpenGLBasicSample.genruntimeconfig.cache
