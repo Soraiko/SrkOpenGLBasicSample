@@ -14,7 +14,6 @@ namespace SrkOpenGLBasicSample
             {
                 WindowState = WindowState.Fullscreen;
                 this.CursorVisible = true;
-                
             }
         }
 
@@ -23,8 +22,13 @@ namespace SrkOpenGLBasicSample
         protected override void OnLoad(EventArgs e)
         {
             GL.ClearColor(BackgroundColor);
-            
+
+            GL.Enable(EnableCap.CullFace);
+            GL.CullFace(CullFaceMode.Front);
+
+
             Camera.Current = new Camera(200f);
+            OnUpdateFrame(null);
 
             base.OnLoad(e);
         }
