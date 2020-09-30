@@ -6,7 +6,7 @@ namespace SrkOpenGLBasicSample
 {
     public static class MathHelper
     {
-        public static float NormalizeAngle(float angle)
+        public static float PrincipalAngle(float angle)
         {
             return (float)Math.Atan2(Math.Sin(angle), Math.Cos(angle));
         }

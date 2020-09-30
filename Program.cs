@@ -6,10 +6,17 @@ namespace SrkOpenGLBasicSample
 {
     public class Program
     {
+        public static string ExecutableDirectory;
         public static void Main(string[] args)
         {
+            ExecutableDirectory = System.IO.Path.GetDirectoryName(System.Diagnostics.Process.GetCurrentProcess().MainModule.FileName);
             System.Globalization.CultureInfo.CurrentCulture = Compatibility.us_cultureinfo_for_decimal_separator;
+            System.Globalization.CultureInfo.CurrentUICulture = Compatibility.us_cultureinfo_for_decimal_separator;
 
+            System.Threading.Thread.CurrentThread.CurrentUICulture = Compatibility.us_cultureinfo_for_decimal_separator;
+            System.Threading.Thread.CurrentThread.CurrentCulture = Compatibility.us_cultureinfo_for_decimal_separator;
+
+            Directory.SetCurrentDirectory(@"KHDebug_files");
             bool read_preferences = true;
 
             for (int i=0;i< args.Length;i++)
@@ -32,7 +39,5 @@ namespace SrkOpenGLBasicSample
                 renderer_window.Run(Preferences.FrameRate);
             }
         }
-
-
     }
 }

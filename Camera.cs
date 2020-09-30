@@ -55,9 +55,9 @@ namespace SrkOpenGLBasicSample
         float rotation_z;
         float dest_rotation_z;
 
-        public float RotationX { get { return MathHelper.NormalizeAngle(rotation_x); } set { dest_rotation_x = value; LookAtMatrixDirty = true; } }
-        public float RotationY { get { return MathHelper.NormalizeAngle(rotation_y); } set { dest_rotation_y = value; LookAtMatrixDirty = true; } }
-        public float RotationZ { get { return MathHelper.NormalizeAngle(rotation_z); } set { dest_rotation_z = value; LookAtMatrixDirty = true; } }
+        public float RotationX { get { return MathHelper.PrincipalAngle(rotation_x); } set { dest_rotation_x = value; LookAtMatrixDirty = true; } }
+        public float RotationY { get { return MathHelper.PrincipalAngle(rotation_y); } set { dest_rotation_y = value; LookAtMatrixDirty = true; } }
+        public float RotationZ { get { return MathHelper.PrincipalAngle(rotation_z); } set { dest_rotation_z = value; LookAtMatrixDirty = true; } }
 
         public bool LookAtMatrixDirty = true;
         public bool ProjectionMatrixDirty = true;
@@ -181,7 +181,7 @@ namespace SrkOpenGLBasicSample
                 if (Math.Abs(diff.X) > 0.000001)
                     this.ProjectionMatrixDirty = true;
 
-                this.ProjectionMatrix = Matrix4.CreatePerspectiveFieldOfView(this.viewAngle, window.Width/ (float)window.Height, 5f,100000f);
+                this.ProjectionMatrix = Matrix4.CreatePerspectiveFieldOfView(this.viewAngle, window.Width/ (float)window.Height, 50f,100000f);
             }
         }
     }
