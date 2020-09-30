@@ -61,11 +61,11 @@ namespace SrkOpenGLBasicSample
             StaticReferences.GraphicsSettings();
             StaticReferences.InitReferences();
 
-            mdl = new DAE(@"H_EX500\H_EX500.dae");
+            mdl = new DAE(@"debug_mode\H_EX500\H_EX500.dae");
 
             mdl.Compile();
 
-            FileStream input = new FileStream(@"anim.bin", FileMode.Open);
+            FileStream input = new FileStream(@"debug_mode\raw_anim.bin", FileMode.Open);
             BinaryReader br = new BinaryReader(input);
             br.BaseStream.Position = 0x10;
 
