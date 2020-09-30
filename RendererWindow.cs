@@ -62,8 +62,9 @@ namespace SrkOpenGLBasicSample
             StaticReferences.InitReferences();
 
             mdl = new DAE(@"debug_mode\H_EX500\H_EX500.dae");
-
             mdl.Compile();
+
+
 
             FileStream input = new FileStream(@"debug_mode\raw_anim.bin", FileMode.Open);
             BinaryReader br = new BinaryReader(input);
@@ -96,6 +97,7 @@ namespace SrkOpenGLBasicSample
 
             }
             mdl.Skeleton.ComputeMatrices(Matrix4.CreateScale(1f));
+
             /*mdl.Meshes = new Mesh[1];
             mdl.Meshes[0] = new Mesh();
             mdl.Meshes[0].primitiveType = PrimitiveType.TriangleStrip;
