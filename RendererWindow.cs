@@ -9,14 +9,14 @@ namespace SrkOpenGLBasicSample
 {
     public class RendererWindow : GameWindow
     {
-        public RendererWindow(int width, int height, int sampleCount) : base(width, height, new GraphicsMode(GraphicsMode.Default.ColorFormat, GraphicsMode.Default.Depth, GraphicsMode.Default.Stencil, sampleCount))
+        public RendererWindow(int x, int y, int width, int height, int sampleCount) : base(width, height, new GraphicsMode(GraphicsMode.Default.ColorFormat, GraphicsMode.Default.Depth, GraphicsMode.Default.Stencil, sampleCount))
         {
+            this.Location = new Point(x, y);
             if (Preferences.Fullscreen)
             {
                 WindowState = WindowState.Fullscreen;
             }
             this.CursorVisible = true;
-            //this.Location = new Point(1920, 0);
         }
 
         public KeyboardState keyboardState;
@@ -24,6 +24,9 @@ namespace SrkOpenGLBasicSample
 
         protected override void OnUpdateFrame(FrameEventArgs e)
         {
+            if (keyboardState.IsKeyDown(Key.Escape))
+                Close();
+
             if (Camera.Current!=null)
             {
                 Camera.Current.KeyboardControl(keyboardState, oldKeyboardState);

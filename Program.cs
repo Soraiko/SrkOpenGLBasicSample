@@ -36,6 +36,8 @@ namespace SrkOpenGLBasicSample
 
 
             using (var renderer_window = new RendererWindow(
+                (int)(Preferences.StartX * OpenTK.DisplayDevice.Default.Width),
+                (int)(Preferences.StartY * OpenTK.DisplayDevice.Default.Width),
                 (int)(Preferences.StartWidth * OpenTK.DisplayDevice.Default.Width),
                 (int)(Preferences.StartHeight * OpenTK.DisplayDevice.Default.Height), Preferences.SampleCount))
             {

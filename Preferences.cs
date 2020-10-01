@@ -8,6 +8,8 @@ namespace SrkOpenGLBasicSample
     public static class Preferences
     {
         static List<string> preferences = new List<string>(0);
+        public static float StartX;
+        public static float StartY;
         public static float StartWidth;
         public static float StartHeight;
         public static int SampleCount;
@@ -17,6 +19,8 @@ namespace SrkOpenGLBasicSample
         public static void Initialize()
         {
             Fullscreen = false;
+            StartX = 0f;
+            StartY = 0f;
             StartWidth = 0.75f;
             StartHeight = 0.75f;
             FrameRate = 60f;
@@ -26,15 +30,17 @@ namespace SrkOpenGLBasicSample
         public enum PrefName
         {
             SCREEN_RESOLUTION = 0,
-            SAMPLE_COUNT = 1,
-            FRAME_RATE = 2,
-            START_IN_FULLSCREEN = 3
+            SCREEN_LOCATION = 1,
+            SAMPLE_COUNT = 2,
+            FRAME_RATE = 3,
+            START_IN_FULLSCREEN = 4
 
         }
 
         static string[] prefNamesString = new string[]
         {
             "SCREEN_RESOLUTION",
+            "SCREEN_LOCATION",
             "SAMPLE_COUNT",
             "FRAME_RATE",
             "START_IN_FULLSCREEN"
@@ -60,6 +66,10 @@ namespace SrkOpenGLBasicSample
                 case PrefName.SCREEN_RESOLUTION:
                     StartWidth = Single.Parse(setting_value.Split(',')[0]);
                     StartHeight = Single.Parse(setting_value.Split(',')[1]);
+                    break;
+                case PrefName.SCREEN_LOCATION:
+                    StartX = Single.Parse(setting_value.Split(',')[0]);
+                    StartY = Single.Parse(setting_value.Split(',')[1]);
                     break;
                 case PrefName.SAMPLE_COUNT:
                     SampleCount = int.Parse(setting_value);
