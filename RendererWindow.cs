@@ -4,6 +4,7 @@ using OpenTK.Graphics.OpenGL;
 using OpenTK.Graphics;
 using OpenTK.Input;
 using System.IO;
+using System.Diagnostics;
 
 namespace SrkOpenGLBasicSample
 {
@@ -41,43 +42,42 @@ namespace SrkOpenGLBasicSample
                 GL.MatrixMode(MatrixMode.Projection);
                 GL.LoadMatrix(ref Camera.Current.ProjectionMatrix);
             }
-            if (br.BaseStream.Position >= br.BaseStream.Length)
-                br.BaseStream.Position = 0x10;
 
-            for (int i = 0; i < mdl.Skeleton.Joints.Length; i++)
+            if (keyboardState.IsKeyDown(Key.P))
             {
-                Matrix4 m = Matrix4.Identity;
-                m.M11 = br.ReadSingle();
-                m.M12 = br.ReadSingle();
-                m.M13 = br.ReadSingle();
-                m.M14 = br.ReadSingle();
+                if (br.BaseStream.Position >= br.BaseStream.Length)
+                    br.BaseStream.Position = 0x10;
 
-                m.M21 = br.ReadSingle();
-                m.M22 = br.ReadSingle();
-                m.M23 = br.ReadSingle();
-                m.M24 = br.ReadSingle();
+                for (int i = 0; i < mdl.Skeleton.Joints.Length; i++)
+                {
+                    Matrix4 m = Matrix4.Identity;
+                    m.M11 = br.ReadSingle();
+                    m.M12 = br.ReadSingle();
+                    m.M13 = br.ReadSingle();
+                    m.M14 = br.ReadSingle();
 
-                m.M31 = br.ReadSingle();
-                m.M32 = br.ReadSingle();
-                m.M33 = br.ReadSingle();
-                m.M34 = br.ReadSingle();
+                    m.M21 = br.ReadSingle();
+                    m.M22 = br.ReadSingle();
+                    m.M23 = br.ReadSingle();
+                    m.M24 = br.ReadSingle();
 
-                m.M41 = br.ReadSingle();
-                m.M42 = br.ReadSingle();
-                m.M43 = br.ReadSingle();
-                m.M44 = br.ReadSingle();
+                    m.M31 = br.ReadSingle();
+                    m.M32 = br.ReadSingle();
+                    m.M33 = br.ReadSingle();
+                    m.M34 = br.ReadSingle();
 
-                mdl.Skeleton.Joints[i].TransformLocal = m;
+                    m.M41 = br.ReadSingle();
+                    m.M42 = br.ReadSingle();
+                    m.M43 = br.ReadSingle();
+                    m.M44 = br.ReadSingle();
 
+                    mdl.Skeleton.Joints[i].TransformLocal = m;
+
+                }
+                mdl.Skeleton.ComputeMatrices(Matrix4.CreateScale(1f));
             }
-            mdl.Skeleton.ComputeMatrices(Matrix4.CreateScale(1f));
 
 
-            Console.WriteLine("");
-            Console.WriteLine("RotationX= " + Camera.Current.RotationX);
-            Console.WriteLine("RotationY= " + Camera.Current.RotationY);
-            Console.WriteLine("RotationZ= " + Camera.Current.RotationZ);
-            Console.WriteLine("");
 
 
             oldKeyboardState = keyboardState;
@@ -91,16 +91,25 @@ namespace SrkOpenGLBasicSample
             GL.ClearColor(BackgroundColor);
             GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
 
-
+            /*Stopwatch stp = new Stopwatch();
+            stp.Start();
+            for (int i=0;i<1;i++)*/
+            //map.Draw();
             mdl.Draw();
+            /*totalTicks += stp.Elapsed.Ticks;
+            ticksCount++;
+            Console.WriteLine(totalTicks/(float)ticksCount);*/
+
 
             Context.SwapBuffers();
             base.OnRenderFrame(e);
         }
-
+        long totalTicks = 0;
+        long ticksCount = 0;
 
 
         Model mdl;
+        Model map;
         BinaryReader br;
         protected override void OnLoad(EventArgs e)
         {
@@ -110,40 +119,13 @@ namespace SrkOpenGLBasicSample
             mdl = new DAE(@"debug_mode\H_EX500\H_EX500.dae");
             mdl.Compile();
 
+            //map = new DAE(@"D:\Desktop\KHDebug\KHDebug\bin\DesktopGL\AnyCPU\Debug\Content\Models\TT08\TT08.dae");
+            //map.Compile();
 
 
             FileStream input = new FileStream(@"debug_mode\raw_anim.bin", FileMode.Open);
             br = new BinaryReader(input);
             br.BaseStream.Position = 0x10;
-
-
-            for (int i=0;i< mdl.Skeleton.Joints.Length;i++)
-            {
-                Matrix4 m = Matrix4.Identity;
-                m.M11 = br.ReadSingle();
-                m.M12 = br.ReadSingle();
-                m.M13 = br.ReadSingle();
-                m.M14 = br.ReadSingle();
-
-                m.M21 = br.ReadSingle();
-                m.M22 = br.ReadSingle();
-                m.M23 = br.ReadSingle();
-                m.M24 = br.ReadSingle();
-
-                m.M31 = br.ReadSingle();
-                m.M32 = br.ReadSingle();
-                m.M33 = br.ReadSingle();
-                m.M34 = br.ReadSingle();
-
-                m.M41 = br.ReadSingle();
-                m.M42 = br.ReadSingle();
-                m.M43 = br.ReadSingle();
-                m.M44 = br.ReadSingle();
-
-                mdl.Skeleton.Joints[i].TransformLocal = m;
-
-            }
-            mdl.Skeleton.ComputeMatrices(Matrix4.CreateScale(1f));
 
             /*mdl.Meshes = new Mesh[1];
             mdl.Meshes[0] = new Mesh();

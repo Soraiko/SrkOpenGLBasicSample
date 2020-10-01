@@ -1104,7 +1104,7 @@ namespace SrkOpenGLBasicSample
                 mesh.primitiveType = OpenTK.Graphics.OpenGL.PrimitiveType.Triangles;
                 mesh.TextureCoordinates = new Vector2[this.GeometryDataTexcoordinates_i[i].Count];
 
-                if (indexof_cont < 0)
+                if (this.Meshes .Length>100|| indexof_cont < 0)
                 {
                     //mesh.Normals = new Vector3[this.GeometryDataNormals_i[i].Count];
                     mesh.Colors = new Color[this.GeometryDataColors_i[i].Count];

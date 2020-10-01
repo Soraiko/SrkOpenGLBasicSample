@@ -20,6 +20,7 @@ namespace SrkOpenGLBasicSample
         public Color[] Colors;
 
         BinaryReader binaryReader;
+        byte[] data;
 
         public void Compile(Skeleton skeleton)
         {
@@ -336,7 +337,11 @@ namespace SrkOpenGLBasicSample
                     }
                     break;
             }
-            binaryReader = new BinaryReader(memoryStream);
+            //binaryReader = new BinaryReader(memoryStream);
+            data = new byte[memoryStream.Length];
+            memoryStream.Position = 0;
+            memoryStream.Read(data, 0, data.Length);
+            binaryWriter.Close();
 
             Vertices.Clear();
             if (Influences != null && Influences.Length > 0) Array.Clear(Influences, 0, Influences.Length);
@@ -349,96 +354,97 @@ namespace SrkOpenGLBasicSample
         public void Draw(Skeleton skeleton)
         {
             Matrix4[] mats = new Matrix4[0];
-            if (skeleton !=null && skeleton.Matrices != null && skeleton.Matrices.Length>0)
+            if (skeleton != null && skeleton.Matrices != null && skeleton.Matrices.Length > 0)
             {
                 mats = new Matrix4[skeleton.Matrices.Length];
                 Array.Copy(skeleton.Matrices, mats, mats.Length);
             }
 
+            int pos = -4;
 
-            binaryReader.BaseStream.Position = 0;
-            GL.Begin((PrimitiveType)binaryReader.ReadInt32());
+            GL.Begin((PrimitiveType)BitConverter.ToInt32(data, pos += 4));
             int count = 0;
             Vector4 somme = Vector4.Zero;
+            GL.Color4((byte)255, (byte)255, (byte)255, (byte)255);
 
-            switch (binaryReader.ReadInt32())
+            switch (BitConverter.ToInt32(data, pos += 4))
             {
                 case 0:
-                    while (binaryReader.BaseStream.Position < binaryReader.BaseStream.Length)
+                    while (pos + 4 < data.Length)
                     {
-                        GL.Vertex3(binaryReader.ReadSingle(), binaryReader.ReadSingle(), binaryReader.ReadSingle());
+                        GL.Vertex3(BitConverter.ToSingle(data, pos += 4), BitConverter.ToSingle(data, pos += 4), BitConverter.ToSingle(data, pos += 4));
                     }
                     break;
                 case 1:
-                    while (binaryReader.BaseStream.Position < binaryReader.BaseStream.Length)
+                    while (pos + 4 < data.Length)
                     {
-                        GL.TexCoord2(binaryReader.ReadSingle(), binaryReader.ReadSingle());
-                        GL.Vertex3(binaryReader.ReadSingle(), binaryReader.ReadSingle(), binaryReader.ReadSingle());
+                        GL.TexCoord2(BitConverter.ToSingle(data, pos += 4), BitConverter.ToSingle(data, pos += 4));
+                        GL.Vertex3(BitConverter.ToSingle(data, pos += 4), BitConverter.ToSingle(data, pos += 4), BitConverter.ToSingle(data, pos += 4));
                     }
                     break;
                 case 2:
-                    while (binaryReader.BaseStream.Position < binaryReader.BaseStream.Length)
+                    while (pos + 4 < data.Length)
                     {
-                        GL.Normal3(binaryReader.ReadSingle(), binaryReader.ReadSingle(), binaryReader.ReadSingle());
-                        GL.Vertex3(binaryReader.ReadSingle(), binaryReader.ReadSingle(), binaryReader.ReadSingle());
+                        GL.Normal3(BitConverter.ToSingle(data, pos += 4), BitConverter.ToSingle(data, pos += 4), BitConverter.ToSingle(data, pos += 4));
+                        GL.Vertex3(BitConverter.ToSingle(data, pos += 4), BitConverter.ToSingle(data, pos += 4), BitConverter.ToSingle(data, pos += 4));
                     }
                     break;
                 case 3:
-                    while (binaryReader.BaseStream.Position < binaryReader.BaseStream.Length)
+                    while (pos + 4 < data.Length)
                     {
-                        GL.Normal3(binaryReader.ReadSingle(), binaryReader.ReadSingle(), binaryReader.ReadSingle());
-                        GL.TexCoord2(binaryReader.ReadSingle(), binaryReader.ReadSingle());
-                        GL.Vertex3(binaryReader.ReadSingle(), binaryReader.ReadSingle(), binaryReader.ReadSingle());
+                        GL.Normal3(BitConverter.ToSingle(data, pos += 4), BitConverter.ToSingle(data, pos += 4), BitConverter.ToSingle(data, pos += 4));
+                        GL.TexCoord2(BitConverter.ToSingle(data, pos += 4), BitConverter.ToSingle(data, pos += 4));
+                        GL.Vertex3(BitConverter.ToSingle(data, pos += 4), BitConverter.ToSingle(data, pos += 4), BitConverter.ToSingle(data, pos += 4));
                     }
                     break;
                 case 4:
-                    while (binaryReader.BaseStream.Position < binaryReader.BaseStream.Length)
+                    while (pos + 4 < data.Length)
                     {
-                        GL.Color4(binaryReader.ReadByte(), binaryReader.ReadByte(), binaryReader.ReadByte(), binaryReader.ReadByte());
-                        GL.Vertex3(binaryReader.ReadSingle(), binaryReader.ReadSingle(), binaryReader.ReadSingle());
+                        GL.Color4(data[pos+4], data[pos+5], data[pos+6], data[pos+7]); pos+=4;
+                        GL.Vertex3(BitConverter.ToSingle(data, pos += 4), BitConverter.ToSingle(data, pos += 4), BitConverter.ToSingle(data, pos += 4));
                     }
                     break;
                 case 5:
-                    while (binaryReader.BaseStream.Position < binaryReader.BaseStream.Length)
+                    while (pos + 4 < data.Length)
                     {
-                        GL.Color4(binaryReader.ReadByte(), binaryReader.ReadByte(), binaryReader.ReadByte(), binaryReader.ReadByte());
-                        GL.TexCoord2(binaryReader.ReadSingle(), binaryReader.ReadSingle());
-                        GL.Vertex3(binaryReader.ReadSingle(), binaryReader.ReadSingle(), binaryReader.ReadSingle());
+                        GL.Color4(data[pos+4], data[pos+5], data[pos+6], data[pos+7]); pos+=4;
+                        GL.TexCoord2(BitConverter.ToSingle(data, pos += 4), BitConverter.ToSingle(data, pos += 4));
+                        GL.Vertex3(BitConverter.ToSingle(data, pos += 4), BitConverter.ToSingle(data, pos += 4), BitConverter.ToSingle(data, pos += 4));
                     }
                     break;
                 case 6:
-                    while (binaryReader.BaseStream.Position < binaryReader.BaseStream.Length)
+                    while (pos + 4 < data.Length)
                     {
-                        GL.Color4(binaryReader.ReadByte(), binaryReader.ReadByte(), binaryReader.ReadByte(), binaryReader.ReadByte());
-                        GL.Normal3(binaryReader.ReadSingle(), binaryReader.ReadSingle(), binaryReader.ReadSingle());
-                        GL.Vertex3(binaryReader.ReadSingle(), binaryReader.ReadSingle(), binaryReader.ReadSingle());
+                        GL.Color4(data[pos+4], data[pos+5], data[pos+6], data[pos+7]); pos+=4;
+                        GL.Normal3(BitConverter.ToSingle(data, pos += 4), BitConverter.ToSingle(data, pos += 4), BitConverter.ToSingle(data, pos += 4));
+                        GL.Vertex3(BitConverter.ToSingle(data, pos += 4), BitConverter.ToSingle(data, pos += 4), BitConverter.ToSingle(data, pos += 4));
                     }
                     break;
                 case 7:
-                    while (binaryReader.BaseStream.Position < binaryReader.BaseStream.Length)
+                    while (pos + 4 < data.Length)
                     {
-                        GL.Color4(binaryReader.ReadByte(), binaryReader.ReadByte(), binaryReader.ReadByte(), binaryReader.ReadByte());
-                        GL.Normal3(binaryReader.ReadSingle(), binaryReader.ReadSingle(), binaryReader.ReadSingle());
-                        GL.TexCoord2(binaryReader.ReadSingle(), binaryReader.ReadSingle());
-                        GL.Vertex3(binaryReader.ReadSingle(), binaryReader.ReadSingle(), binaryReader.ReadSingle());
+                        GL.Color4(data[pos+4], data[pos+5], data[pos+6], data[pos+7]); pos+=4;
+                        GL.Normal3(BitConverter.ToSingle(data, pos += 4), BitConverter.ToSingle(data, pos += 4), BitConverter.ToSingle(data, pos += 4));
+                        GL.TexCoord2(BitConverter.ToSingle(data, pos += 4), BitConverter.ToSingle(data, pos += 4));
+                        GL.Vertex3(BitConverter.ToSingle(data, pos += 4), BitConverter.ToSingle(data, pos += 4), BitConverter.ToSingle(data, pos += 4));
                     }
                     break;
 
 
                 case 8:
-                    while (binaryReader.BaseStream.Position < binaryReader.BaseStream.Length)
+                    while (pos + 4 < data.Length)
                     {
-                        count = binaryReader.ReadInt32();
+                        count = BitConverter.ToInt32(data, pos += 4);
                         somme = Vector4.Zero;
                         do
                         {
                             somme += Vector4.Transform(new Vector4(
-                                binaryReader.ReadSingle(),
-                                binaryReader.ReadSingle(), 
-                                binaryReader.ReadSingle(), 
-                                binaryReader.ReadSingle()), mats[binaryReader.ReadInt32()]);
+                                BitConverter.ToSingle(data, pos += 4),
+                                BitConverter.ToSingle(data, pos += 4),
+                                BitConverter.ToSingle(data, pos += 4),
+                                BitConverter.ToSingle(data, pos += 4)), mats[BitConverter.ToInt32(data, pos += 4)]);
                             count--;
-                            if (count==0)
+                            if (count == 0)
                             {
                                 GL.Vertex3(somme.X, somme.Y, somme.Z);
                                 break;
@@ -448,21 +454,21 @@ namespace SrkOpenGLBasicSample
                     }
                     break;
                 case 9:
-                    while (binaryReader.BaseStream.Position < binaryReader.BaseStream.Length)
+                    while (pos + 4 < data.Length)
                     {
-                        GL.TexCoord2(binaryReader.ReadSingle(), binaryReader.ReadSingle());
-                        
+                        GL.TexCoord2(BitConverter.ToSingle(data, pos += 4), BitConverter.ToSingle(data, pos += 4));
 
-                        count = binaryReader.ReadInt32();
+
+                        count = BitConverter.ToInt32(data, pos += 4);
                         somme = Vector4.Zero;
                         do
                         {
 
                             somme += Vector4.Transform(new Vector4(
-                                binaryReader.ReadSingle(),
-                                binaryReader.ReadSingle(),
-                                binaryReader.ReadSingle(),
-                                binaryReader.ReadSingle()), mats[binaryReader.ReadInt32()]);
+                                BitConverter.ToSingle(data, pos += 4),
+                                BitConverter.ToSingle(data, pos += 4),
+                                BitConverter.ToSingle(data, pos += 4),
+                                BitConverter.ToSingle(data, pos += 4)), mats[BitConverter.ToInt32(data, pos += 4)]);
 
                             count--;
                             if (count == 0)
@@ -476,19 +482,19 @@ namespace SrkOpenGLBasicSample
                     }
                     break;
                 case 10:
-                    while (binaryReader.BaseStream.Position < binaryReader.BaseStream.Length)
+                    while (pos + 4 < data.Length)
                     {
-                        GL.Normal3(binaryReader.ReadSingle(), binaryReader.ReadSingle(), binaryReader.ReadSingle());
+                        GL.Normal3(BitConverter.ToSingle(data, pos += 4), BitConverter.ToSingle(data, pos += 4), BitConverter.ToSingle(data, pos += 4));
 
-                        count = binaryReader.ReadInt32();
+                        count = BitConverter.ToInt32(data, pos += 4);
                         somme = Vector4.Zero;
                         do
                         {
                             somme += Vector4.Transform(new Vector4(
-                                binaryReader.ReadSingle(),
-                                binaryReader.ReadSingle(),
-                                binaryReader.ReadSingle(),
-                                binaryReader.ReadSingle()), mats[binaryReader.ReadInt32()]);
+                                BitConverter.ToSingle(data, pos += 4),
+                                BitConverter.ToSingle(data, pos += 4),
+                                BitConverter.ToSingle(data, pos += 4),
+                                BitConverter.ToSingle(data, pos += 4)), mats[BitConverter.ToInt32(data, pos += 4)]);
                             count--;
                             if (count == 0)
                             {
@@ -500,21 +506,21 @@ namespace SrkOpenGLBasicSample
                     }
                     break;
                 case 11:
-                    while (binaryReader.BaseStream.Position < binaryReader.BaseStream.Length)
+                    while (pos + 4 < data.Length)
                     {
-                        GL.Normal3(binaryReader.ReadSingle(), binaryReader.ReadSingle(), binaryReader.ReadSingle());
-                        GL.TexCoord2(binaryReader.ReadSingle(), binaryReader.ReadSingle());
+                        GL.Normal3(BitConverter.ToSingle(data, pos += 4), BitConverter.ToSingle(data, pos += 4), BitConverter.ToSingle(data, pos += 4));
+                        GL.TexCoord2(BitConverter.ToSingle(data, pos += 4), BitConverter.ToSingle(data, pos += 4));
 
 
-                        count = binaryReader.ReadInt32();
+                        count = BitConverter.ToInt32(data, pos += 4);
                         somme = Vector4.Zero;
                         do
                         {
                             somme += Vector4.Transform(new Vector4(
-                                binaryReader.ReadSingle(),
-                                binaryReader.ReadSingle(),
-                                binaryReader.ReadSingle(),
-                                binaryReader.ReadSingle()), mats[binaryReader.ReadInt32()]);
+                                BitConverter.ToSingle(data, pos += 4),
+                                BitConverter.ToSingle(data, pos += 4),
+                                BitConverter.ToSingle(data, pos += 4),
+                                BitConverter.ToSingle(data, pos += 4)), mats[BitConverter.ToInt32(data, pos += 4)]);
                             count--;
                             if (count == 0)
                             {
@@ -526,20 +532,20 @@ namespace SrkOpenGLBasicSample
                     }
                     break;
                 case 12:
-                    while (binaryReader.BaseStream.Position < binaryReader.BaseStream.Length)
+                    while (pos + 4 < data.Length)
                     {
-                        GL.Color4(binaryReader.ReadByte(), binaryReader.ReadByte(), binaryReader.ReadByte(), binaryReader.ReadByte());
+                        GL.Color4(data[pos+4], data[pos+5], data[pos+6], data[pos+7]); pos+=4;
 
 
-                        count = binaryReader.ReadInt32();
+                        count = BitConverter.ToInt32(data, pos += 4);
                         somme = Vector4.Zero;
                         do
                         {
                             somme += Vector4.Transform(new Vector4(
-                                binaryReader.ReadSingle(),
-                                binaryReader.ReadSingle(),
-                                binaryReader.ReadSingle(),
-                                binaryReader.ReadSingle()), mats[binaryReader.ReadInt32()]);
+                                BitConverter.ToSingle(data, pos += 4),
+                                BitConverter.ToSingle(data, pos += 4),
+                                BitConverter.ToSingle(data, pos += 4),
+                                BitConverter.ToSingle(data, pos += 4)), mats[BitConverter.ToInt32(data, pos += 4)]);
                             count--;
                             if (count == 0)
                             {
@@ -551,21 +557,21 @@ namespace SrkOpenGLBasicSample
                     }
                     break;
                 case 13:
-                    while (binaryReader.BaseStream.Position < binaryReader.BaseStream.Length)
+                    while (pos + 4 < data.Length)
                     {
-                        GL.Color4(binaryReader.ReadByte(), binaryReader.ReadByte(), binaryReader.ReadByte(), binaryReader.ReadByte());
-                        GL.TexCoord2(binaryReader.ReadSingle(), binaryReader.ReadSingle());
+                        GL.Color4(data[pos+4], data[pos+5], data[pos+6], data[pos+7]); pos+=4;
+                        GL.TexCoord2(BitConverter.ToSingle(data, pos += 4), BitConverter.ToSingle(data, pos += 4));
 
 
-                        count = binaryReader.ReadInt32();
+                        count = BitConverter.ToInt32(data, pos += 4);
                         somme = Vector4.Zero;
                         do
                         {
                             somme += Vector4.Transform(new Vector4(
-                                binaryReader.ReadSingle(),
-                                binaryReader.ReadSingle(),
-                                binaryReader.ReadSingle(),
-                                binaryReader.ReadSingle()), mats[binaryReader.ReadInt32()]);
+                                BitConverter.ToSingle(data, pos += 4),
+                                BitConverter.ToSingle(data, pos += 4),
+                                BitConverter.ToSingle(data, pos += 4),
+                                BitConverter.ToSingle(data, pos += 4)), mats[BitConverter.ToInt32(data, pos += 4)]);
                             count--;
                             if (count == 0)
                             {
@@ -577,21 +583,21 @@ namespace SrkOpenGLBasicSample
                     }
                     break;
                 case 14:
-                    while (binaryReader.BaseStream.Position < binaryReader.BaseStream.Length)
+                    while (pos + 4 < data.Length)
                     {
-                        GL.Color4(binaryReader.ReadByte(), binaryReader.ReadByte(), binaryReader.ReadByte(), binaryReader.ReadByte());
-                        GL.Normal3(binaryReader.ReadSingle(), binaryReader.ReadSingle(), binaryReader.ReadSingle());
+                        GL.Color4(data[pos+4], data[pos+5], data[pos+6], data[pos+7]); pos+=4;
+                        GL.Normal3(BitConverter.ToSingle(data, pos += 4), BitConverter.ToSingle(data, pos += 4), BitConverter.ToSingle(data, pos += 4));
 
 
-                        count = binaryReader.ReadInt32();
+                        count = BitConverter.ToInt32(data, pos += 4);
                         somme = Vector4.Zero;
                         do
                         {
                             somme += Vector4.Transform(new Vector4(
-                                binaryReader.ReadSingle(),
-                                binaryReader.ReadSingle(),
-                                binaryReader.ReadSingle(),
-                                binaryReader.ReadSingle()), mats[binaryReader.ReadInt32()]);
+                                BitConverter.ToSingle(data, pos += 4),
+                                BitConverter.ToSingle(data, pos += 4),
+                                BitConverter.ToSingle(data, pos += 4),
+                                BitConverter.ToSingle(data, pos += 4)), mats[BitConverter.ToInt32(data, pos += 4)]);
                             count--;
                             if (count == 0)
                             {
@@ -603,22 +609,22 @@ namespace SrkOpenGLBasicSample
                     }
                     break;
                 case 15:
-                    while (binaryReader.BaseStream.Position < binaryReader.BaseStream.Length)
+                    while (pos + 4 < data.Length)
                     {
-                        GL.Color4(binaryReader.ReadByte(), binaryReader.ReadByte(), binaryReader.ReadByte(), binaryReader.ReadByte());
-                        GL.Normal3(binaryReader.ReadSingle(), binaryReader.ReadSingle(), binaryReader.ReadSingle());
-                        GL.TexCoord2(binaryReader.ReadSingle(), binaryReader.ReadSingle());
+                        GL.Color4(data[pos+4], data[pos+5], data[pos+6], data[pos+7]); pos+=4;
+                        GL.Normal3(BitConverter.ToSingle(data, pos += 4), BitConverter.ToSingle(data, pos += 4), BitConverter.ToSingle(data, pos += 4));
+                        GL.TexCoord2(BitConverter.ToSingle(data, pos += 4), BitConverter.ToSingle(data, pos += 4));
 
 
-                        count = binaryReader.ReadInt32();
+                        count = BitConverter.ToInt32(data, pos += 4);
                         somme = Vector4.Zero;
                         do
                         {
                             somme += Vector4.Transform(new Vector4(
-                                binaryReader.ReadSingle(),
-                                binaryReader.ReadSingle(),
-                                binaryReader.ReadSingle(),
-                                binaryReader.ReadSingle()), mats[binaryReader.ReadInt32()]);
+                                BitConverter.ToSingle(data, pos += 4),
+                                BitConverter.ToSingle(data, pos += 4),
+                                BitConverter.ToSingle(data, pos += 4),
+                                BitConverter.ToSingle(data, pos += 4)), mats[BitConverter.ToInt32(data, pos += 4)]);
                             count--;
                             if (count == 0)
                             {
@@ -632,5 +638,11 @@ namespace SrkOpenGLBasicSample
             }
             GL.End();
         }
+
+
+
+
+
+
     }
 }

@@ -11,6 +11,7 @@ namespace SrkOpenGLBasicSample
 {
     public class Camera
     {
+        const float EPSILON = 0.001f;
         public Camera() : this(350f)
         {
 
@@ -45,7 +46,9 @@ namespace SrkOpenGLBasicSample
             }
             set
             {
+                if (Vector3.Distance(this.dest_lookAt, value) < EPSILON) return;
                 this.dest_lookAt = value;
+                LookAtMatrixDirty = true;
             }
         }
 
@@ -85,8 +88,16 @@ namespace SrkOpenGLBasicSample
         float dest_distance;
         public float Distance
         {
-            get { return this.distance; }
-            set { this.dest_distance = value; }
+            get
+            { 
+                return this.distance;
+            }
+            set
+            { 
+                if (Math.Abs(this.dest_distance - value) < EPSILON) return; 
+                this.dest_distance = value; 
+                LookAtMatrixDirty = true; 
+            }
         }
 
         float viewAngle;
@@ -100,7 +111,9 @@ namespace SrkOpenGLBasicSample
             }
             set
             {
+                if (Math.Abs(this.dest_viewAngle - value) < EPSILON) return;
                 this.dest_viewAngle = value;
+                ProjectionMatrixDirty = true;
             }
         }
 
@@ -108,11 +121,11 @@ namespace SrkOpenGLBasicSample
         {
             if (mouseState.Wheel > oldMouseState.Wheel)
             {
-                this.Distance = this.dest_distance + 10f;
+                this.Distance = this.dest_distance - 10f;
             }
             else if (mouseState.Wheel < oldMouseState.Wheel)
             {
-                this.Distance = this.dest_distance - 10f;
+                this.Distance = this.dest_distance + 10f;
             }
         }
 
@@ -149,27 +162,27 @@ namespace SrkOpenGLBasicSample
                     this.rotation_z = this.dest_rotation_z;
                 }
                 this.rotation_x += diff.X * this.rotationStep;
-                if (Math.Abs(diff.X) > 0.000001)
+                if (Math.Abs(diff.X) > EPSILON)
                     this.LookAtMatrixDirty = true;
 
                 diff.Y = this.dest_rotation_y - this.rotation_y;
                 this.rotation_y += diff.Y * this.rotationStep;
-                if (Math.Abs(diff.Y) > 0.000001)
+                if (Math.Abs(diff.Y) > EPSILON)
                     this.LookAtMatrixDirty = true;
 
                 diff.Z = this.dest_rotation_z - this.rotation_z;
                 this.rotation_z += diff.Z * this.rotationStep;
-                if (Math.Abs(diff.Z) > 0.000001)
+                if (Math.Abs(diff.Z) > EPSILON)
                     this.LookAtMatrixDirty = true;
 
                 diff = this.dest_lookAt - this.lookAt;
                 this.lookAt += diff * this.translationStep;
-                if (diff.Length > 0.000001)
+                if (diff.Length > EPSILON)
                     this.LookAtMatrixDirty = true;
 
                 diff.Z = this.dest_distance - this.distance;
                 this.distance += diff.Z * this.translationStep;
-                if (Math.Abs(diff.Z) > 0.000001)
+                if (Math.Abs(diff.Z) > EPSILON)
                     this.LookAtMatrixDirty = true;
 
 
@@ -191,7 +204,7 @@ namespace SrkOpenGLBasicSample
 
                 diff.X = this.dest_viewAngle - this.viewAngle;
                 this.viewAngle += diff.X * this.rotationStep;
-                if (Math.Abs(diff.X) > 0.000001)
+                if (Math.Abs(diff.X) > EPSILON)
                     this.ProjectionMatrixDirty = true;
 
                 this.ProjectionMatrix = Matrix4.CreatePerspectiveFieldOfView(this.viewAngle, window.Width/ (float)window.Height, 50f,100000f);
