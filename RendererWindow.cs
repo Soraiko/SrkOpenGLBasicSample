@@ -9,13 +9,14 @@ namespace SrkOpenGLBasicSample
 {
     public class RendererWindow : GameWindow
     {
-        public RendererWindow(int width, int height, int sampleCount) : base(width, height, new GraphicsMode(ColorFormat.Empty, 0, 0, sampleCount, ColorFormat.Empty, 1))
+        public RendererWindow(int width, int height, int sampleCount) : base(width, height, new GraphicsMode(GraphicsMode.Default.ColorFormat, GraphicsMode.Default.Depth, GraphicsMode.Default.Stencil, sampleCount))
         {
             if (Preferences.Fullscreen)
             {
                 WindowState = WindowState.Fullscreen;
             }
             this.CursorVisible = true;
+            this.Location = new Point(1920, 0);
         }
 
         public KeyboardState keyboardState;
@@ -23,8 +24,6 @@ namespace SrkOpenGLBasicSample
 
         protected override void OnUpdateFrame(FrameEventArgs e)
         {
-            keyboardState = Keyboard.GetState();
-
             if (Camera.Current!=null)
             {
                 Camera.Current.KeyboardControl(keyboardState, oldKeyboardState);
@@ -36,6 +35,44 @@ namespace SrkOpenGLBasicSample
                 GL.MatrixMode(MatrixMode.Projection);
                 GL.LoadMatrix(ref Camera.Current.ProjectionMatrix);
             }
+            if (br.BaseStream.Position >= br.BaseStream.Length)
+                br.BaseStream.Position = 0x10;
+
+            for (int i = 0; i < mdl.Skeleton.Joints.Length; i++)
+            {
+                Matrix4 m = Matrix4.Identity;
+                m.M11 = br.ReadSingle();
+                m.M12 = br.ReadSingle();
+                m.M13 = br.ReadSingle();
+                m.M14 = br.ReadSingle();
+
+                m.M21 = br.ReadSingle();
+                m.M22 = br.ReadSingle();
+                m.M23 = br.ReadSingle();
+                m.M24 = br.ReadSingle();
+
+                m.M31 = br.ReadSingle();
+                m.M32 = br.ReadSingle();
+                m.M33 = br.ReadSingle();
+                m.M34 = br.ReadSingle();
+
+                m.M41 = br.ReadSingle();
+                m.M42 = br.ReadSingle();
+                m.M43 = br.ReadSingle();
+                m.M44 = br.ReadSingle();
+
+                mdl.Skeleton.Joints[i].TransformLocal = m;
+
+            }
+            mdl.Skeleton.ComputeMatrices(Matrix4.CreateScale(1f));
+
+
+            Console.WriteLine("");
+            Console.WriteLine("RotationX= " + Camera.Current.RotationX);
+            Console.WriteLine("RotationY= " + Camera.Current.RotationY);
+            Console.WriteLine("RotationZ= " + Camera.Current.RotationZ);
+            Console.WriteLine("");
+
 
             oldKeyboardState = keyboardState;
             base.OnUpdateFrame(e);
@@ -56,6 +93,8 @@ namespace SrkOpenGLBasicSample
 
 
 
+        Model mdl;
+        BinaryReader br;
         protected override void OnLoad(EventArgs e)
         {
             StaticReferences.GraphicsSettings();
@@ -67,8 +106,9 @@ namespace SrkOpenGLBasicSample
 
 
             FileStream input = new FileStream(@"debug_mode\raw_anim.bin", FileMode.Open);
-            BinaryReader br = new BinaryReader(input);
+            br = new BinaryReader(input);
             br.BaseStream.Position = 0x10;
+
 
             for (int i=0;i< mdl.Skeleton.Joints.Length;i++)
             {
@@ -148,10 +188,19 @@ namespace SrkOpenGLBasicSample
 
 
             OnUpdateFrame(null);
-
             base.OnLoad(e);
         }
-        Model mdl;
+        protected override void OnKeyDown(OpenTK.Input.KeyboardKeyEventArgs e)
+        {
+            keyboardState = e.Keyboard;
+            base.OnKeyDown(e);
+        }
+        protected override void OnKeyUp(OpenTK.Input.KeyboardKeyEventArgs e)
+        {
+            keyboardState = e.Keyboard;
+            base.OnKeyDown(e);
+        }
+
 
         protected override void OnResize(EventArgs e)
         {

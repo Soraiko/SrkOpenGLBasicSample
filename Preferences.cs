@@ -8,8 +8,8 @@ namespace SrkOpenGLBasicSample
     public static class Preferences
     {
         static List<string> preferences = new List<string>(0);
-        public static float StartupWidth;
-        public static float StartupHeight;
+        public static float StartWidth;
+        public static float StartHeight;
         public static int SampleCount;
         public static float FrameRate;
         public static bool Fullscreen;
@@ -17,64 +17,35 @@ namespace SrkOpenGLBasicSample
         public static void Initialize()
         {
             Fullscreen = false;
-            StartupWidth = 0.75f;
-            StartupHeight = 0.75f;
+            StartWidth = 0.75f;
+            StartHeight = 0.75f;
             FrameRate = 60f;
             SampleCount = 4;
         }
-        public static void ApplyPreference(string name, string setting_value)
+
+        public enum PrefName
         {
-            switch (name)
-            {
-                case "screen_resolution":
-                    StartupWidth = Single.Parse(setting_value.Split(',')[0]);
-                    StartupHeight = Single.Parse(setting_value.Split(',')[1]);
-                    break;
-                case "sample_count":
-                    SampleCount = int.Parse(setting_value);
-                    break;
-                case "frame_rate":
-                    FrameRate = Single.Parse(setting_value);
-                    break;
-                case "start_in_fullscreen":
-                    Preferences.Fullscreen = setting_value.ToLower().Contains("true");
-                break;
-            }
+            SCREEN_RESOLUTION = 0,
+            SAMPLE_COUNT = 1,
+            FRAME_RATE = 2,
+            START_IN_FULLSCREEN = 3
+
         }
 
-        public static void Get()
+        static string[] prefNamesString = new string[]
         {
-            if (System.IO.File.Exists("preferences.ini"))
-            {
-                preferences = new List<string>(System.IO.File.ReadAllLines("preferences.ini"));
-                for (int i = 0; i < preferences.Count; i++)
-                {
-                    string[] spli = preferences[i].Split('=');
-                    if (spli.Length > 1)
-                        ApplyPreference(spli[0].ToLower(), spli[1]);
-                }
-            }
-        }
+            "SCREEN_RESOLUTION",
+            "SAMPLE_COUNT",
+            "FRAME_RATE",
+            "START_IN_FULLSCREEN"
+        };
 
-
-        public static bool GetPreference(string name, out string preference)
-        {
-            preference = "";
-            for (int i = 0; i < preferences.Count; i++)
-                if (preferences[i].Split('=')[0].ToLower() == name.ToLower())
-                {
-                    preference = preferences[i].Split('=')[1];
-                    return true;
-                }
-            return false;
-        }
-
-        public static void SetPreference(string name, string setting_value)
+        public static void SetPreference(PrefName name, string setting_value)
         {
             bool set = false;
             for (int i = 0; i < preferences.Count; i++)
             {
-                if (preferences[i].Split('=')[0].ToLower() == name.ToLower())
+                if (preferences[i].Split('=')[0].ToUpper() == prefNamesString[(int)name])
                 {
                     set = true;
                     preferences[i] = name + "=" + setting_value;
@@ -84,7 +55,58 @@ namespace SrkOpenGLBasicSample
             if (!set)
                 preferences.Add(name + "=" + setting_value);
 
+            switch (name)
+            {
+                case PrefName.SCREEN_RESOLUTION:
+                    StartWidth = Single.Parse(setting_value.Split(',')[0]);
+                    StartHeight = Single.Parse(setting_value.Split(',')[1]);
+                    break;
+                case PrefName.SAMPLE_COUNT:
+                    SampleCount = int.Parse(setting_value);
+                    break;
+                case PrefName.FRAME_RATE:
+                    FrameRate = Single.Parse(setting_value);
+                    break;
+                case PrefName.START_IN_FULLSCREEN:
+                    Preferences.Fullscreen = setting_value.ToUpper().Contains("TRUE");
+                break;
+            }
             System.IO.File.WriteAllLines("preferences.ini", preferences);
         }
+
+        public static void GetFromFile()
+        {
+            if (System.IO.File.Exists(@"preferences.ini"))
+            {
+                preferences = new List<string>(System.IO.File.ReadAllLines(@"preferences.ini"));
+                for (int i = 0; i < preferences.Count; i++)
+                {
+                    string[] spli = preferences[i].Split('=');
+                    if (spli.Length > 1)
+                    {
+                        int prefIndex = Array.IndexOf(prefNamesString, spli[0].ToUpper());
+                        if (prefIndex > -1)
+                        SetPreference((PrefName)prefIndex, spli[1]);
+                    }
+                }
+            }
+        }
+
+
+        public static bool GetPreference(PrefName name, out string preference)
+        {
+            if (preferences==null)
+                GetFromFile();
+
+            preference = "";
+            for (int i = 0; i < preferences.Count; i++)
+                if (preferences[i].Split('=')[0].ToUpper() == prefNamesString[(int)name])
+                {
+                    preference = preferences[i].Split('=')[1];
+                    return true;
+                }
+            return false;
+        }
+
     }
 }

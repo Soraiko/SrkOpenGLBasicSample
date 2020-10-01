@@ -30,11 +30,14 @@ namespace SrkOpenGLBasicSample
             }
 
             Preferences.Initialize();
-            if (read_preferences) Preferences.Get();
+            if (read_preferences) Preferences.GetFromFile();
+            //Preferences.SetPreference(Preferences.PrefName.SCREEN_RESOLUTION,"1,1");
+            //Preferences.SetPreference(Preferences.PrefName.START_IN_FULLSCREEN,"true");
+
 
             using (var renderer_window = new RendererWindow(
-                (int)(Preferences.StartupWidth * OpenTK.DisplayDevice.Default.Width),
-                (int)(Preferences.StartupHeight * OpenTK.DisplayDevice.Default.Height), Preferences.SampleCount))
+                (int)(Preferences.StartWidth * OpenTK.DisplayDevice.Default.Width),
+                (int)(Preferences.StartHeight * OpenTK.DisplayDevice.Default.Height), Preferences.SampleCount))
             {
                 renderer_window.Run(Preferences.FrameRate);
             }

@@ -4,6 +4,7 @@ using OpenTK.Input;
 using System;
 using System.Collections.Generic;
 using System.Drawing.Drawing2D;
+using System.Runtime.CompilerServices;
 using System.Text;
 
 namespace SrkOpenGLBasicSample
@@ -183,6 +184,15 @@ namespace SrkOpenGLBasicSample
 
                 this.ProjectionMatrix = Matrix4.CreatePerspectiveFieldOfView(this.viewAngle, window.Width/ (float)window.Height, 50f,100000f);
             }
+        }
+        public void SkipTransitions()
+        {
+            this.distance = this.dest_distance * 1f;
+            this.lookAt = this.dest_lookAt * 1f;
+            this.rotation_x = this.dest_rotation_x * 1f;
+            this.rotation_y = this.dest_rotation_y * 1f;
+            this.rotation_z = this.dest_rotation_z * 1f;
+            this.viewAngle = this.dest_viewAngle * 1f;
         }
     }
 }

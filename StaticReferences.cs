@@ -29,6 +29,7 @@ namespace SrkOpenGLBasicSample
             whitePixel1x1 = Texturing.LoadTexture(@"resources\whitePixel1x1.png", TextureMinFilter.Nearest, TextureWrapMode.Clamp);
             Camera.Current = new Camera(200f);
             Camera.Current.LookAt = new OpenTK.Vector3(0,120,0);
+            Camera.Current.SkipTransitions();
         }
     }
 }
