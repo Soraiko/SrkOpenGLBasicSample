@@ -104,6 +104,18 @@ namespace SrkOpenGLBasicSample
             }
         }
 
+        public void MouseControl(MouseState mouseState, MouseState oldMouseState)
+        {
+            if (mouseState.Wheel > oldMouseState.Wheel)
+            {
+                this.Distance = this.dest_distance + 10f;
+            }
+            else if (mouseState.Wheel < oldMouseState.Wheel)
+            {
+                this.Distance = this.dest_distance - 10f;
+            }
+        }
+
         public void KeyboardControl(KeyboardState keyboardState, KeyboardState oldKeyboardState)
         {
             if (keyboardState.IsKeyDown(Key.Keypad4))

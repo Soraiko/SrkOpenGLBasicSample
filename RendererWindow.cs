@@ -20,7 +20,9 @@ namespace SrkOpenGLBasicSample
         }
 
         public KeyboardState keyboardState;
+        public MouseState mouseState;
         public KeyboardState oldKeyboardState;
+        public MouseState oldMouseState;
 
         protected override void OnUpdateFrame(FrameEventArgs e)
         {
@@ -29,6 +31,7 @@ namespace SrkOpenGLBasicSample
 
             if (Camera.Current!=null)
             {
+                Camera.Current.MouseControl(mouseState, oldMouseState);
                 Camera.Current.KeyboardControl(keyboardState, oldKeyboardState);
                 Camera.Current.Update(this);
 
@@ -78,6 +81,7 @@ namespace SrkOpenGLBasicSample
 
 
             oldKeyboardState = keyboardState;
+            oldMouseState = mouseState;
             base.OnUpdateFrame(e);
         }
 
@@ -193,6 +197,22 @@ namespace SrkOpenGLBasicSample
             OnUpdateFrame(null);
             base.OnLoad(e);
         }
+        protected override void OnMouseWheel(MouseWheelEventArgs e)
+        {
+            mouseState = e.Mouse;
+            base.OnMouseWheel(e);
+        }
+        protected override void OnMouseDown(MouseButtonEventArgs e)
+        {
+            mouseState = e.Mouse;
+            base.OnMouseDown(e);
+        }
+        protected override void OnMouseUp(MouseButtonEventArgs e)
+        {
+            mouseState = e.Mouse;
+            base.OnMouseUp(e);
+        }
+
         protected override void OnKeyDown(OpenTK.Input.KeyboardKeyEventArgs e)
         {
             keyboardState = e.Keyboard;
