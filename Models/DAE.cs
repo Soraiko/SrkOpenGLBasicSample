@@ -7,6 +7,8 @@ using System.Runtime.InteropServices;
 
 using OpenTK;
 using OpenTK.Graphics;
+using OpenTK.Graphics.OpenGL;
+using System.Drawing.Drawing2D;
 
 namespace SrkOpenGLBasicSample
 {
@@ -54,6 +56,9 @@ namespace SrkOpenGLBasicSample
 
             this.ImagesIDs = new List<string>(0);
             this.ImagesFilenames = new List<string>(0);
+
+            this.ImagesMinFilters = new List<TextureMinFilter>(0);
+            this.ImagesWrapModes = new List<TextureWrapMode>(0);
 
             this.PerGeometryMaterials = new List<string>(0);
             this.MaterialsIDs = new List<string>(0);
@@ -159,7 +164,39 @@ namespace SrkOpenGLBasicSample
                 if (initFromNode.Count > 0)
                 {
                     this.ImagesIDs.Add(this.images[i].Attributes["id"].Value);
-                    this.ImagesFilenames.Add(initFromNode[0].InnerText);
+                    string innerText = initFromNode[0].InnerText;
+
+                    TextureMinFilter minFilter = TextureMinFilter.Linear;
+                    TextureWrapMode wrapMode = TextureWrapMode.Repeat;
+
+                    if (innerText.Contains("?"))
+                    {
+                        string[] parameters = innerText.Split('?')[1].Split(';');
+                        for (int j=0;j< parameters.Length;j++)
+                        {
+                            string left = parameters[j].Split('=')[0];
+                            int right = 0;
+                            if (parameters[j].Contains("="))
+                            {
+                                right = int.Parse(parameters[j].Split('=')[1]);
+                            }
+                            switch (left)
+                            {
+                                case "TextureMinFilter":
+                                    minFilter = (TextureMinFilter)right;
+                                    break;
+                                case "TextureWrapMode":
+                                    wrapMode = (TextureWrapMode)right;
+                                    break;
+                            }
+                        }
+                        innerText = innerText.Split('?')[0];
+                    }
+
+
+                    this.ImagesFilenames.Add(innerText);
+                    this.ImagesMinFilters.Add(minFilter);
+                    this.ImagesWrapModes.Add(wrapMode);
                 }
             }
 			/*string[] pngs = System.IO.Directory.GetFiles(@"D:\Desktop\KHDebug\KHDebug\bin\DesktopGL\AnyCPU\Debug\Content\Models\TT08", "*.png");
@@ -1037,8 +1074,8 @@ namespace SrkOpenGLBasicSample
                                     if (File.Exists(fname))
                                     {
                                         mesh.Texture = Texturing.LoadTexture(fname,
-                                            OpenTK.Graphics.OpenGL.TextureMinFilter.Nearest,
-                                            OpenTK.Graphics.OpenGL.TextureWrapMode.Repeat);
+                                            ImagesMinFilters[fnameIndex],
+                                            ImagesWrapModes[fnameIndex]);
 
                                         int ind = fname.IndexOf(this.Directory + @"\");
                                         if (ind > -1)
@@ -1115,6 +1152,10 @@ namespace SrkOpenGLBasicSample
 
         readonly List<string> ImagesIDs;
         readonly List<string> ImagesFilenames;
+
+        readonly List<TextureMinFilter> ImagesMinFilters;
+        readonly List<TextureWrapMode> ImagesWrapModes;
+
         readonly List<string> PerGeometryMaterials;
         List<string> MaterialsIDs;
         readonly List<string> MaterialsEffectIDs; /* Data is corresponding effect ID (an URL, with #) */

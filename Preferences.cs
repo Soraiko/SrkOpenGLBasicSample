@@ -19,10 +19,13 @@ namespace SrkOpenGLBasicSample
         public static void Initialize()
         {
             Fullscreen = false;
-            StartX = 0f;
-            StartY = 0f;
+
             StartWidth = 0.75f;
             StartHeight = 0.75f;
+
+            StartX = 0.5f - StartWidth / 2f;
+            StartY = 0.5f - StartHeight / 2f;
+
             FrameRate = 60f;
             SampleCount = 4;
         }
