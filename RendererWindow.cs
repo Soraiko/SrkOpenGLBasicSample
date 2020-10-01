@@ -16,7 +16,7 @@ namespace SrkOpenGLBasicSample
                 WindowState = WindowState.Fullscreen;
             }
             this.CursorVisible = true;
-            this.Location = new Point(1920, 0);
+            //this.Location = new Point(1920, 0);
         }
 
         public KeyboardState keyboardState;
