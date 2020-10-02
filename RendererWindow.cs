@@ -94,7 +94,7 @@ namespace SrkOpenGLBasicSample
             /*Stopwatch stp = new Stopwatch();
             stp.Start();
             for (int i=0;i<1;i++)*/
-            //map.Draw();
+            map.Draw();
             mdl.Draw();
             /*totalTicks += stp.Elapsed.Ticks;
             ticksCount++;
@@ -119,8 +119,8 @@ namespace SrkOpenGLBasicSample
             mdl = new DAE(@"debug_mode\H_EX500\H_EX500.dae");
             mdl.Compile();
 
-            //map = new DAE(@"D:\Desktop\KHDebug\KHDebug\bin\DesktopGL\AnyCPU\Debug\Content\Models\TT08\TT08.dae");
-            //map.Compile();
+            map = new DAE(@"C:\Users\Cdministrateur\Documents\utilitaires\KH2FM.Mdlx+Map.Viewer.2019.November.29\BB00-export\BB00.dae");
+            map.Compile();
 
 
             FileStream input = new FileStream(@"debug_mode\raw_anim.bin", FileMode.Open);

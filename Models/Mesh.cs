@@ -21,7 +21,8 @@ namespace SrkOpenGLBasicSample
 
         BinaryReader binaryReader;
         byte[] data;
-
+        int VertexArrayObject;
+        int VertexBufferObject;
         public void Compile(Skeleton skeleton)
         {
             Matrix4[] mats = new Matrix4[0];
@@ -42,6 +43,18 @@ namespace SrkOpenGLBasicSample
             binaryWriter.Write(meshType);
 
             int vertexIndex = 0;
+
+            /*
+                GL.BindVertexArray(VertexArrayObject);
+                GL.BindBuffer(BufferTarget.ArrayBuffer, VertexBufferObject);
+                GL.BufferData(BufferTarget.ArrayBuffer, this.Data.Length, this.Data, BufferUsageHint.StaticDraw);
+
+                GL.VertexAttribPointer(0, 3, VertexAttribPointerType.Float, false, this.VertexStride, 0);
+                GL.EnableVertexAttribArray(0);
+
+                GL.VertexAttribIPointer(1, 1, VertexAttribIntegerType.Int, this.VertexStride, (IntPtr)(3 * sizeof(float)));
+                GL.EnableVertexAttribArray(1);
+            */
 
             switch (meshType)
             {

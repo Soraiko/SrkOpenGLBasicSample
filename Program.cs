@@ -31,8 +31,9 @@ namespace SrkOpenGLBasicSample
 
             Preferences.Initialize();
             if (read_preferences) Preferences.GetFromFile();
-            //Preferences.SetPreference(Preferences.PrefName.SCREEN_RESOLUTION,"1,1");
-            //Preferences.SetPreference(Preferences.PrefName.START_IN_FULLSCREEN,"true");
+            /*Preferences.SetPreference(Preferences.PrefName.SCREEN_RESOLUTION, "1,1");
+            Preferences.SetPreference(Preferences.PrefName.SCREEN_LOCATION, "1,0");
+            Preferences.SetPreference(Preferences.PrefName.START_IN_FULLSCREEN,"true");*/
 
 
             using (var renderer_window = new RendererWindow(
