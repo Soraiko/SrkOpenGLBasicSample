@@ -95,7 +95,7 @@ namespace SrkOpenGLBasicSample
             stp.Start();
             for (int i=0;i<1;i++)*/
             map.Draw();
-            mdl.Draw();
+            //mdl.Draw();
             /*totalTicks += stp.Elapsed.Ticks;
             ticksCount++;
             Console.WriteLine(totalTicks/(float)ticksCount);*/
@@ -119,7 +119,7 @@ namespace SrkOpenGLBasicSample
             mdl = new DAE(@"debug_mode\H_EX500\H_EX500.dae");
             mdl.Compile();
 
-            map = new DAE(@"C:\Users\Cdministrateur\Documents\utilitaires\KH2FM.Mdlx+Map.Viewer.2019.November.29\BB00-export\BB00.dae");
+            map = new DAE(@"D:\Desktop\KHDebug\KHDebug\bin\DesktopGL\AnyCPU\Debug\Content\Models\TT00\TT00.dae");
             map.Compile();
 
 
