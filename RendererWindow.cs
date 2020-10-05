@@ -94,7 +94,7 @@ namespace SrkOpenGLBasicSample
             /*Stopwatch stp = new Stopwatch();
             stp.Start();
             for (int i=0;i<1;i++)*/
-          map.Draw();
+            map.Draw();
             mdl.Draw();
             /*totalTicks += stp.Elapsed.Ticks;
             ticksCount++;
