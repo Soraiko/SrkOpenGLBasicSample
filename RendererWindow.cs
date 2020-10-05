@@ -94,13 +94,13 @@ namespace SrkOpenGLBasicSample
             /*Stopwatch stp = new Stopwatch();
             stp.Start();
             for (int i=0;i<1;i++)*/
-            map.Draw();
-            //mdl.Draw();
+          map.Draw();
+            mdl.Draw();
             /*totalTicks += stp.Elapsed.Ticks;
             ticksCount++;
             Console.WriteLine(totalTicks/(float)ticksCount);*/
-
-
+            if (DateTime.Now.Millisecond <100)
+            Title = ((int)base.RenderFrequency).ToString();
             Context.SwapBuffers();
             base.OnRenderFrame(e);
         }
@@ -119,7 +119,7 @@ namespace SrkOpenGLBasicSample
             mdl = new DAE(@"debug_mode\H_EX500\H_EX500.dae");
             mdl.Compile();
 
-            map = new DAE(@"D:\Desktop\KHDebug\KHDebug\bin\DesktopGL\AnyCPU\Debug\Content\Models\TT00\TT00.dae");
+            map = new DAE(@"debug_mode\BB00\BB00.dae");
             map.Compile();
 
 
@@ -127,7 +127,8 @@ namespace SrkOpenGLBasicSample
             br = new BinaryReader(input);
             br.BaseStream.Position = 0x10;
 
-            /*mdl.Meshes = new Mesh[1];
+            /*mdl = new Model();
+            mdl.Meshes = new Mesh[1];
             mdl.Meshes[0] = new Mesh();
             mdl.Meshes[0].primitiveType = PrimitiveType.TriangleStrip;
 
@@ -150,13 +151,15 @@ namespace SrkOpenGLBasicSample
                 new Vector2(1,1)
             };
 
-            mdl.Meshes[0].Vertices = new Vector4[]
+            mdl.Meshes[0].Vertices = 
+                new System.Collections.Generic.List<Vector4>(
+                new Vector4[]
             {
-                new Vector4(0,0,0,1f),
                 new Vector4(0,100,0,1),
-                new Vector4(100,0,0,1),
-                new Vector4(100,100,0,1)
-            };
+                new Vector4(0,0,0,1f),
+                new Vector4(100,100,0,1),
+                new Vector4(100,0,0,1)
+            });
 
             Skeleton s = new Skeleton(4);
             s.Joints[0] = new Joint("bone000", Matrix4.CreateScale(1f)); 
@@ -173,8 +176,8 @@ namespace SrkOpenGLBasicSample
                 new int[] {1},
                 new int[] {2},
                 new int[] {3}
-            };*/
-
+            };
+            mdl.Compile();*/
 
             OnUpdateFrame(null);
             base.OnLoad(e);

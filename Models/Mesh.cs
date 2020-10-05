@@ -10,9 +10,6 @@ namespace SrkOpenGLBasicSample
     public class Mesh
     {
         public PrimitiveType primitiveType;
-
-
-
         public int Texture;
         public List<Vector4> Vertices = new List<Vector4>(0);
         public int[][] Influences;
@@ -44,9 +41,6 @@ namespace SrkOpenGLBasicSample
             binaryWriter.Write(meshType);
 
             int vertexIndex = 0;
-
-
-
 
             switch (meshType)
             {
