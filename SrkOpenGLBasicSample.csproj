@@ -24,397 +24,397 @@
     <None Update="KHDebug_files\anim.bin">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="KHDebug_files\debug_mode\BB00\BB00.dae">
+    <None Update="KHDebug_files\debug_files\BB00\BB00.dae">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="KHDebug_files\debug_mode\BB00\desktop.ini">
+    <None Update="KHDebug_files\debug_files\BB00\desktop.ini">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="KHDebug_files\debug_mode\BB00\texture758-fs8.png">
+    <None Update="KHDebug_files\debug_files\BB00\texture758-fs8.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="KHDebug_files\debug_mode\BB00\texture758.png">
+    <None Update="KHDebug_files\debug_files\BB00\texture758.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="KHDebug_files\debug_mode\BB00\texture759-fs8.png">
+    <None Update="KHDebug_files\debug_files\BB00\texture759-fs8.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="KHDebug_files\debug_mode\BB00\texture759.png">
+    <None Update="KHDebug_files\debug_files\BB00\texture759.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="KHDebug_files\debug_mode\BB00\texture760-fs8.png">
+    <None Update="KHDebug_files\debug_files\BB00\texture760-fs8.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="KHDebug_files\debug_mode\BB00\texture760.png">
+    <None Update="KHDebug_files\debug_files\BB00\texture760.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="KHDebug_files\debug_mode\BB00\texture761-fs8.png">
+    <None Update="KHDebug_files\debug_files\BB00\texture761-fs8.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="KHDebug_files\debug_mode\BB00\texture761.png">
+    <None Update="KHDebug_files\debug_files\BB00\texture761.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="KHDebug_files\debug_mode\BB00\texture762-fs8.png">
+    <None Update="KHDebug_files\debug_files\BB00\texture762-fs8.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="KHDebug_files\debug_mode\BB00\texture762.png">
+    <None Update="KHDebug_files\debug_files\BB00\texture762.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="KHDebug_files\debug_mode\BB00\texture763-fs8.png">
+    <None Update="KHDebug_files\debug_files\BB00\texture763-fs8.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="KHDebug_files\debug_mode\BB00\texture763.png">
+    <None Update="KHDebug_files\debug_files\BB00\texture763.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="KHDebug_files\debug_mode\BB00\texture764-fs8.png">
+    <None Update="KHDebug_files\debug_files\BB00\texture764-fs8.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="KHDebug_files\debug_mode\BB00\texture764.png">
+    <None Update="KHDebug_files\debug_files\BB00\texture764.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="KHDebug_files\debug_mode\BB00\texture765-fs8.png">
+    <None Update="KHDebug_files\debug_files\BB00\texture765-fs8.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="KHDebug_files\debug_mode\BB00\texture765.png">
+    <None Update="KHDebug_files\debug_files\BB00\texture765.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="KHDebug_files\debug_mode\BB00\texture766-fs8.png">
+    <None Update="KHDebug_files\debug_files\BB00\texture766-fs8.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="KHDebug_files\debug_mode\BB00\texture766.png">
+    <None Update="KHDebug_files\debug_files\BB00\texture766.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="KHDebug_files\debug_mode\BB00\texture767-fs8.png">
+    <None Update="KHDebug_files\debug_files\BB00\texture767-fs8.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="KHDebug_files\debug_mode\BB00\texture767.png">
+    <None Update="KHDebug_files\debug_files\BB00\texture767.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="KHDebug_files\debug_mode\BB00\texture768-fs8.png">
+    <None Update="KHDebug_files\debug_files\BB00\texture768-fs8.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="KHDebug_files\debug_mode\BB00\texture768.png">
+    <None Update="KHDebug_files\debug_files\BB00\texture768.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="KHDebug_files\debug_mode\BB00\texture769-fs8.png">
+    <None Update="KHDebug_files\debug_files\BB00\texture769-fs8.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="KHDebug_files\debug_mode\BB00\texture769.png">
+    <None Update="KHDebug_files\debug_files\BB00\texture769.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="KHDebug_files\debug_mode\BB00\texture770-fs8.png">
+    <None Update="KHDebug_files\debug_files\BB00\texture770-fs8.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="KHDebug_files\debug_mode\BB00\texture770.png">
+    <None Update="KHDebug_files\debug_files\BB00\texture770.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="KHDebug_files\debug_mode\BB00\texture771-fs8.png">
+    <None Update="KHDebug_files\debug_files\BB00\texture771-fs8.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="KHDebug_files\debug_mode\BB00\texture771.png">
+    <None Update="KHDebug_files\debug_files\BB00\texture771.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="KHDebug_files\debug_mode\BB00\texture772-fs8.png">
+    <None Update="KHDebug_files\debug_files\BB00\texture772-fs8.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="KHDebug_files\debug_mode\BB00\texture772.png">
+    <None Update="KHDebug_files\debug_files\BB00\texture772.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="KHDebug_files\debug_mode\BB00\texture773-fs8.png">
+    <None Update="KHDebug_files\debug_files\BB00\texture773-fs8.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="KHDebug_files\debug_mode\BB00\texture773.png">
+    <None Update="KHDebug_files\debug_files\BB00\texture773.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="KHDebug_files\debug_mode\BB00\texture774-fs8.png">
+    <None Update="KHDebug_files\debug_files\BB00\texture774-fs8.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="KHDebug_files\debug_mode\BB00\texture774.png">
+    <None Update="KHDebug_files\debug_files\BB00\texture774.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="KHDebug_files\debug_mode\BB00\texture775-fs8.png">
+    <None Update="KHDebug_files\debug_files\BB00\texture775-fs8.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="KHDebug_files\debug_mode\BB00\texture775.png">
+    <None Update="KHDebug_files\debug_files\BB00\texture775.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="KHDebug_files\debug_mode\BB00\texture776-fs8.png">
+    <None Update="KHDebug_files\debug_files\BB00\texture776-fs8.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="KHDebug_files\debug_mode\BB00\texture776.png">
+    <None Update="KHDebug_files\debug_files\BB00\texture776.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="KHDebug_files\debug_mode\BB00\texture777-fs8.png">
+    <None Update="KHDebug_files\debug_files\BB00\texture777-fs8.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="KHDebug_files\debug_mode\BB00\texture777.png">
+    <None Update="KHDebug_files\debug_files\BB00\texture777.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="KHDebug_files\debug_mode\BB00\texture778-fs8.png">
+    <None Update="KHDebug_files\debug_files\BB00\texture778-fs8.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="KHDebug_files\debug_mode\BB00\texture778.png">
+    <None Update="KHDebug_files\debug_files\BB00\texture778.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="KHDebug_files\debug_mode\BB00\texture779-fs8.png">
+    <None Update="KHDebug_files\debug_files\BB00\texture779-fs8.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="KHDebug_files\debug_mode\BB00\texture779.png">
+    <None Update="KHDebug_files\debug_files\BB00\texture779.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="KHDebug_files\debug_mode\BB00\texture780-fs8.png">
+    <None Update="KHDebug_files\debug_files\BB00\texture780-fs8.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="KHDebug_files\debug_mode\BB00\texture780.png">
+    <None Update="KHDebug_files\debug_files\BB00\texture780.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="KHDebug_files\debug_mode\BB00\texture781-fs8.png">
+    <None Update="KHDebug_files\debug_files\BB00\texture781-fs8.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="KHDebug_files\debug_mode\BB00\texture781.png">
+    <None Update="KHDebug_files\debug_files\BB00\texture781.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="KHDebug_files\debug_mode\BB00\texture782-fs8.png">
+    <None Update="KHDebug_files\debug_files\BB00\texture782-fs8.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="KHDebug_files\debug_mode\BB00\texture782.png">
+    <None Update="KHDebug_files\debug_files\BB00\texture782.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="KHDebug_files\debug_mode\BB00\texture783-fs8.png">
+    <None Update="KHDebug_files\debug_files\BB00\texture783-fs8.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="KHDebug_files\debug_mode\BB00\texture783.png">
+    <None Update="KHDebug_files\debug_files\BB00\texture783.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="KHDebug_files\debug_mode\BB00\texture784-fs8.png">
+    <None Update="KHDebug_files\debug_files\BB00\texture784-fs8.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="KHDebug_files\debug_mode\BB00\texture784.png">
+    <None Update="KHDebug_files\debug_files\BB00\texture784.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="KHDebug_files\debug_mode\BB00\texture785-fs8.png">
+    <None Update="KHDebug_files\debug_files\BB00\texture785-fs8.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="KHDebug_files\debug_mode\BB00\texture785.png">
+    <None Update="KHDebug_files\debug_files\BB00\texture785.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="KHDebug_files\debug_mode\BB00\texture786-fs8.png">
+    <None Update="KHDebug_files\debug_files\BB00\texture786-fs8.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="KHDebug_files\debug_mode\BB00\texture786.png">
+    <None Update="KHDebug_files\debug_files\BB00\texture786.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="KHDebug_files\debug_mode\BB00\texture787-fs8.png">
+    <None Update="KHDebug_files\debug_files\BB00\texture787-fs8.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="KHDebug_files\debug_mode\BB00\texture787.png">
+    <None Update="KHDebug_files\debug_files\BB00\texture787.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="KHDebug_files\debug_mode\BB00\texture788-fs8.png">
+    <None Update="KHDebug_files\debug_files\BB00\texture788-fs8.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="KHDebug_files\debug_mode\BB00\texture788.png">
+    <None Update="KHDebug_files\debug_files\BB00\texture788.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="KHDebug_files\debug_mode\BB00\texture789-fs8.png">
+    <None Update="KHDebug_files\debug_files\BB00\texture789-fs8.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="KHDebug_files\debug_mode\BB00\texture789.png">
+    <None Update="KHDebug_files\debug_files\BB00\texture789.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="KHDebug_files\debug_mode\BB00\texture790-fs8.png">
+    <None Update="KHDebug_files\debug_files\BB00\texture790-fs8.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="KHDebug_files\debug_mode\BB00\texture790.png">
+    <None Update="KHDebug_files\debug_files\BB00\texture790.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="KHDebug_files\debug_mode\BB00\texture791-fs8.png">
+    <None Update="KHDebug_files\debug_files\BB00\texture791-fs8.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="KHDebug_files\debug_mode\BB00\texture791.png">
+    <None Update="KHDebug_files\debug_files\BB00\texture791.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="KHDebug_files\debug_mode\BB00\texture792-fs8.png">
+    <None Update="KHDebug_files\debug_files\BB00\texture792-fs8.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="KHDebug_files\debug_mode\BB00\texture792.png">
+    <None Update="KHDebug_files\debug_files\BB00\texture792.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="KHDebug_files\debug_mode\BB00\texture793-fs8.png">
+    <None Update="KHDebug_files\debug_files\BB00\texture793-fs8.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="KHDebug_files\debug_mode\BB00\texture793.png">
+    <None Update="KHDebug_files\debug_files\BB00\texture793.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="KHDebug_files\debug_mode\BB00\texture794-fs8.png">
+    <None Update="KHDebug_files\debug_files\BB00\texture794-fs8.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="KHDebug_files\debug_mode\BB00\texture794.png">
+    <None Update="KHDebug_files\debug_files\BB00\texture794.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="KHDebug_files\debug_mode\BB00\texture795-fs8.png">
+    <None Update="KHDebug_files\debug_files\BB00\texture795-fs8.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="KHDebug_files\debug_mode\BB00\texture795.png">
+    <None Update="KHDebug_files\debug_files\BB00\texture795.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="KHDebug_files\debug_mode\BB00\texture796-fs8.png">
+    <None Update="KHDebug_files\debug_files\BB00\texture796-fs8.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="KHDebug_files\debug_mode\BB00\texture796.png">
+    <None Update="KHDebug_files\debug_files\BB00\texture796.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="KHDebug_files\debug_mode\BB00\texture797-fs8.png">
+    <None Update="KHDebug_files\debug_files\BB00\texture797-fs8.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="KHDebug_files\debug_mode\BB00\texture797.png">
+    <None Update="KHDebug_files\debug_files\BB00\texture797.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="KHDebug_files\debug_mode\BB00\texture798-fs8.png">
+    <None Update="KHDebug_files\debug_files\BB00\texture798-fs8.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="KHDebug_files\debug_mode\BB00\texture798.png">
+    <None Update="KHDebug_files\debug_files\BB00\texture798.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="KHDebug_files\debug_mode\BB00\texture799-fs8.png">
+    <None Update="KHDebug_files\debug_files\BB00\texture799-fs8.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="KHDebug_files\debug_mode\BB00\texture799.png">
+    <None Update="KHDebug_files\debug_files\BB00\texture799.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="KHDebug_files\debug_mode\BB00\texture800-fs8.png">
+    <None Update="KHDebug_files\debug_files\BB00\texture800-fs8.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="KHDebug_files\debug_mode\BB00\texture800.png">
+    <None Update="KHDebug_files\debug_files\BB00\texture800.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="KHDebug_files\debug_mode\BB00\texture801-fs8.png">
+    <None Update="KHDebug_files\debug_files\BB00\texture801-fs8.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="KHDebug_files\debug_mode\BB00\texture801.png">
+    <None Update="KHDebug_files\debug_files\BB00\texture801.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="KHDebug_files\debug_mode\BB00\texture802-fs8.png">
+    <None Update="KHDebug_files\debug_files\BB00\texture802-fs8.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="KHDebug_files\debug_mode\BB00\texture802.png">
+    <None Update="KHDebug_files\debug_files\BB00\texture802.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="KHDebug_files\debug_mode\BB00\texture803-fs8.png">
+    <None Update="KHDebug_files\debug_files\BB00\texture803-fs8.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="KHDebug_files\debug_mode\BB00\texture803.png">
+    <None Update="KHDebug_files\debug_files\BB00\texture803.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="KHDebug_files\debug_mode\BB00\texture804-fs8.png">
+    <None Update="KHDebug_files\debug_files\BB00\texture804-fs8.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="KHDebug_files\debug_mode\BB00\texture804.png">
+    <None Update="KHDebug_files\debug_files\BB00\texture804.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="KHDebug_files\debug_mode\BB00\texture805-fs8.png">
+    <None Update="KHDebug_files\debug_files\BB00\texture805-fs8.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="KHDebug_files\debug_mode\BB00\texture805.png">
+    <None Update="KHDebug_files\debug_files\BB00\texture805.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="KHDebug_files\debug_mode\BB00\texture806-fs8.png">
+    <None Update="KHDebug_files\debug_files\BB00\texture806-fs8.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="KHDebug_files\debug_mode\BB00\texture806.png">
+    <None Update="KHDebug_files\debug_files\BB00\texture806.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="KHDebug_files\debug_mode\BB00\texture807-fs8.png">
+    <None Update="KHDebug_files\debug_files\BB00\texture807-fs8.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="KHDebug_files\debug_mode\BB00\texture807.png">
+    <None Update="KHDebug_files\debug_files\BB00\texture807.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="KHDebug_files\debug_mode\BB00\texture808-fs8.png">
+    <None Update="KHDebug_files\debug_files\BB00\texture808-fs8.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="KHDebug_files\debug_mode\BB00\texture808.png">
+    <None Update="KHDebug_files\debug_files\BB00\texture808.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="KHDebug_files\debug_mode\BB00\texture809-fs8.png">
+    <None Update="KHDebug_files\debug_files\BB00\texture809-fs8.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="KHDebug_files\debug_mode\BB00\texture809.png">
+    <None Update="KHDebug_files\debug_files\BB00\texture809.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="KHDebug_files\debug_mode\BB00\texture810-fs8.png">
+    <None Update="KHDebug_files\debug_files\BB00\texture810-fs8.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="KHDebug_files\debug_mode\BB00\texture810.png">
+    <None Update="KHDebug_files\debug_files\BB00\texture810.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="KHDebug_files\debug_mode\BB00\texture811-fs8.png">
+    <None Update="KHDebug_files\debug_files\BB00\texture811-fs8.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="KHDebug_files\debug_mode\BB00\texture811.png">
+    <None Update="KHDebug_files\debug_files\BB00\texture811.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="KHDebug_files\debug_mode\BB00\texture812-fs8.png">
+    <None Update="KHDebug_files\debug_files\BB00\texture812-fs8.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="KHDebug_files\debug_mode\BB00\texture812.png">
+    <None Update="KHDebug_files\debug_files\BB00\texture812.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="KHDebug_files\debug_mode\BB00\texture813-fs8.png">
+    <None Update="KHDebug_files\debug_files\BB00\texture813-fs8.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="KHDebug_files\debug_mode\BB00\texture813.png">
+    <None Update="KHDebug_files\debug_files\BB00\texture813.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="KHDebug_files\debug_mode\BB00\texture814-fs8.png">
+    <None Update="KHDebug_files\debug_files\BB00\texture814-fs8.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="KHDebug_files\debug_mode\BB00\texture814.png">
+    <None Update="KHDebug_files\debug_files\BB00\texture814.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="KHDebug_files\debug_mode\BB00\texture815-fs8.png">
+    <None Update="KHDebug_files\debug_files\BB00\texture815-fs8.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="KHDebug_files\debug_mode\BB00\texture815.png">
+    <None Update="KHDebug_files\debug_files\BB00\texture815.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="KHDebug_files\debug_mode\BB00\texture816-fs8.png">
+    <None Update="KHDebug_files\debug_files\BB00\texture816-fs8.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="KHDebug_files\debug_mode\BB00\texture816.png">
+    <None Update="KHDebug_files\debug_files\BB00\texture816.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="KHDebug_files\debug_mode\BB00\texture817-fs8.png">
+    <None Update="KHDebug_files\debug_files\BB00\texture817-fs8.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="KHDebug_files\debug_mode\BB00\texture817.png">
+    <None Update="KHDebug_files\debug_files\BB00\texture817.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="KHDebug_files\debug_mode\BB00\texture818-fs8.png">
+    <None Update="KHDebug_files\debug_files\BB00\texture818-fs8.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="KHDebug_files\debug_mode\BB00\texture818.png">
+    <None Update="KHDebug_files\debug_files\BB00\texture818.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="KHDebug_files\debug_mode\H_EX500\H_EX500.dae">
+    <None Update="KHDebug_files\debug_files\H_EX500\H_EX500.dae">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="KHDebug_files\debug_mode\H_EX500\texture000.png">
+    <None Update="KHDebug_files\debug_files\H_EX500\texture000.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="KHDebug_files\debug_mode\H_EX500\texture001.png">
+    <None Update="KHDebug_files\debug_files\H_EX500\texture001.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="KHDebug_files\debug_mode\H_EX500\texture002.png">
+    <None Update="KHDebug_files\debug_files\H_EX500\texture002.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="KHDebug_files\debug_mode\H_EX500\texture003.png">
+    <None Update="KHDebug_files\debug_files\H_EX500\texture003.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="KHDebug_files\debug_mode\H_EX500\texture004.png">
+    <None Update="KHDebug_files\debug_files\H_EX500\texture004.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="KHDebug_files\debug_mode\raw_anim.bin">
+    <None Update="KHDebug_files\binary_files\raw_anim.bin">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Update="KHDebug_files\H_EX500\H_EX500.dae">
@@ -474,8 +474,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="KHDebug_files\debug_mode\" />
-    <Folder Include="KHDebug_files\binary_mode\" />
+    <Folder Include="KHDebug_files\debug_files\" />
   </ItemGroup>
 
 </Project>

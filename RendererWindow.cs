@@ -116,14 +116,16 @@ namespace SrkOpenGLBasicSample
             StaticReferences.GraphicsSettings();
             StaticReferences.InitReferences();
 
-            mdl = new DAE(@"debug_mode\H_EX500\H_EX500.dae");
+            
+
+            mdl = new DAE(@"debug_files\H_EX500\H_EX500.dae");
             mdl.Compile();
 
-            map = new DAE(@"debug_mode\BB00\BB00.dae");
+            map = new DAE(@"debug_files\BB00\BB00.dae");
             map.Compile();
+            /* Links/SrkGraphics.zip (filezilla) */
 
-
-            FileStream input = new FileStream(@"debug_mode\raw_anim.bin", FileMode.Open);
+            FileStream input = new FileStream(@"binary_files\raw_anim.bin", FileMode.Open);
             br = new BinaryReader(input);
             br.BaseStream.Position = 0x10;
 

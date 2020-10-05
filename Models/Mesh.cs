@@ -19,7 +19,7 @@ namespace SrkOpenGLBasicSample
         public Color[] Colors;
 
         BinaryReader binaryReader;
-        byte[] data;
+        public byte[] Data;
 
         public void Compile(Skeleton skeleton)
         {
@@ -338,9 +338,9 @@ namespace SrkOpenGLBasicSample
                     break;
             }
             //binaryReader = new BinaryReader(memoryStream);
-            data = new byte[memoryStream.Length];
+            Data = new byte[memoryStream.Length];
             memoryStream.Position = 0;
-            memoryStream.Read(data, 0, data.Length);
+            memoryStream.Read(Data, 0, Data.Length);
             binaryWriter.Close();
 
             Vertices.Clear();
@@ -362,87 +362,87 @@ namespace SrkOpenGLBasicSample
 
             int pos = -4;
 
-            GL.Begin((PrimitiveType)BitConverter.ToInt32(data, pos += 4));
+            GL.Begin((PrimitiveType)BitConverter.ToInt32(Data, pos += 4));
             int count = 0;
             Vector4 somme = Vector4.Zero;
             GL.Color4((byte)255, (byte)255, (byte)255, (byte)255);
 
-            switch (BitConverter.ToInt32(data, pos += 4))
+            switch (BitConverter.ToInt32(Data, pos += 4))
             {
                 case 0:
-                    while (pos + 4 < data.Length)
+                    while (pos + 4 < Data.Length)
                     {
-                        GL.Vertex3(BitConverter.ToSingle(data, pos += 4), BitConverter.ToSingle(data, pos += 4), BitConverter.ToSingle(data, pos += 4));
+                        GL.Vertex3(BitConverter.ToSingle(Data, pos += 4), BitConverter.ToSingle(Data, pos += 4), BitConverter.ToSingle(Data, pos += 4));
                     }
                     break;
                 case 1:
-                    while (pos + 4 < data.Length)
+                    while (pos + 4 < Data.Length)
                     {
-                        GL.TexCoord2(BitConverter.ToSingle(data, pos += 4), BitConverter.ToSingle(data, pos += 4));
-                        GL.Vertex3(BitConverter.ToSingle(data, pos += 4), BitConverter.ToSingle(data, pos += 4), BitConverter.ToSingle(data, pos += 4));
+                        GL.TexCoord2(BitConverter.ToSingle(Data, pos += 4), BitConverter.ToSingle(Data, pos += 4));
+                        GL.Vertex3(BitConverter.ToSingle(Data, pos += 4), BitConverter.ToSingle(Data, pos += 4), BitConverter.ToSingle(Data, pos += 4));
                     }
                     break;
                 case 2:
-                    while (pos + 4 < data.Length)
+                    while (pos + 4 < Data.Length)
                     {
-                        GL.Normal3(BitConverter.ToSingle(data, pos += 4), BitConverter.ToSingle(data, pos += 4), BitConverter.ToSingle(data, pos += 4));
-                        GL.Vertex3(BitConverter.ToSingle(data, pos += 4), BitConverter.ToSingle(data, pos += 4), BitConverter.ToSingle(data, pos += 4));
+                        GL.Normal3(BitConverter.ToSingle(Data, pos += 4), BitConverter.ToSingle(Data, pos += 4), BitConverter.ToSingle(Data, pos += 4));
+                        GL.Vertex3(BitConverter.ToSingle(Data, pos += 4), BitConverter.ToSingle(Data, pos += 4), BitConverter.ToSingle(Data, pos += 4));
                     }
                     break;
                 case 3:
-                    while (pos + 4 < data.Length)
+                    while (pos + 4 < Data.Length)
                     {
-                        GL.Normal3(BitConverter.ToSingle(data, pos += 4), BitConverter.ToSingle(data, pos += 4), BitConverter.ToSingle(data, pos += 4));
-                        GL.TexCoord2(BitConverter.ToSingle(data, pos += 4), BitConverter.ToSingle(data, pos += 4));
-                        GL.Vertex3(BitConverter.ToSingle(data, pos += 4), BitConverter.ToSingle(data, pos += 4), BitConverter.ToSingle(data, pos += 4));
+                        GL.Normal3(BitConverter.ToSingle(Data, pos += 4), BitConverter.ToSingle(Data, pos += 4), BitConverter.ToSingle(Data, pos += 4));
+                        GL.TexCoord2(BitConverter.ToSingle(Data, pos += 4), BitConverter.ToSingle(Data, pos += 4));
+                        GL.Vertex3(BitConverter.ToSingle(Data, pos += 4), BitConverter.ToSingle(Data, pos += 4), BitConverter.ToSingle(Data, pos += 4));
                     }
                     break;
                 case 4:
-                    while (pos + 4 < data.Length)
+                    while (pos + 4 < Data.Length)
                     {
-                        GL.Color4(data[pos+4], data[pos+5], data[pos+6], data[pos+7]); pos+=4;
-                        GL.Vertex3(BitConverter.ToSingle(data, pos += 4), BitConverter.ToSingle(data, pos += 4), BitConverter.ToSingle(data, pos += 4));
+                        GL.Color4(Data[pos+4], Data[pos+5], Data[pos+6], Data[pos+7]); pos+=4;
+                        GL.Vertex3(BitConverter.ToSingle(Data, pos += 4), BitConverter.ToSingle(Data, pos += 4), BitConverter.ToSingle(Data, pos += 4));
                     }
                     break;
                 case 5:
-                    while (pos + 4 < data.Length)
+                    while (pos + 4 < Data.Length)
                     {
-                        GL.Color4(data[pos+4], data[pos+5], data[pos+6], data[pos+7]); pos+=4;
-                        GL.TexCoord2(BitConverter.ToSingle(data, pos += 4), BitConverter.ToSingle(data, pos += 4));
-                        GL.Vertex3(BitConverter.ToSingle(data, pos += 4), BitConverter.ToSingle(data, pos += 4), BitConverter.ToSingle(data, pos += 4));
+                        GL.Color4(Data[pos+4], Data[pos+5], Data[pos+6], Data[pos+7]); pos+=4;
+                        GL.TexCoord2(BitConverter.ToSingle(Data, pos += 4), BitConverter.ToSingle(Data, pos += 4));
+                        GL.Vertex3(BitConverter.ToSingle(Data, pos += 4), BitConverter.ToSingle(Data, pos += 4), BitConverter.ToSingle(Data, pos += 4));
                     }
                     break;
                 case 6:
-                    while (pos + 4 < data.Length)
+                    while (pos + 4 < Data.Length)
                     {
-                        GL.Color4(data[pos+4], data[pos+5], data[pos+6], data[pos+7]); pos+=4;
-                        GL.Normal3(BitConverter.ToSingle(data, pos += 4), BitConverter.ToSingle(data, pos += 4), BitConverter.ToSingle(data, pos += 4));
-                        GL.Vertex3(BitConverter.ToSingle(data, pos += 4), BitConverter.ToSingle(data, pos += 4), BitConverter.ToSingle(data, pos += 4));
+                        GL.Color4(Data[pos+4], Data[pos+5], Data[pos+6], Data[pos+7]); pos+=4;
+                        GL.Normal3(BitConverter.ToSingle(Data, pos += 4), BitConverter.ToSingle(Data, pos += 4), BitConverter.ToSingle(Data, pos += 4));
+                        GL.Vertex3(BitConverter.ToSingle(Data, pos += 4), BitConverter.ToSingle(Data, pos += 4), BitConverter.ToSingle(Data, pos += 4));
                     }
                     break;
                 case 7:
-                    while (pos + 4 < data.Length)
+                    while (pos + 4 < Data.Length)
                     {
-                        GL.Color4(data[pos+4], data[pos+5], data[pos+6], data[pos+7]); pos+=4;
-                        GL.Normal3(BitConverter.ToSingle(data, pos += 4), BitConverter.ToSingle(data, pos += 4), BitConverter.ToSingle(data, pos += 4));
-                        GL.TexCoord2(BitConverter.ToSingle(data, pos += 4), BitConverter.ToSingle(data, pos += 4));
-                        GL.Vertex3(BitConverter.ToSingle(data, pos += 4), BitConverter.ToSingle(data, pos += 4), BitConverter.ToSingle(data, pos += 4));
+                        GL.Color4(Data[pos+4], Data[pos+5], Data[pos+6], Data[pos+7]); pos+=4;
+                        GL.Normal3(BitConverter.ToSingle(Data, pos += 4), BitConverter.ToSingle(Data, pos += 4), BitConverter.ToSingle(Data, pos += 4));
+                        GL.TexCoord2(BitConverter.ToSingle(Data, pos += 4), BitConverter.ToSingle(Data, pos += 4));
+                        GL.Vertex3(BitConverter.ToSingle(Data, pos += 4), BitConverter.ToSingle(Data, pos += 4), BitConverter.ToSingle(Data, pos += 4));
                     }
                     break;
 
 
                 case 8:
-                    while (pos + 4 < data.Length)
+                    while (pos + 4 < Data.Length)
                     {
-                        count = BitConverter.ToInt32(data, pos += 4);
+                        count = BitConverter.ToInt32(Data, pos += 4);
                         somme = Vector4.Zero;
                         do
                         {
                             somme += Vector4.Transform(new Vector4(
-                                BitConverter.ToSingle(data, pos += 4),
-                                BitConverter.ToSingle(data, pos += 4),
-                                BitConverter.ToSingle(data, pos += 4),
-                                BitConverter.ToSingle(data, pos += 4)), mats[BitConverter.ToInt32(data, pos += 4)]);
+                                BitConverter.ToSingle(Data, pos += 4),
+                                BitConverter.ToSingle(Data, pos += 4),
+                                BitConverter.ToSingle(Data, pos += 4),
+                                BitConverter.ToSingle(Data, pos += 4)), mats[BitConverter.ToInt32(Data, pos += 4)]);
                             count--;
                             if (count == 0)
                             {
@@ -454,21 +454,21 @@ namespace SrkOpenGLBasicSample
                     }
                     break;
                 case 9:
-                    while (pos + 4 < data.Length)
+                    while (pos + 4 < Data.Length)
                     {
-                        GL.TexCoord2(BitConverter.ToSingle(data, pos += 4), BitConverter.ToSingle(data, pos += 4));
+                        GL.TexCoord2(BitConverter.ToSingle(Data, pos += 4), BitConverter.ToSingle(Data, pos += 4));
 
 
-                        count = BitConverter.ToInt32(data, pos += 4);
+                        count = BitConverter.ToInt32(Data, pos += 4);
                         somme = Vector4.Zero;
                         do
                         {
 
                             somme += Vector4.Transform(new Vector4(
-                                BitConverter.ToSingle(data, pos += 4),
-                                BitConverter.ToSingle(data, pos += 4),
-                                BitConverter.ToSingle(data, pos += 4),
-                                BitConverter.ToSingle(data, pos += 4)), mats[BitConverter.ToInt32(data, pos += 4)]);
+                                BitConverter.ToSingle(Data, pos += 4),
+                                BitConverter.ToSingle(Data, pos += 4),
+                                BitConverter.ToSingle(Data, pos += 4),
+                                BitConverter.ToSingle(Data, pos += 4)), mats[BitConverter.ToInt32(Data, pos += 4)]);
 
                             count--;
                             if (count == 0)
@@ -482,19 +482,19 @@ namespace SrkOpenGLBasicSample
                     }
                     break;
                 case 10:
-                    while (pos + 4 < data.Length)
+                    while (pos + 4 < Data.Length)
                     {
-                        GL.Normal3(BitConverter.ToSingle(data, pos += 4), BitConverter.ToSingle(data, pos += 4), BitConverter.ToSingle(data, pos += 4));
+                        GL.Normal3(BitConverter.ToSingle(Data, pos += 4), BitConverter.ToSingle(Data, pos += 4), BitConverter.ToSingle(Data, pos += 4));
 
-                        count = BitConverter.ToInt32(data, pos += 4);
+                        count = BitConverter.ToInt32(Data, pos += 4);
                         somme = Vector4.Zero;
                         do
                         {
                             somme += Vector4.Transform(new Vector4(
-                                BitConverter.ToSingle(data, pos += 4),
-                                BitConverter.ToSingle(data, pos += 4),
-                                BitConverter.ToSingle(data, pos += 4),
-                                BitConverter.ToSingle(data, pos += 4)), mats[BitConverter.ToInt32(data, pos += 4)]);
+                                BitConverter.ToSingle(Data, pos += 4),
+                                BitConverter.ToSingle(Data, pos += 4),
+                                BitConverter.ToSingle(Data, pos += 4),
+                                BitConverter.ToSingle(Data, pos += 4)), mats[BitConverter.ToInt32(Data, pos += 4)]);
                             count--;
                             if (count == 0)
                             {
@@ -506,21 +506,21 @@ namespace SrkOpenGLBasicSample
                     }
                     break;
                 case 11:
-                    while (pos + 4 < data.Length)
+                    while (pos + 4 < Data.Length)
                     {
-                        GL.Normal3(BitConverter.ToSingle(data, pos += 4), BitConverter.ToSingle(data, pos += 4), BitConverter.ToSingle(data, pos += 4));
-                        GL.TexCoord2(BitConverter.ToSingle(data, pos += 4), BitConverter.ToSingle(data, pos += 4));
+                        GL.Normal3(BitConverter.ToSingle(Data, pos += 4), BitConverter.ToSingle(Data, pos += 4), BitConverter.ToSingle(Data, pos += 4));
+                        GL.TexCoord2(BitConverter.ToSingle(Data, pos += 4), BitConverter.ToSingle(Data, pos += 4));
 
 
-                        count = BitConverter.ToInt32(data, pos += 4);
+                        count = BitConverter.ToInt32(Data, pos += 4);
                         somme = Vector4.Zero;
                         do
                         {
                             somme += Vector4.Transform(new Vector4(
-                                BitConverter.ToSingle(data, pos += 4),
-                                BitConverter.ToSingle(data, pos += 4),
-                                BitConverter.ToSingle(data, pos += 4),
-                                BitConverter.ToSingle(data, pos += 4)), mats[BitConverter.ToInt32(data, pos += 4)]);
+                                BitConverter.ToSingle(Data, pos += 4),
+                                BitConverter.ToSingle(Data, pos += 4),
+                                BitConverter.ToSingle(Data, pos += 4),
+                                BitConverter.ToSingle(Data, pos += 4)), mats[BitConverter.ToInt32(Data, pos += 4)]);
                             count--;
                             if (count == 0)
                             {
@@ -532,20 +532,20 @@ namespace SrkOpenGLBasicSample
                     }
                     break;
                 case 12:
-                    while (pos + 4 < data.Length)
+                    while (pos + 4 < Data.Length)
                     {
-                        GL.Color4(data[pos+4], data[pos+5], data[pos+6], data[pos+7]); pos+=4;
+                        GL.Color4(Data[pos+4], Data[pos+5], Data[pos+6], Data[pos+7]); pos+=4;
 
 
-                        count = BitConverter.ToInt32(data, pos += 4);
+                        count = BitConverter.ToInt32(Data, pos += 4);
                         somme = Vector4.Zero;
                         do
                         {
                             somme += Vector4.Transform(new Vector4(
-                                BitConverter.ToSingle(data, pos += 4),
-                                BitConverter.ToSingle(data, pos += 4),
-                                BitConverter.ToSingle(data, pos += 4),
-                                BitConverter.ToSingle(data, pos += 4)), mats[BitConverter.ToInt32(data, pos += 4)]);
+                                BitConverter.ToSingle(Data, pos += 4),
+                                BitConverter.ToSingle(Data, pos += 4),
+                                BitConverter.ToSingle(Data, pos += 4),
+                                BitConverter.ToSingle(Data, pos += 4)), mats[BitConverter.ToInt32(Data, pos += 4)]);
                             count--;
                             if (count == 0)
                             {
@@ -557,21 +557,21 @@ namespace SrkOpenGLBasicSample
                     }
                     break;
                 case 13:
-                    while (pos + 4 < data.Length)
+                    while (pos + 4 < Data.Length)
                     {
-                        GL.Color4(data[pos+4], data[pos+5], data[pos+6], data[pos+7]); pos+=4;
-                        GL.TexCoord2(BitConverter.ToSingle(data, pos += 4), BitConverter.ToSingle(data, pos += 4));
+                        GL.Color4(Data[pos+4], Data[pos+5], Data[pos+6], Data[pos+7]); pos+=4;
+                        GL.TexCoord2(BitConverter.ToSingle(Data, pos += 4), BitConverter.ToSingle(Data, pos += 4));
 
 
-                        count = BitConverter.ToInt32(data, pos += 4);
+                        count = BitConverter.ToInt32(Data, pos += 4);
                         somme = Vector4.Zero;
                         do
                         {
                             somme += Vector4.Transform(new Vector4(
-                                BitConverter.ToSingle(data, pos += 4),
-                                BitConverter.ToSingle(data, pos += 4),
-                                BitConverter.ToSingle(data, pos += 4),
-                                BitConverter.ToSingle(data, pos += 4)), mats[BitConverter.ToInt32(data, pos += 4)]);
+                                BitConverter.ToSingle(Data, pos += 4),
+                                BitConverter.ToSingle(Data, pos += 4),
+                                BitConverter.ToSingle(Data, pos += 4),
+                                BitConverter.ToSingle(Data, pos += 4)), mats[BitConverter.ToInt32(Data, pos += 4)]);
                             count--;
                             if (count == 0)
                             {
@@ -583,21 +583,21 @@ namespace SrkOpenGLBasicSample
                     }
                     break;
                 case 14:
-                    while (pos + 4 < data.Length)
+                    while (pos + 4 < Data.Length)
                     {
-                        GL.Color4(data[pos+4], data[pos+5], data[pos+6], data[pos+7]); pos+=4;
-                        GL.Normal3(BitConverter.ToSingle(data, pos += 4), BitConverter.ToSingle(data, pos += 4), BitConverter.ToSingle(data, pos += 4));
+                        GL.Color4(Data[pos+4], Data[pos+5], Data[pos+6], Data[pos+7]); pos+=4;
+                        GL.Normal3(BitConverter.ToSingle(Data, pos += 4), BitConverter.ToSingle(Data, pos += 4), BitConverter.ToSingle(Data, pos += 4));
 
 
-                        count = BitConverter.ToInt32(data, pos += 4);
+                        count = BitConverter.ToInt32(Data, pos += 4);
                         somme = Vector4.Zero;
                         do
                         {
                             somme += Vector4.Transform(new Vector4(
-                                BitConverter.ToSingle(data, pos += 4),
-                                BitConverter.ToSingle(data, pos += 4),
-                                BitConverter.ToSingle(data, pos += 4),
-                                BitConverter.ToSingle(data, pos += 4)), mats[BitConverter.ToInt32(data, pos += 4)]);
+                                BitConverter.ToSingle(Data, pos += 4),
+                                BitConverter.ToSingle(Data, pos += 4),
+                                BitConverter.ToSingle(Data, pos += 4),
+                                BitConverter.ToSingle(Data, pos += 4)), mats[BitConverter.ToInt32(Data, pos += 4)]);
                             count--;
                             if (count == 0)
                             {
@@ -609,22 +609,22 @@ namespace SrkOpenGLBasicSample
                     }
                     break;
                 case 15:
-                    while (pos + 4 < data.Length)
+                    while (pos + 4 < Data.Length)
                     {
-                        GL.Color4(data[pos+4], data[pos+5], data[pos+6], data[pos+7]); pos+=4;
-                        GL.Normal3(BitConverter.ToSingle(data, pos += 4), BitConverter.ToSingle(data, pos += 4), BitConverter.ToSingle(data, pos += 4));
-                        GL.TexCoord2(BitConverter.ToSingle(data, pos += 4), BitConverter.ToSingle(data, pos += 4));
+                        GL.Color4(Data[pos+4], Data[pos+5], Data[pos+6], Data[pos+7]); pos+=4;
+                        GL.Normal3(BitConverter.ToSingle(Data, pos += 4), BitConverter.ToSingle(Data, pos += 4), BitConverter.ToSingle(Data, pos += 4));
+                        GL.TexCoord2(BitConverter.ToSingle(Data, pos += 4), BitConverter.ToSingle(Data, pos += 4));
 
 
-                        count = BitConverter.ToInt32(data, pos += 4);
+                        count = BitConverter.ToInt32(Data, pos += 4);
                         somme = Vector4.Zero;
                         do
                         {
                             somme += Vector4.Transform(new Vector4(
-                                BitConverter.ToSingle(data, pos += 4),
-                                BitConverter.ToSingle(data, pos += 4),
-                                BitConverter.ToSingle(data, pos += 4),
-                                BitConverter.ToSingle(data, pos += 4)), mats[BitConverter.ToInt32(data, pos += 4)]);
+                                BitConverter.ToSingle(Data, pos += 4),
+                                BitConverter.ToSingle(Data, pos += 4),
+                                BitConverter.ToSingle(Data, pos += 4),
+                                BitConverter.ToSingle(Data, pos += 4)), mats[BitConverter.ToInt32(Data, pos += 4)]);
                             count--;
                             if (count == 0)
                             {

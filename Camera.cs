@@ -156,11 +156,13 @@ namespace SrkOpenGLBasicSample
                 this.LookAtMatrixDirty = false;
 
                 diff.X = this.dest_rotation_x - this.rotation_x;
+
                 if (Math.Cos(this.rotation_x) < 0 ^ Math.Cos(this.rotation_x + diff.X * this.rotationStep) < 0)
                 {
                     this.dest_rotation_z = OpenTK.MathHelper.Pi - this.dest_rotation_z;
                     this.rotation_z = this.dest_rotation_z;
                 }
+
                 this.rotation_x += diff.X * this.rotationStep;
                 if (Math.Abs(diff.X) > EPSILON)
                     this.LookAtMatrixDirty = true;
@@ -188,7 +190,7 @@ namespace SrkOpenGLBasicSample
 
                 this.RotationMatrix =
                     Matrix3.CreateRotationX(this.rotation_x) *
-                    Matrix3.CreateRotationY(this.rotation_y);
+                    Matrix3.CreateRotationY(this.rotation_y);// * Matrix3.CreateRotationZ(this.rotation_z);
 
                 this.Position = this.lookAt + Vector3.Transform(Vector3.UnitZ, this.RotationMatrix) * this.distance;
 

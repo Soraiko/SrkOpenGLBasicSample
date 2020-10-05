@@ -194,6 +194,105 @@ namespace SrkOpenGLBasicSample
                     }
 
 
+                    string[] possible_extenstions = new string[] { string.Empty, ".png", ".jpg", ".jpeg", ".dds" };
+                    for (int pe = 0; pe < possible_extenstions.Length; pe++)
+                    {
+                        string fname = innerText;
+                        if (pe > 0)
+                        {
+                            fname += possible_extenstions[pe];
+                        }
+                        int subDir = 0;
+
+                        string[] split = fname.Split(new char[] { '\\', '/' });
+                        if (split.Length > 0 && split[0].Length > 0)
+                        {
+                            int countPoint = 0;
+                            for (int sp = 0; sp < split[0].Length; sp++)
+                            {
+                                if (split[0][sp] == '.')
+                                {
+                                    countPoint++;
+                                }
+                            }
+                            if (countPoint == split[0].Length)
+                            {
+                                while (fname[0] == '.')
+                                {
+                                    fname = fname.Remove(0, 1);
+                                    subDir++;
+                                }
+                                fname = fname.Remove(0, 1);
+                                string dir = this.Directory;
+
+                                while (subDir > 0)
+                                {
+                                    for (int sp = dir.Length - 1; sp > 0; sp--)
+                                    {
+                                        if (dir[sp] == '\\')
+                                        {
+                                            dir = dir.Substring(0, sp);
+                                            break;
+                                        }
+                                    }
+                                    subDir--;
+                                }
+                                if (File.Exists(dir + @"\" + fname))
+                                {
+                                    fname = dir + @"\" + fname;
+                                }
+                                else if (File.Exists(this.Directory + @"\" + fname))
+                                {
+                                    fname = this.Directory + @"\" + fname;
+                                }
+                            }
+                        }
+
+
+                        Uri uri;
+
+                        if (Uri.TryCreate(fname, UriKind.Absolute, out uri))
+                        {
+                            fname = uri.AbsolutePath;
+                        }
+
+                        if (!File.Exists(fname))
+                        {
+                            int fileslashIndex = fname.IndexOf("file://");
+                            if (fileslashIndex > -1)
+                            {
+                                fname = fname.Remove(fileslashIndex, 7);
+                            }
+                            fname = fname.Replace("/", "\\");
+                            if (!File.Exists(fname))
+                            {
+                                if (!fname.Contains(":\\") && File.Exists(this.Directory + @"\" + fname))
+                                {
+                                    fname = this.Directory + @"\" + fname;
+                                }
+                                else
+                                {
+                                    if (File.Exists(this.Directory + @"\" + Path.GetFileName(fname)))
+                                    {
+                                        fname = this.Directory + @"\" + Path.GetFileName(fname);
+                                    }
+                                }
+                            }
+
+                        }
+                        fname = fname.Replace("%20", " ");
+                        if (File.Exists(fname))
+                        {
+                            /*int ind = fname.IndexOf(Program.ExecutableDirectory + @"\");
+                            if (ind > -1)
+                            {
+                                fname = fname.Remove(ind, Program.ExecutableDirectory.Length + 1);
+                            }*/
+                            innerText = fname;
+                            break;
+                        }
+                    }
+
                     this.ImagesFilenames.Add(innerText);
                     this.ImagesMinFilters.Add(minFilter);
                     this.ImagesWrapModes.Add(wrapMode);
@@ -934,7 +1033,7 @@ namespace SrkOpenGLBasicSample
 
             #endregion
             #region Get Per-Geometry Textures
-            for (int i = 0; i < this.PerGeometryMaterials.Count; i++)
+            /*for (int i = 0; i < this.PerGeometryMaterials.Count; i++)
             {
                 //string currEffectID = this.MaterialsEffectIDs[MaterialsIDs.IndexOf(this.PerGeometryMaterials[i])];
                 //string currImageID = this.EffectsImageIDs[this.EffectsIDs.IndexOf(currEffectID)];
@@ -957,10 +1056,9 @@ namespace SrkOpenGLBasicSample
                 {
                     currImageFileName = this.ImagesFilenames[ind];
                 }
-            }
+            }*/
 
             #endregion
-
 
 
             this.Meshes = new Mesh[this.GeometryDataVertex_i.Count];
@@ -985,108 +1083,7 @@ namespace SrkOpenGLBasicSample
                             int fnameIndex = ImagesIDs.IndexOf(imageID);
                             if (fnameIndex > -1)
                             {
-                                string[] possible_extenstions = new string[] { string.Empty, ".png", ".jpg", ".jpeg", ".dds" };
-                                for (int pe = 0; pe < possible_extenstions.Length; pe++)
-                                {
-                                    string fname = ImagesFilenames[fnameIndex];
-                                    if (pe > 0)
-                                    {
-                                        fname += possible_extenstions[pe];
-                                    }
-                                    int subDir = 0;
-
-                                    string[] split = fname.Split(new char[] { '\\', '/' });
-                                    if (split.Length > 0 && split[0].Length > 0)
-                                    {
-                                        int countPoint = 0;
-                                        for (int sp = 0; sp < split[0].Length; sp++)
-                                        {
-                                            if (split[0][sp] == '.')
-                                            {
-                                                countPoint++;
-                                            }
-                                        }
-                                        if (countPoint == split[0].Length)
-                                        {
-                                            while (fname[0] == '.')
-                                            {
-                                                fname = fname.Remove(0, 1);
-                                                subDir++;
-                                            }
-                                            fname = fname.Remove(0, 1);
-                                            string dir = this.Directory;
-
-                                            while (subDir > 0)
-                                            {
-                                                for (int sp = dir.Length - 1; sp > 0; sp--)
-                                                {
-                                                    if (dir[sp] == '\\')
-                                                    {
-                                                        dir = dir.Substring(0, sp);
-                                                        break;
-                                                    }
-                                                }
-                                                subDir--;
-                                            }
-                                            if (File.Exists(dir + @"\" + fname))
-                                            {
-                                                fname = dir + @"\" + fname;
-                                            }
-                                            else if (File.Exists(this.Directory + @"\" + fname))
-                                            {
-                                                fname = this.Directory + @"\" + fname;
-                                            }
-                                        }
-                                    }
-
-
-                                    Uri uri;
-
-                                    if (Uri.TryCreate(fname, UriKind.Absolute, out uri))
-                                    {
-                                        fname = uri.AbsolutePath;
-                                    }
-
-                                    if (!File.Exists(fname))
-                                    {
-                                        int fileslashIndex = fname.IndexOf("file://");
-                                        if (fileslashIndex > -1)
-                                        {
-                                            fname = fname.Remove(fileslashIndex, 7);
-                                        }
-                                        fname = fname.Replace("/", "\\");
-                                        if (!File.Exists(fname))
-                                        {
-                                            if (!fname.Contains(":\\") && File.Exists(this.Directory + @"\" + fname))
-                                            {
-                                                fname = this.Directory + @"\" + fname;
-                                            }
-                                            else
-                                            {
-                                                if (File.Exists(this.Directory + @"\" + Path.GetFileName(fname)))
-                                                {
-                                                    fname = this.Directory + @"\" + Path.GetFileName(fname);
-                                                }
-                                            }
-                                        }
-
-                                    }
-                                    if (File.Exists(fname))
-                                    {
-                                        mesh.Texture = Texturing.LoadTexture(fname,
-                                            ImagesMinFilters[fnameIndex],
-                                            ImagesWrapModes[fnameIndex]);
-
-                                        int ind = fname.IndexOf(this.Directory + @"\");
-                                        if (ind > -1)
-                                        {
-                                            fname = fname.Remove(ind, this.Directory.Length + 1);
-                                        }
-                                        fname = fname.Replace("%20", " ");
-                                        ImagesFilenames[fnameIndex] = fname;
-                                        break;
-                                    }
-                                }
+                                mesh.Texture = Texturing.LoadTexture(ImagesFilenames[fnameIndex], ImagesMinFilters[fnameIndex], ImagesWrapModes[fnameIndex]);
                             }
                         }
                     }

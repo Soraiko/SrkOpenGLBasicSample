@@ -15,6 +15,7 @@ namespace SrkOpenGLBasicSample
         public static int SampleCount;
         public static float FrameRate;
         public static bool Fullscreen;
+        public static bool Debug;
 
         public static void Initialize()
         {
@@ -36,7 +37,8 @@ namespace SrkOpenGLBasicSample
             SCREEN_LOCATION = 1,
             SAMPLE_COUNT = 2,
             FRAME_RATE = 3,
-            START_IN_FULLSCREEN = 4
+            START_IN_FULLSCREEN = 4,
+            DEBUG = 5
 
         }
 
@@ -46,7 +48,8 @@ namespace SrkOpenGLBasicSample
             "SCREEN_LOCATION",
             "SAMPLE_COUNT",
             "FRAME_RATE",
-            "START_IN_FULLSCREEN"
+            "START_IN_FULLSCREEN",
+            "DEBUG"
         };
 
         public static void SetPreference(PrefName name, string setting_value)
@@ -82,7 +85,10 @@ namespace SrkOpenGLBasicSample
                     break;
                 case PrefName.START_IN_FULLSCREEN:
                     Preferences.Fullscreen = setting_value.ToUpper().Contains("TRUE");
-                break;
+                    break;
+                case PrefName.DEBUG:
+                    Preferences.Debug = setting_value.ToUpper().Contains("TRUE");
+                    break;
             }
             System.IO.File.WriteAllLines("preferences.ini", preferences);
         }
