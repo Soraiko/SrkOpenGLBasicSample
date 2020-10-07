@@ -10,7 +10,7 @@ namespace SrkOpenGLBasicSample
     public class Mesh
     {
         public PrimitiveType primitiveType;
-        public int Texture;
+        public Texture Texture;
         public List<Vector4> Vertices = new List<Vector4>(0);
         public int[][] Influences;
 

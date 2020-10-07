@@ -18,7 +18,7 @@
    <library_images>
       
    <image id="file0-image" name="file0">
-         <init_from>texture000.png</init_from>
+         <init_from>texture000.png?TexFilter=9728;TexWrapS=10496;TexWrapT=10496</init_from>
       </image><image id="file1-image" name="file1">
          <init_from>texture001.png</init_from>
       </image><image id="file2-image" name="file2">

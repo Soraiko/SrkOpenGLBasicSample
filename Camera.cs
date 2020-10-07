@@ -209,7 +209,7 @@ namespace SrkOpenGLBasicSample
                 if (Math.Abs(diff.X) > EPSILON)
                     this.ProjectionMatrixDirty = true;
 
-                this.ProjectionMatrix = Matrix4.CreatePerspectiveFieldOfView(this.viewAngle, window.Width/ (float)window.Height, 50f,100000f);
+                this.ProjectionMatrix = Matrix4.CreatePerspectiveFieldOfView(this.viewAngle, window.Width/ (float)window.Height, 30f,100000000f);
             }
         }
         public void SkipTransitions()

@@ -21,13 +21,16 @@ namespace SrkOpenGLBasicSample
 
             //GL.CullFace(CullFaceMode.Back);
 
+            GL.Enable(EnableCap.Blend);
+            GL.BlendFunc(BlendingFactor.SrcAlpha, BlendingFactor.OneMinusSrcAlpha);
+            GL.DepthFunc(OpenTK.Graphics.OpenGL.DepthFunction.Lequal);
             GL.Enable(EnableCap.DepthTest);
         }
 
-        public static int whitePixel1x1;
+        public static Texture whitePixel1x1;
         public static void InitReferences()
         {
-            whitePixel1x1 = Texturing.LoadTexture(@"resources\whitePixel1x1.png", TextureMinFilter.Nearest, TextureWrapMode.Clamp);
+            whitePixel1x1 = Texture.LoadTexture(@"resources\whitePixel1x1.png", TextureMinFilter.Nearest, TextureWrapMode.Clamp, TextureWrapMode.Clamp);
             Camera.Current = new Camera(200f);
             Camera.Current.LookAt = new OpenTK.Vector3(0,120,0);
             Camera.Current.SkipTransitions();

@@ -79,8 +79,6 @@ namespace SrkOpenGLBasicSample
 
             if (keyboardState.IsKeyDown(Key.B) && oldKeyboardState.IsKeyUp(Key.B))
             {
-                GL.BlendFunc(BlendingFactor.SrcAlpha, BlendingFactor.One);
-
                 Blend = !Blend;
                 if (Blend)
                     GL.Enable(EnableCap.Blend);
@@ -123,7 +121,7 @@ namespace SrkOpenGLBasicSample
             stp.Start();
             for (int i=0;i<1;i++)*/
             map.Draw();
-            mdl.Draw();
+            //mdl.Draw();
             /*totalTicks += stp.Elapsed.Ticks;
             ticksCount++;
             Console.WriteLine(totalTicks/(float)ticksCount);*/
@@ -146,11 +144,12 @@ namespace SrkOpenGLBasicSample
 
             
 
-            mdl = new DAE(@"debug_files\H_EX500\H_EX500.dae");
-            mdl.Compile();
 
             map = new DAE(@"debug_files\BB00\BB00.dae");
             map.Compile();
+
+            /*mdl = new DAE(@"D:\Desktop\KHDebug\KHDebug\bin\DesktopGL\AnyCPU\Debug\Content\Models\TT08\TT08 - Copie.dae");
+            mdl.Compile();*/
 
 
             FileStream input = new FileStream(@"binary_files\raw_anim.bin", FileMode.Open);

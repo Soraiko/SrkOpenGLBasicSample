@@ -58,7 +58,8 @@ namespace SrkOpenGLBasicSample
             this.ImagesFilenames = new List<string>(0);
 
             this.ImagesMinFilters = new List<TextureMinFilter>(0);
-            this.ImagesWrapModes = new List<TextureWrapMode>(0);
+            this.ImagesWrapS = new List<TextureWrapMode>(0);
+            this.ImagesWrapT = new List<TextureWrapMode>(0);
 
             this.PerGeometryMaterials = new List<string>(0);
             this.MaterialsIDs = new List<string>(0);
@@ -167,7 +168,8 @@ namespace SrkOpenGLBasicSample
                     string innerText = initFromNode[0].InnerText;
 
                     TextureMinFilter minFilter = TextureMinFilter.Linear;
-                    TextureWrapMode wrapMode = TextureWrapMode.Repeat;
+                    TextureWrapMode wrapS = TextureWrapMode.Repeat;
+                    TextureWrapMode wrapT = TextureWrapMode.Repeat;
 
                     if (innerText.Contains("?"))
                     {
@@ -182,11 +184,14 @@ namespace SrkOpenGLBasicSample
                             }
                             switch (left)
                             {
-                                case "TextureMinFilter":
+                                case "TexFilter":
                                     minFilter = (TextureMinFilter)right;
                                     break;
-                                case "TextureWrapMode":
-                                    wrapMode = (TextureWrapMode)right;
+                                case "TexWrapS":
+                                    wrapS = (TextureWrapMode)right;
+                                    break;
+                                case "TexWrapT":
+                                    wrapT = (TextureWrapMode)right;
                                     break;
                             }
                         }
@@ -295,7 +300,8 @@ namespace SrkOpenGLBasicSample
 
                     this.ImagesFilenames.Add(innerText);
                     this.ImagesMinFilters.Add(minFilter);
-                    this.ImagesWrapModes.Add(wrapMode);
+                    this.ImagesWrapS.Add(wrapS);
+                    this.ImagesWrapT.Add(wrapT);
                 }
             }
 			/*string[] pngs = System.IO.Directory.GetFiles(@"D:\Desktop\KHDebug\KHDebug\bin\DesktopGL\AnyCPU\Debug\Content\Models\TT08", "*.png");
@@ -1083,7 +1089,7 @@ namespace SrkOpenGLBasicSample
                             int fnameIndex = ImagesIDs.IndexOf(imageID);
                             if (fnameIndex > -1)
                             {
-                                mesh.Texture = Texturing.LoadTexture(ImagesFilenames[fnameIndex], ImagesMinFilters[fnameIndex], ImagesWrapModes[fnameIndex]);
+                                mesh.Texture = Texture.LoadTexture(ImagesFilenames[fnameIndex], ImagesMinFilters[fnameIndex], ImagesWrapS[fnameIndex], ImagesWrapT[fnameIndex]);
                             }
                         }
                     }
@@ -1101,7 +1107,7 @@ namespace SrkOpenGLBasicSample
                 mesh.primitiveType = OpenTK.Graphics.OpenGL.PrimitiveType.Triangles;
                 mesh.TextureCoordinates = new Vector2[this.GeometryDataTexcoordinates_i[i].Count];
 
-                if (this.Meshes .Length>100|| indexof_cont < 0)
+                if (indexof_cont < 0)
                 {
                     //mesh.Normals = new Vector3[this.GeometryDataNormals_i[i].Count];
                     mesh.Colors = new Color[this.GeometryDataColors_i[i].Count];
@@ -1111,12 +1117,20 @@ namespace SrkOpenGLBasicSample
                     {
                         //Vector3 n = this.GeometryDataNormals[i][this.GeometryDataNormals_i[i][j]];
                         Vector2 t = this.GeometryDataTexcoordinates[i][this.GeometryDataTexcoordinates_i[i][j]];
-                        Color4 c = this.GeometryDataColors[i][this.GeometryDataColors_i[i][j]];
+                        if (j < this.GeometryDataTexcoordinates_i[i].Count && this.GeometryDataTexcoordinates_i[i][j] < this.GeometryDataTexcoordinates_i[i].Count)
+                        {
+                            t = this.GeometryDataTexcoordinates[i][this.GeometryDataTexcoordinates_i[i][j]];
+                            mesh.TextureCoordinates[j] = t;
+                        }
+                        Color4 c = Color.White;
+                        if (j < this.GeometryDataColors_i[i].Count && this.GeometryDataColors_i[i][j]<this.GeometryDataColors_i[i].Count)
+                        {
+                            c = this.GeometryDataColors[i][this.GeometryDataColors_i[i][j]];
+                            mesh.Colors[j] = new Color((int)(c.R * 255), (int)(c.G * 255), (int)(c.B * 255), (int)(c.A * 255));
+                        }
                         Vector3 v = this.GeometryDataVertex[i][this.GeometryDataVertex_i[i][j]];
 
                         //mesh.Normals[j] = n;
-                        mesh.TextureCoordinates[j] = t;
-                        mesh.Colors[j] = new Color((int)(c.R * 255), (int)(c.G * 255), (int)(c.B * 255), (int)(c.A * 255));
                         mesh.Vertices.Add(new Vector4(v.X, v.Y, v.Z, 1f));
                     }
                 }
@@ -1151,7 +1165,8 @@ namespace SrkOpenGLBasicSample
         readonly List<string> ImagesFilenames;
 
         readonly List<TextureMinFilter> ImagesMinFilters;
-        readonly List<TextureWrapMode> ImagesWrapModes;
+        readonly List<TextureWrapMode> ImagesWrapS;
+        readonly List<TextureWrapMode> ImagesWrapT;
 
         readonly List<string> PerGeometryMaterials;
         List<string> MaterialsIDs;
