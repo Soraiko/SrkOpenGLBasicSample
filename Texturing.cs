@@ -21,6 +21,8 @@ namespace SrkOpenGLBasicSample
             int indexOf = textureFilenames.IndexOf(filename);
             if (indexOf > -1)
                 return textureIntegers[indexOf];
+            if (!File.Exists(filename))
+                return 0;
 
             System.Drawing.Bitmap bitmap = (System.Drawing.Bitmap)System.Drawing.Image.FromFile(filename);
 
@@ -41,6 +43,7 @@ namespace SrkOpenGLBasicSample
             PixelInternalFormat format = PixelInternalFormat.Rgba;
 
             GL.TexImage2D(TextureTarget.Texture2D, 0, format, bitmap.Width, bitmap.Height, 0, OpenTK.Graphics.OpenGL.PixelFormat.Bgra, PixelType.UnsignedByte, data.Scan0);
+            
             GL.GenerateMipmap(GenerateMipmapTarget.Texture2D);
 
 

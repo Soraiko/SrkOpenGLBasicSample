@@ -11,7 +11,7 @@
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-    <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <Optimize>false</Optimize>
     <DefineConstants>TRACE;DEBUG</DefineConstants>
   </PropertyGroup>
@@ -438,10 +438,22 @@
     <None Update="KHDebug_files\raw_anim.bin">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <None Update="KHDebug_files\resources\graphics\vpct_frag.c">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="KHDebug_files\resources\graphics\vpct_vert.c">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Update="KHDebug_files\resources\graphics\vpc_frag.c">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Update="KHDebug_files\resources\graphics\vpc_vert.c">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="KHDebug_files\resources\graphics\vpnt_frag.c">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="KHDebug_files\resources\graphics\vpnt_vert.c">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Update="KHDebug_files\resources\graphics\vptc_frag.c">

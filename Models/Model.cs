@@ -169,14 +169,23 @@ namespace SrkOpenGLBasicSample
                 this.Meshes[i].Compile(this.Skeleton);
             }
         }
+        static int lastTexture = -1;
         public void Draw()
         {
+            Matrix4[] mats = new Matrix4[0];
+            if (this.Skeleton != null && this.Skeleton.Matrices != null && this.Skeleton.Matrices.Length > 0)
+            {
+                mats = new Matrix4[this.Skeleton.Matrices.Length];
+                Array.Copy(this.Skeleton.Matrices, mats, mats.Length);
+            }
+            GL.Enable(EnableCap.Texture2D);
             for (int i=0;i<this.Meshes.Length;i++)
             {
-                GL.Enable(EnableCap.Texture2D);
-                GL.BindTexture(TextureTarget.Texture2D, this.Meshes[i].Texture);
+                if (this.Meshes[i].Texture != lastTexture)
+                    GL.BindTexture(TextureTarget.Texture2D, this.Meshes[i].Texture);
+                lastTexture = this.Meshes[i].Texture;
 
-                this.Meshes[i].Draw(this.Skeleton);
+                this.Meshes[i].Draw(mats);
             }
         }
     }

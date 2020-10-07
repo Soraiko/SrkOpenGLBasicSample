@@ -21,7 +21,7 @@ namespace SrkOpenGLBasicSample
         BinaryReader binaryReader;
         public byte[] Data;
 
-        public void Compile(Skeleton skeleton)
+        public unsafe void Compile(Skeleton skeleton)
         {
             Matrix4[] mats = new Matrix4[0];
             if (skeleton != null && skeleton.Matrices != null && skeleton.Matrices.Length > 0)
@@ -41,11 +41,11 @@ namespace SrkOpenGLBasicSample
             binaryWriter.Write(meshType);
 
             int vertexIndex = 0;
+            int VertexStride = 0; 
 
             switch (meshType)
             {
                 case 0:
-
                     for (int i = 0; i < Vertices.Count; i++)
                     {
                         binaryWriter.Write(Vertices[i].X);
@@ -343,21 +343,146 @@ namespace SrkOpenGLBasicSample
             memoryStream.Read(Data, 0, Data.Length);
             binaryWriter.Close();
 
+
+
+
+
+
+
+
+
+
+            if (meshType < 8)
+            {
+                VertexBufferObject = GL.GenBuffer();
+                VertexArrayObject = GL.GenVertexArray();
+                GL.BindVertexArray(VertexArrayObject);
+                GL.BindBuffer(BufferTarget.ArrayBuffer, VertexBufferObject);
+
+                fixed (byte* p = this.Data)
+                    GL.BufferData(BufferTarget.ArrayBuffer, this.Data.Length - 8, ((IntPtr)p) + 8, BufferUsageHint.StaticDraw);
+
+
+                switch (meshType)
+                {
+                    case 0:
+                        this.shader = new Shader(@"resources\graphics\vp_vert.c", @"resources\graphics\vp_frag.c");
+                        VertexStride = sizeof(float) * 3;
+
+                        GL.VertexAttribPointer(0, 3, VertexAttribPointerType.Float, false, VertexStride, 0);
+                        GL.EnableVertexAttribArray(0);
+                        break;
+                    case 1:
+                        this.shader = new Shader(@"resources\graphics\vpt_vert.c", @"resources\graphics\vpt_frag.c");
+                        VertexStride = sizeof(float) * 2 + sizeof(float) * 3;
+
+                        GL.VertexAttribPointer(0, 3, VertexAttribPointerType.Float, false, VertexStride, sizeof(float) * 2);
+                        GL.EnableVertexAttribArray(0);
+
+                        GL.VertexAttribPointer(1, 2, VertexAttribPointerType.Float, false, VertexStride, 0);
+                        GL.EnableVertexAttribArray(1);
+                        break;
+                    case 2:
+                        this.shader = new Shader(@"resources\graphics\vp_vert.c", @"resources\graphics\vp_frag.c");
+                        VertexStride = sizeof(float) * 3 + sizeof(float) * 3;
+
+                        GL.VertexAttribPointer(0, 3, VertexAttribPointerType.Float, false, VertexStride, sizeof(float) * 3);
+                        GL.EnableVertexAttribArray(0);
+
+                        GL.VertexAttribPointer(3, 3, VertexAttribPointerType.Float, false, VertexStride, 0);
+                        GL.EnableVertexAttribArray(3);
+                        break;
+                    case 3:
+                        this.shader = new Shader(@"resources\graphics\vpnt_vert.c", @"resources\graphics\vpnt_frag.c");
+                        VertexStride = sizeof(float) * 3 + sizeof(float) * 2 + sizeof(float) * 3;
+                        GL.VertexAttribPointer(0, 3, VertexAttribPointerType.Float, false, VertexStride, sizeof(float) * 3 + sizeof(float) * 2);
+                        GL.EnableVertexAttribArray(0);
+
+                        GL.VertexAttribPointer(1, 2, VertexAttribPointerType.Float, false, VertexStride, sizeof(float) * 3);
+                        GL.EnableVertexAttribArray(1);
+
+                        GL.VertexAttribPointer(3, 3, VertexAttribPointerType.Float, false, VertexStride, 0);
+                        GL.EnableVertexAttribArray(3);
+                        break;
+                    case 4:
+                        this.shader = new Shader(@"resources\graphics\vpc_vert.c", @"resources\graphics\vpc_frag.c");
+                        VertexStride = sizeof(byte) * 4 + sizeof(float) * 3;
+                        GL.VertexAttribPointer(0, 3, VertexAttribPointerType.Float, false, VertexStride, sizeof(byte) * 4);
+                        GL.EnableVertexAttribArray(0);
+
+                        GL.VertexAttribPointer(2, 4, VertexAttribPointerType.UnsignedByte, true, VertexStride, 0);
+                        GL.EnableVertexAttribArray(2);
+                        break;
+                    case 5:
+                        this.shader = new Shader(@"resources\graphics\vpct_vert.c", @"resources\graphics\vpct_frag.c");
+                        VertexStride = sizeof(byte) * 4 + sizeof(float) * 2 + sizeof(float) * 3;
+                        GL.VertexAttribPointer(0, 3, VertexAttribPointerType.Float, false, VertexStride, sizeof(byte) * 4 + sizeof(float) * 2);
+                        GL.EnableVertexAttribArray(0);
+
+                        GL.VertexAttribPointer(1, 2, VertexAttribPointerType.Float, false, VertexStride, sizeof(byte) * 4);
+                        GL.EnableVertexAttribArray(1);
+
+                        GL.VertexAttribPointer(2, 4, VertexAttribPointerType.UnsignedByte, true, VertexStride, 0);
+                        GL.EnableVertexAttribArray(2);
+                        break;
+                    case 6:
+                        this.shader = new Shader(@"resources\graphics\vpc_vert.c", @"resources\graphics\vpc_frag.c");
+                        VertexStride = sizeof(byte) * 4 + sizeof(float) * 3 + sizeof(float) * 3;
+                        GL.VertexAttribPointer(0, 3, VertexAttribPointerType.Float, false, VertexStride, sizeof(byte) * 4 + sizeof(float) * 3);
+                        GL.EnableVertexAttribArray(0);
+
+                        GL.VertexAttribPointer(3, 3, VertexAttribPointerType.Float, false, VertexStride, sizeof(byte) * 4);
+                        GL.EnableVertexAttribArray(3);
+
+                        GL.VertexAttribPointer(2, 4, VertexAttribPointerType.UnsignedByte, true, VertexStride, 0);
+                        GL.EnableVertexAttribArray(2);
+                        break;
+                    case 7:
+                        this.shader = new Shader(@"resources\graphics\vpct_vert.c", @"resources\graphics\vpct_frag.c");
+                        VertexStride = sizeof(byte) * 4 + sizeof(float) * 3 + sizeof(float) * 2 + sizeof(float) * 3;
+
+                        GL.VertexAttribPointer(0, 3, VertexAttribPointerType.Float, false, VertexStride, sizeof(byte) * 4 + sizeof(float) * 3 + sizeof(float) * 2);
+                        GL.EnableVertexAttribArray(0);
+
+                        GL.VertexAttribPointer(1, 2, VertexAttribPointerType.Float, false, VertexStride, sizeof(byte) * 4 + sizeof(float) * 3);
+                        GL.EnableVertexAttribArray(1);
+
+                        GL.VertexAttribPointer(2, 4, VertexAttribPointerType.UnsignedByte, true, VertexStride, 0);
+                        GL.EnableVertexAttribArray(2);
+
+                        GL.VertexAttribPointer(3, 3, VertexAttribPointerType.Float, false, VertexStride, sizeof(byte) * 4);
+                        GL.EnableVertexAttribArray(3);
+                        break;
+                }
+                this.PrimitiveCount = (this.Data.Length - 8) / VertexStride;
+
+                GL.BindBuffer(BufferTarget.ArrayBuffer, 0);
+                GL.BindBuffer(BufferTarget.ElementArrayBuffer, 0);
+                GL.BindVertexArray(0);
+            }
+
             Vertices.Clear();
             if (Influences != null && Influences.Length > 0) Array.Clear(Influences, 0, Influences.Length);
             if (TextureCoordinates != null && TextureCoordinates.Length > 0) Array.Clear(TextureCoordinates, 0, TextureCoordinates.Length);
             if (Normals != null && Normals.Length > 0) Array.Clear(Normals, 0, Normals.Length);
             if (Colors != null && Colors.Length > 0) Array.Clear(Colors, 0, Colors.Length);
-    }
+        }
+        int PrimitiveCount;
+        Shader shader;
 
+        int VertexBufferObject;
+        int VertexArrayObject;
 
-        public void Draw(Skeleton skeleton)
+        public void Draw(Matrix4[] skeleton)
         {
-            Matrix4[] mats = new Matrix4[0];
-            if (skeleton != null && skeleton.Matrices != null && skeleton.Matrices.Length > 0)
+            int meshType = BitConverter.ToInt32(Data, 4);
+            if (meshType >= 0 && meshType < 8)
             {
-                mats = new Matrix4[skeleton.Matrices.Length];
-                Array.Copy(skeleton.Matrices, mats, mats.Length);
+                this.shader.Use();
+                GL.BindVertexArray(VertexArrayObject);
+                GL.DrawArrays(PrimitiveType.Triangles, 0, PrimitiveCount);
+                GL.UseProgram(0);
+                return;
             }
 
             int pos = -4;
@@ -369,7 +494,7 @@ namespace SrkOpenGLBasicSample
 
             switch (BitConverter.ToInt32(Data, pos += 4))
             {
-                case 0:
+                /*case 0:
                     while (pos + 4 < Data.Length)
                     {
                         GL.Vertex3(BitConverter.ToSingle(Data, pos += 4), BitConverter.ToSingle(Data, pos += 4), BitConverter.ToSingle(Data, pos += 4));
@@ -428,7 +553,7 @@ namespace SrkOpenGLBasicSample
                         GL.TexCoord2(BitConverter.ToSingle(Data, pos += 4), BitConverter.ToSingle(Data, pos += 4));
                         GL.Vertex3(BitConverter.ToSingle(Data, pos += 4), BitConverter.ToSingle(Data, pos += 4), BitConverter.ToSingle(Data, pos += 4));
                     }
-                    break;
+                    break;*/
 
 
                 case 8:
@@ -442,7 +567,7 @@ namespace SrkOpenGLBasicSample
                                 BitConverter.ToSingle(Data, pos += 4),
                                 BitConverter.ToSingle(Data, pos += 4),
                                 BitConverter.ToSingle(Data, pos += 4),
-                                BitConverter.ToSingle(Data, pos += 4)), mats[BitConverter.ToInt32(Data, pos += 4)]);
+                                BitConverter.ToSingle(Data, pos += 4)), skeleton[BitConverter.ToInt32(Data, pos += 4)]);
                             count--;
                             if (count == 0)
                             {
@@ -468,7 +593,7 @@ namespace SrkOpenGLBasicSample
                                 BitConverter.ToSingle(Data, pos += 4),
                                 BitConverter.ToSingle(Data, pos += 4),
                                 BitConverter.ToSingle(Data, pos += 4),
-                                BitConverter.ToSingle(Data, pos += 4)), mats[BitConverter.ToInt32(Data, pos += 4)]);
+                                BitConverter.ToSingle(Data, pos += 4)), skeleton[BitConverter.ToInt32(Data, pos += 4)]);
 
                             count--;
                             if (count == 0)
@@ -494,7 +619,7 @@ namespace SrkOpenGLBasicSample
                                 BitConverter.ToSingle(Data, pos += 4),
                                 BitConverter.ToSingle(Data, pos += 4),
                                 BitConverter.ToSingle(Data, pos += 4),
-                                BitConverter.ToSingle(Data, pos += 4)), mats[BitConverter.ToInt32(Data, pos += 4)]);
+                                BitConverter.ToSingle(Data, pos += 4)), skeleton[BitConverter.ToInt32(Data, pos += 4)]);
                             count--;
                             if (count == 0)
                             {
@@ -520,7 +645,7 @@ namespace SrkOpenGLBasicSample
                                 BitConverter.ToSingle(Data, pos += 4),
                                 BitConverter.ToSingle(Data, pos += 4),
                                 BitConverter.ToSingle(Data, pos += 4),
-                                BitConverter.ToSingle(Data, pos += 4)), mats[BitConverter.ToInt32(Data, pos += 4)]);
+                                BitConverter.ToSingle(Data, pos += 4)), skeleton[BitConverter.ToInt32(Data, pos += 4)]);
                             count--;
                             if (count == 0)
                             {
@@ -545,7 +670,7 @@ namespace SrkOpenGLBasicSample
                                 BitConverter.ToSingle(Data, pos += 4),
                                 BitConverter.ToSingle(Data, pos += 4),
                                 BitConverter.ToSingle(Data, pos += 4),
-                                BitConverter.ToSingle(Data, pos += 4)), mats[BitConverter.ToInt32(Data, pos += 4)]);
+                                BitConverter.ToSingle(Data, pos += 4)), skeleton[BitConverter.ToInt32(Data, pos += 4)]);
                             count--;
                             if (count == 0)
                             {
@@ -571,7 +696,7 @@ namespace SrkOpenGLBasicSample
                                 BitConverter.ToSingle(Data, pos += 4),
                                 BitConverter.ToSingle(Data, pos += 4),
                                 BitConverter.ToSingle(Data, pos += 4),
-                                BitConverter.ToSingle(Data, pos += 4)), mats[BitConverter.ToInt32(Data, pos += 4)]);
+                                BitConverter.ToSingle(Data, pos += 4)), skeleton[BitConverter.ToInt32(Data, pos += 4)]);
                             count--;
                             if (count == 0)
                             {
@@ -597,7 +722,7 @@ namespace SrkOpenGLBasicSample
                                 BitConverter.ToSingle(Data, pos += 4),
                                 BitConverter.ToSingle(Data, pos += 4),
                                 BitConverter.ToSingle(Data, pos += 4),
-                                BitConverter.ToSingle(Data, pos += 4)), mats[BitConverter.ToInt32(Data, pos += 4)]);
+                                BitConverter.ToSingle(Data, pos += 4)), skeleton[BitConverter.ToInt32(Data, pos += 4)]);
                             count--;
                             if (count == 0)
                             {
@@ -624,7 +749,7 @@ namespace SrkOpenGLBasicSample
                                 BitConverter.ToSingle(Data, pos += 4),
                                 BitConverter.ToSingle(Data, pos += 4),
                                 BitConverter.ToSingle(Data, pos += 4),
-                                BitConverter.ToSingle(Data, pos += 4)), mats[BitConverter.ToInt32(Data, pos += 4)]);
+                                BitConverter.ToSingle(Data, pos += 4)), skeleton[BitConverter.ToInt32(Data, pos += 4)]);
                             count--;
                             if (count == 0)
                             {

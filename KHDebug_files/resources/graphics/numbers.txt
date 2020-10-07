@@ -1,0 +1,13 @@
+gl_Vertex	0
+gl_Normal	2
+gl_Color	3
+gl_SecondaryColor	4
+gl_FogCoord	5
+gl_MultiTexCoord0	8
+gl_MultiTexCoord1	9
+gl_MultiTexCoord2	10
+gl_MultiTexCoord3	11
+gl_MultiTexCoord4	12
+gl_MultiTexCoord5	13
+gl_MultiTexCoord6	14
+gl_MultiTexCoord7	15

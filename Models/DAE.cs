@@ -1106,7 +1106,7 @@ namespace SrkOpenGLBasicSample
                     //mesh.Normals = new Vector3[this.GeometryDataNormals_i[i].Count];
                     mesh.Colors = new Color[this.GeometryDataColors_i[i].Count];
 
-
+                    //mesh.TextureCoordinates = null;
                     for (int j = 0; j < this.GeometryDataVertex_i[i].Count; j++)
                     {
                         //Vector3 n = this.GeometryDataNormals[i][this.GeometryDataNormals_i[i][j]];
