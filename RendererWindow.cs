@@ -77,13 +77,41 @@ namespace SrkOpenGLBasicSample
                 mdl.Skeleton.ComputeMatrices(Matrix4.CreateScale(1f));
             }
 
+            if (keyboardState.IsKeyDown(Key.B) && oldKeyboardState.IsKeyUp(Key.B))
+            {
+                GL.BlendFunc(BlendingFactor.SrcAlpha, BlendingFactor.One);
 
+                Blend = !Blend;
+                if (Blend)
+                    GL.Enable(EnableCap.Blend);
+                else
+                    GL.Disable(EnableCap.Blend);
+            }
+            if (keyboardState.IsKeyDown(Key.D) && oldKeyboardState.IsKeyUp(Key.D))
+            {
+                DepthTest = !DepthTest;
+                if (DepthTest)
+                    GL.Enable(EnableCap.DepthTest);
+                else
+                    GL.Disable(EnableCap.DepthTest);
+            }
+            if (keyboardState.IsKeyDown(Key.A) && oldKeyboardState.IsKeyUp(Key.A))
+            {
+                AlphaTest = !AlphaTest;
+                if (AlphaTest)
+                    GL.Enable(EnableCap.AlphaTest);
+                else
+                    GL.Disable(EnableCap.AlphaTest);
+            }
 
 
             oldKeyboardState = keyboardState;
             oldMouseState = mouseState;
             base.OnUpdateFrame(e);
         }
+        bool Blend = false;
+        bool DepthTest = true;
+        bool AlphaTest = true;
 
         public static Color BackgroundColor;
         protected override void OnRenderFrame(FrameEventArgs e)
@@ -123,7 +151,7 @@ namespace SrkOpenGLBasicSample
 
             map = new DAE(@"debug_files\BB00\BB00.dae");
             map.Compile();
-            /* Links/SrkGraphics.zip (filezilla) */
+
 
             FileStream input = new FileStream(@"binary_files\raw_anim.bin", FileMode.Open);
             br = new BinaryReader(input);

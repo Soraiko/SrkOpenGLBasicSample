@@ -164,9 +164,15 @@ namespace SrkOpenGLBasicSample
 
         public void Compile()
         {
+            Matrix4[] matrices = new Matrix4[0];
+            if (this.Skeleton != null && this.Skeleton.Matrices != null && this.Skeleton.Matrices.Length > 0)
+            {
+                matrices = new Matrix4[this.Skeleton.Matrices.Length];
+                Array.Copy(this.Skeleton.Matrices, matrices, matrices.Length);
+            }
             for (int i = 0; i < this.Meshes.Length; i++)
             {
-                this.Meshes[i].Compile(this.Skeleton);
+                this.Meshes[i].Compile(ref matrices);
             }
         }
         static int lastTexture = -1;

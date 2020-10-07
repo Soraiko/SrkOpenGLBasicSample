@@ -20,6 +20,7 @@ namespace SrkOpenGLBasicSample
             GL.Light(LightName.Light0, LightParameter.Specular, new float[] { 1, 1, 1, 1 });*/
 
             //GL.CullFace(CullFaceMode.Back);
+
             GL.Enable(EnableCap.DepthTest);
         }
 
