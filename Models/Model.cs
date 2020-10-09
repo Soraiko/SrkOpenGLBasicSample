@@ -187,65 +187,19 @@ namespace SrkOpenGLBasicSample
             GL.Enable(EnableCap.Texture2D);
             for (int i = 0; i < this.Meshes.Length; i++)
             {
-                if (this.Meshes[i].Texture.AlphaRatio>0.9999)
+                if (this.Meshes[i].Texture.Integer != lastTexture)
                 {
-                    if (this.Meshes[i].Texture.Integer != lastTexture)
-                    {
-                        GL.BindTexture(TextureTarget.Texture2D, this.Meshes[i].Texture.Integer);
+                    GL.BindTexture(TextureTarget.Texture2D, this.Meshes[i].Texture.Integer);
 
-                        GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMinFilter, this.Meshes[i].Texture.TextureMinFilter);
-                        GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMagFilter, this.Meshes[i].Texture.TextureMinFilter);
+                    GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMinFilter, this.Meshes[i].Texture.TextureMinFilter);
+                    GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMagFilter, this.Meshes[i].Texture.TextureMinFilter);
 
-                        GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureWrapS, this.Meshes[i].Texture.TextureWrapS);
-                        GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureWrapT, this.Meshes[i].Texture.TextureWrapT);
-                    }
-                    lastTexture = this.Meshes[i].Texture.Integer;
-
-                    this.Meshes[i].Draw(mats);
+                    GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureWrapS, this.Meshes[i].Texture.TextureWrapS);
+                    GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureWrapT, this.Meshes[i].Texture.TextureWrapT);
                 }
-            }
+                lastTexture = this.Meshes[i].Texture.Integer;
 
-            GL.Enable(EnableCap.AlphaTest);
-            GL.AlphaFunc(OpenTK.Graphics.OpenGL.AlphaFunction.Gequal, 0.02f);
-            for (int i = 0; i < this.Meshes.Length; i++)
-            {
-                if (this.Meshes[i].Texture.AlphaRatio > 0.45 && this.Meshes[i].Texture.AlphaRatio < 0.9999)
-                {
-                    if (this.Meshes[i].Texture.Integer != lastTexture)
-                    {
-                        GL.BindTexture(TextureTarget.Texture2D, this.Meshes[i].Texture.Integer);
-
-                        GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMinFilter, this.Meshes[i].Texture.TextureMinFilter);
-                        GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMagFilter, this.Meshes[i].Texture.TextureMinFilter);
-
-                        GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureWrapS, this.Meshes[i].Texture.TextureWrapS);
-                        GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureWrapT, this.Meshes[i].Texture.TextureWrapT);
-                    }
-                    lastTexture = this.Meshes[i].Texture.Integer;
-
-                    this.Meshes[i].Draw(mats);
-                }
-            }
-            GL.Disable(EnableCap.AlphaTest);
-            GL.AlphaFunc(OpenTK.Graphics.OpenGL.AlphaFunction.Gequal, 0.01f);
-            for (int i = 0; i < this.Meshes.Length; i++)
-            {
-                if (this.Meshes[i].Texture.AlphaRatio < 0.45)
-                {
-                    if (this.Meshes[i].Texture.Integer != lastTexture)
-                    {
-                        GL.BindTexture(TextureTarget.Texture2D, this.Meshes[i].Texture.Integer);
-
-                        GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMinFilter, this.Meshes[i].Texture.TextureMinFilter);
-                        GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMagFilter, this.Meshes[i].Texture.TextureMinFilter);
-
-                        GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureWrapS, this.Meshes[i].Texture.TextureWrapS);
-                        GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureWrapT, this.Meshes[i].Texture.TextureWrapT);
-                    }
-                    lastTexture = this.Meshes[i].Texture.Integer;
-
-                    this.Meshes[i].Draw(mats);
-                }
+                this.Meshes[i].Draw(mats);
             }
         }
     }

@@ -5,6 +5,7 @@ using OpenTK.Graphics;
 using OpenTK.Input;
 using System.IO;
 using System.Diagnostics;
+using System.Drawing.Drawing2D;
 
 namespace SrkOpenGLBasicSample
 {
@@ -43,12 +44,12 @@ namespace SrkOpenGLBasicSample
                 GL.LoadMatrix(ref Camera.Current.ProjectionMatrix);
             }
 
-            if (keyboardState.IsKeyDown(Key.P))
+            if (true||keyboardState.IsKeyDown(Key.P))
             {
                 if (br.BaseStream.Position >= br.BaseStream.Length)
                     br.BaseStream.Position = 0x10;
 
-                for (int i = 0; i < mdl.Skeleton.Joints.Length; i++)
+                for (int i = 0; i < sora.Skeleton.Joints.Length; i++)
                 {
                     Matrix4 m = Matrix4.Identity;
                     m.M11 = br.ReadSingle();
@@ -71,10 +72,10 @@ namespace SrkOpenGLBasicSample
                     m.M43 = br.ReadSingle();
                     m.M44 = br.ReadSingle();
 
-                    mdl.Skeleton.Joints[i].TransformLocal = m;
+                    sora.Skeleton.Joints[i].TransformLocal = m;
 
                 }
-                mdl.Skeleton.ComputeMatrices(Matrix4.CreateScale(1f));
+                sora.Skeleton.ComputeMatrices(Matrix4.CreateTranslation(0,0,-150));
             }
 
             if (keyboardState.IsKeyDown(Key.B) && oldKeyboardState.IsKeyUp(Key.B))
@@ -111,42 +112,37 @@ namespace SrkOpenGLBasicSample
         bool DepthTest = true;
         bool AlphaTest = true;
 
-        public static Color BackgroundColor;
+        public static Color BackgroundColor = new Color(50,50,50,255);
         protected override void OnRenderFrame(FrameEventArgs e)
         {
             GL.ClearColor(BackgroundColor);
             GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
 
-            /*Stopwatch stp = new Stopwatch();
-            stp.Start();
-            for (int i=0;i<1;i++)*/
-            map.Draw();
-            //mdl.Draw();
-            /*totalTicks += stp.Elapsed.Ticks;
-            ticksCount++;
-            Console.WriteLine(totalTicks/(float)ticksCount);*/
+
+            sora.Draw();
+            mdl.Draw();
+
             if (DateTime.Now.Millisecond <100)
             Title = ((int)base.RenderFrequency).ToString();
             Context.SwapBuffers();
             base.OnRenderFrame(e);
         }
-        long totalTicks = 0;
-        long ticksCount = 0;
 
 
+
+        Model sora;
         Model mdl;
-        Model map;
         BinaryReader br;
         protected override void OnLoad(EventArgs e)
         {
             StaticReferences.GraphicsSettings();
             StaticReferences.InitReferences();
 
-            
 
 
-            map = new DAE(@"debug_files\BB00\BB00.dae");
-            map.Compile();
+            sora = new DAE(@"debug_files\H_EX500\H_EX500.dae");
+            sora.Compile();
+
 
             /*mdl = new DAE(@"D:\Desktop\KHDebug\KHDebug\bin\DesktopGL\AnyCPU\Debug\Content\Models\TT08\TT08 - Copie.dae");
             mdl.Compile();*/
@@ -156,57 +152,95 @@ namespace SrkOpenGLBasicSample
             br = new BinaryReader(input);
             br.BaseStream.Position = 0x10;
 
-            /*mdl = new Model();
-            mdl.Meshes = new Mesh[1];
-            mdl.Meshes[0] = new Mesh();
-            mdl.Meshes[0].primitiveType = PrimitiveType.TriangleStrip;
 
-
-
-            mdl.Meshes[0].Colors = new Color[]
+            mdl = new Model();
+            mdl.Meshes = new Mesh[3];
+            for (int i=0;i<mdl.Meshes.Length;i++)
             {
-                new Color(255, 0, 0, 255),
-                new Color(0, 255, 0, 255),
-                new Color(0, 0, 255, 255),
-                new Color(255, 255, 255, 255)
-            };
+                mdl.Meshes[i] = new Mesh();
+                //mdl.Meshes[i].primitiveType = PrimitiveType.TriangleStrip;
 
-            mdl.Meshes[0].Texture = Texturing.LoadTexture("texture.png", TextureMinFilter.Nearest,TextureWrapMode.Clamp);
-            mdl.Meshes[0].TextureCoordinates = new Vector2[]
-            {
+                mdl.Meshes[i].Colors = new Color[]
+                {
+                    new Color(255, 0, 0, 255),
+                    new Color(0, 255, 0, 255),
+                    new Color(0, 0, 255, 255),
+                    new Color(255, 255, 255, 255)
+                };
+
+                mdl.Meshes[i].Texture = Texture.LoadTexture("texture"+i.ToString("d3")+".png", TextureMinFilter.Nearest, TextureWrapMode.Repeat, TextureWrapMode.Repeat);
+                mdl.Meshes[i].TextureCoordinates = new Vector2[]
+                {
                 new Vector2(0,0),
                 new Vector2(0,1),
                 new Vector2(1,0),
+                new Vector2(1,0),
+                new Vector2(0,1),
                 new Vector2(1,1)
-            };
+                };
 
-            mdl.Meshes[0].Vertices = 
-                new System.Collections.Generic.List<Vector4>(
-                new Vector4[]
-            {
-                new Vector4(0,100,0,1),
-                new Vector4(0,0,0,1f),
+                mdl.Meshes[i].Vertices =
+                    new System.Collections.Generic.List<Vector4>(
+                    new Vector4[]
+                {
+                new Vector4(-100,100,0,1),
+                new Vector4(-100,-100,0,1f),
                 new Vector4(100,100,0,1),
-                new Vector4(100,0,0,1)
-            });
+                new Vector4(100,100,0,1),
+                new Vector4(-100,-100,0,1f),
+                new Vector4(100,-100,0,1)
+                });
+                mdl.Meshes[i].Colors =
 
-            Skeleton s = new Skeleton(4);
-            s.Joints[0] = new Joint("bone000", Matrix4.CreateScale(1f)); 
-            s.Joints[1] = new Joint("bone001", Matrix4.CreateScale(1f));
-            s.Joints[2] = new Joint("bone002", Matrix4.CreateScale(1f));
-            s.Joints[3] = new Joint("bone003", Matrix4.CreateScale(1f));
+                    new Color[]
+                {
+                new Color(255,0,0,255),
+                new Color(0,255,0,255),
+                new Color(0,0,255,255),
+                new Color(0,0,255,255),
+                new Color(0,255,0,255),
+                new Color(255,255,255,255)
+                };
+            }
 
-            s.ComputeMatrices(Matrix4.CreateScale(1f));
-            mdl.Skeleton = s;
-
-            mdl.Meshes[0].Influences = new int[][]
+            for (int i = 0; i < mdl.Meshes[0].Vertices.Count; i++)
             {
-                new int[] {0},
-                new int[] {1},
-                new int[] {2},
-                new int[] {3}
-            };
-            mdl.Compile();*/
+                mdl.Meshes[0].Vertices[i] = Vector4.Transform(mdl.Meshes[0].Vertices[i], Matrix4.CreateRotationX(-OpenTK.MathHelper.PiOver2));
+                mdl.Meshes[0].Vertices[i] = Vector4.Transform(mdl.Meshes[0].Vertices[i], Matrix4.CreateScale(1000f));
+                mdl.Meshes[0].Vertices[i] = Vector4.Transform(mdl.Meshes[0].Vertices[i], Matrix4.CreateTranslation(0, -100, 0));
+                mdl.Meshes[0].TextureCoordinates[i].X *= 1000f;
+                mdl.Meshes[0].TextureCoordinates[i].Y *= 1000f;
+            }
+
+            mdl.Meshes[1].Vertices.Add(mdl.Meshes[1].Vertices[0] * 1f);
+            mdl.Meshes[1].Vertices.Add(mdl.Meshes[1].Vertices[1] * 1f);
+            mdl.Meshes[1].Vertices.Add(mdl.Meshes[1].Vertices[2] * 1f);
+            mdl.Meshes[1].Vertices.Add(mdl.Meshes[1].Vertices[3] * 1f);
+            mdl.Meshes[1].Vertices.Add(mdl.Meshes[1].Vertices[4] * 1f);
+            mdl.Meshes[1].Vertices.Add(mdl.Meshes[1].Vertices[5] * 1f);
+
+            Color[] colors = new Color[mdl.Meshes[1].Colors.Length * 2];
+            Array.Copy(mdl.Meshes[1].Colors, 0, colors, 0, mdl.Meshes[1].Colors.Length);
+            Array.Copy(mdl.Meshes[1].Colors, 0, colors, mdl.Meshes[1].Colors.Length, mdl.Meshes[1].Colors.Length);
+            mdl.Meshes[1].Colors = colors;
+
+            Vector2[] texCoords = new Vector2[mdl.Meshes[1].TextureCoordinates.Length * 2];
+            Array.Copy(mdl.Meshes[1].TextureCoordinates, 0, texCoords, 0, mdl.Meshes[1].TextureCoordinates.Length);
+            Array.Copy(mdl.Meshes[1].TextureCoordinates, 0, texCoords, mdl.Meshes[1].TextureCoordinates.Length, mdl.Meshes[1].TextureCoordinates.Length);
+            mdl.Meshes[1].TextureCoordinates = texCoords;
+
+            for (int i = 0; i < mdl.Meshes[1].Vertices.Count / 2; i++)
+                mdl.Meshes[1].Vertices[i] = Vector4.Transform(mdl.Meshes[1].Vertices[i], Matrix4.CreateRotationY(OpenTK.MathHelper.PiOver2));
+
+            for (int i = 0; i < mdl.Meshes[1].Vertices.Count; i++)
+                mdl.Meshes[1].Vertices[i] = Vector4.Transform(mdl.Meshes[1].Vertices[i], Matrix4.CreateRotationY(OpenTK.MathHelper.PiOver4));
+
+
+            for (int i = 0; i < mdl.Meshes[2].Vertices.Count; i++)
+            {
+                mdl.Meshes[2].Vertices[i] = Vector4.Transform(mdl.Meshes[2].Vertices[i], Matrix4.CreateTranslation(2, 2, -150));
+            }
+            mdl.Compile();
 
             OnUpdateFrame(null);
             base.OnLoad(e);

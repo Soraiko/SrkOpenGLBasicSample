@@ -26,7 +26,6 @@ namespace SrkOpenGLBasicSample
 
         public int Integer;
         public string Filename;
-        public float AlphaRatio;
         public static Texture LoadTexture(string filename, TextureMinFilter textureMinFilter, TextureWrapMode textureWrapS, TextureWrapMode textureWrapT)
         {
             Texture output = new Texture();
@@ -60,24 +59,6 @@ namespace SrkOpenGLBasicSample
 
             System.Drawing.Imaging.BitmapData data = bitmap.LockBits(new System.Drawing.Rectangle(0, 0, bitmap.Width, bitmap.Height), System.Drawing.Imaging.ImageLockMode.ReadOnly, bitmap.PixelFormat);
 
-            output.AlphaRatio = 0f;
-            byte[] bytes = new byte[bitmap.Height * data.Stride];
-
-            Marshal.Copy(data.Scan0, bytes, 0, bytes.Length);
-            float zeroRatio = 0;
-
-            for (int i=0;i< bytes.Length;i+=4)
-            {
-                output.AlphaRatio += bytes[i + 3];
-                if (bytes[i + 3] < 16)
-                    zeroRatio++;
-            }
-            zeroRatio /= bytes.Length;
-            zeroRatio *= 4;
-            if (zeroRatio > 0.5)
-                output.AlphaRatio = 0.75f;
-            else
-                output.AlphaRatio /= (bytes.Length * 63.75f);
 
             PixelInternalFormat format = PixelInternalFormat.Rgba;
 

@@ -633,9 +633,14 @@ namespace SrkOpenGLBasicSample
             int meshType = BitConverter.ToInt32(Data, 4);
             if (meshType >= 0 && meshType < 8)
             {
-                this.shader.Use();
                 GL.BindVertexArray(VertexArrayObject);
+
+                this.shader.Use(1);
                 GL.DrawArrays(PrimitiveType.Triangles, 0, PrimitiveCount);
+
+                this.shader.Use(0);
+                GL.DrawArrays(PrimitiveType.Triangles, 0, PrimitiveCount);
+
                 GL.UseProgram(0);
                 return;
             }

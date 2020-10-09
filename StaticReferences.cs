@@ -31,8 +31,11 @@ namespace SrkOpenGLBasicSample
         public static void InitReferences()
         {
             whitePixel1x1 = Texture.LoadTexture(@"resources\whitePixel1x1.png", TextureMinFilter.Nearest, TextureWrapMode.Clamp, TextureWrapMode.Clamp);
-            Camera.Current = new Camera(200f);
-            Camera.Current.LookAt = new OpenTK.Vector3(0,120,0);
+            Camera.Current = new Camera(400f);
+            Camera.Current.LookAt = new OpenTK.Vector3(0,80,0);
+            Camera.Current.RotationX = -0.7f;
+            Camera.Current.RotationY = 0.9f;
+           
             Camera.Current.SkipTransitions();
         }
     }

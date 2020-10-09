@@ -260,7 +260,11 @@ namespace SrkOpenGLBasicSample
                         {
                             fname = uri.AbsolutePath;
                         }
-
+                        if (File.Exists(this.Directory + @"\" + fname))
+                        {
+                            fname = this.Directory + @"\" + fname;
+                        }
+                        else
                         if (!File.Exists(fname))
                         {
                             int fileslashIndex = fname.IndexOf("file://");
@@ -269,7 +273,12 @@ namespace SrkOpenGLBasicSample
                                 fname = fname.Remove(fileslashIndex, 7);
                             }
                             fname = fname.Replace("/", "\\");
-                            if (!File.Exists(fname))
+                            if (File.Exists(this.Directory + @"\" + fname))
+                            {
+                                fname = this.Directory + @"\" + fname;
+                            }
+                            else
+                                if (!File.Exists(fname))
                             {
                                 if (!fname.Contains(":\\") && File.Exists(this.Directory + @"\" + fname))
                                 {
