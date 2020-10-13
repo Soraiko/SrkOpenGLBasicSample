@@ -78,31 +78,6 @@ namespace SrkOpenGLBasicSample
                 sora.Skeleton.ComputeMatrices(Matrix4.CreateTranslation(0,0,-150));
             }
 
-            if (keyboardState.IsKeyDown(Key.B) && oldKeyboardState.IsKeyUp(Key.B))
-            {
-                Blend = !Blend;
-                if (Blend)
-                    GL.Enable(EnableCap.Blend);
-                else
-                    GL.Disable(EnableCap.Blend);
-            }
-            if (keyboardState.IsKeyDown(Key.D) && oldKeyboardState.IsKeyUp(Key.D))
-            {
-                DepthTest = !DepthTest;
-                if (DepthTest)
-                    GL.Enable(EnableCap.DepthTest);
-                else
-                    GL.Disable(EnableCap.DepthTest);
-            }
-            if (keyboardState.IsKeyDown(Key.A) && oldKeyboardState.IsKeyUp(Key.A))
-            {
-                AlphaTest = !AlphaTest;
-                if (AlphaTest)
-                    GL.Enable(EnableCap.AlphaTest);
-                else
-                    GL.Disable(EnableCap.AlphaTest);
-            }
-
 
             oldKeyboardState = keyboardState;
             oldMouseState = mouseState;
@@ -117,7 +92,6 @@ namespace SrkOpenGLBasicSample
         {
             GL.ClearColor(BackgroundColor);
             GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
-
 
             sora.Draw();
             mdl.Draw();

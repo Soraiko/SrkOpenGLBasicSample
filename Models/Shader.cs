@@ -18,8 +18,6 @@ namespace SrkOpenGLBasicSample
         int VertexShader;
         int FragmentShader;
 
-        int skipAlpha = -1;
-
         public static Shader VP;
         public static Shader VPC;
         public static Shader VPCT;
@@ -70,12 +68,13 @@ namespace SrkOpenGLBasicSample
             GL.DeleteProgram(Handle);
         }
 
-        public void Use(int skipAlpha)
+
+        public void Use()
         {
             GL.UseProgram(Handle);
-            if (this.skipAlpha<0)
+            /*if (this.skipAlpha<0)
             this.skipAlpha = GL.GetUniformLocation(Handle, "skipAlpha");
-            GL.Uniform1(this.skipAlpha, skipAlpha);
+            GL.Uniform1(this.skipAlpha, skipAlpha);*/
         }
 
         private bool disposedValue = false;

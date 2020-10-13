@@ -9,6 +9,8 @@ namespace SrkOpenGLBasicSample
 {
     public class Mesh
     {
+        public List<ushort> Indices = new List<ushort>(0);
+
         public PrimitiveType primitiveType;
         public Texture Texture;
         public List<Vector4> Vertices = new List<Vector4>(0);
@@ -517,6 +519,17 @@ namespace SrkOpenGLBasicSample
                 fixed (byte* p = this.Data)
                     GL.BufferData(BufferTarget.ArrayBuffer, this.Data.Length - 8, ((IntPtr)p) + 8, BufferUsageHint.StaticDraw);
 
+                IndexBufferObject = GL.GenBuffer();
+                for (int i=0;i<this.TextureCoordinates.Length;i++)
+                {
+                    this.Indices.Add((ushort)i);
+                }
+                if (this.Indices.Count>0)
+                {
+                    GL.BindBuffer(BufferTarget.ElementArrayBuffer, this.IndexBufferObject);
+                    GL.BufferData(BufferTarget.ElementArrayBuffer, this.Indices.Count * sizeof(ushort), this.Indices.ToArray(), BufferUsageHint.StaticDraw);
+                    this.Indices.Clear();
+                }
 
                 switch (meshType)
                 {
@@ -618,13 +631,14 @@ namespace SrkOpenGLBasicSample
 
             Vertices.Clear();
             if (Influences != null && Influences.Length > 0) Array.Clear(Influences, 0, Influences.Length);
-            if (TextureCoordinates != null && TextureCoordinates.Length > 0) Array.Clear(TextureCoordinates, 0, TextureCoordinates.Length);
+            //if (TextureCoordinates != null && TextureCoordinates.Length > 0) Array.Clear(TextureCoordinates, 0, TextureCoordinates.Length);
             if (Normals != null && Normals.Length > 0) Array.Clear(Normals, 0, Normals.Length);
             if (Colors != null && Colors.Length > 0) Array.Clear(Colors, 0, Colors.Length);
         }
         int PrimitiveCount;
         Shader shader;
 
+        int IndexBufferObject;
         int VertexBufferObject;
         int VertexArrayObject;
 
@@ -634,12 +648,10 @@ namespace SrkOpenGLBasicSample
             if (meshType >= 0 && meshType < 8)
             {
                 GL.BindVertexArray(VertexArrayObject);
+                GL.BindBuffer(BufferTarget.ElementArrayBuffer, this.IndexBufferObject);
 
-                this.shader.Use(1);
-                GL.DrawArrays(PrimitiveType.Triangles, 0, PrimitiveCount);
-
-                this.shader.Use(0);
-                GL.DrawArrays(PrimitiveType.Triangles, 0, PrimitiveCount);
+                this.shader.Use();
+                GL.DrawElements(PrimitiveType.Triangles, PrimitiveCount, DrawElementsType.UnsignedShort, 0);
 
                 GL.UseProgram(0);
                 return;
