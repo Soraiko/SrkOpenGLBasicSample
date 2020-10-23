@@ -17,13 +17,14 @@ namespace SrkOpenGLBasicSample
 
         }
 
-        public Camera(float distance) : this(distance, 0.1f,0.1f, OpenTK.MathHelper.DegreesToRadians(60f))
+        public Camera(float distance) : this(distance, 0.1f, 0.1f, OpenTK.MathHelper.DegreesToRadians(60f))
         {
-            
+
         }
 
         public Camera(float distance, float rotation_step, float translation_step, float view_angle)
         {
+            this.RotationMatrix = Matrix3.CreateScale(1f);
             this.rotationStep = rotation_step;
             this.translationStep = translation_step;
             this.viewAngle = view_angle;
@@ -39,7 +40,7 @@ namespace SrkOpenGLBasicSample
         Vector3 lookAt;
         Vector3 dest_lookAt;
         public Vector3 LookAt
-        { 
+        {
             get
             {
                 return this.lookAt;
@@ -52,16 +53,12 @@ namespace SrkOpenGLBasicSample
             }
         }
 
-        float rotation_x;
-        float dest_rotation_x;
-        float rotation_y;
-        float dest_rotation_y;
-        float rotation_z;
-        float dest_rotation_z;
+        Vector3 rotation;
+        Vector3 dest_rotation;
 
-        public float RotationX { get { return MathHelper.PrincipalAngle(rotation_x); } set { dest_rotation_x = value; LookAtMatrixDirty = true; } }
-        public float RotationY { get { return MathHelper.PrincipalAngle(rotation_y); } set { dest_rotation_y = value; LookAtMatrixDirty = true; } }
-        public float RotationZ { get { return MathHelper.PrincipalAngle(rotation_z); } set { dest_rotation_z = value; LookAtMatrixDirty = true; } }
+        public float RotationX { get { return MathHelper.PrincipalAngle(rotation.X); } set { if (Grounded && Math.Abs(value) > Math.PI * 0.499) return; dest_rotation.X = value; LookAtMatrixDirty = true; } }
+        public float RotationY { get { return MathHelper.PrincipalAngle(rotation.Y); } set { dest_rotation.Y = value; LookAtMatrixDirty = true; } }
+        public float RotationZ { get { return MathHelper.PrincipalAngle(rotation.Z); } set { dest_rotation.Z = value; LookAtMatrixDirty = true; } }
 
         public bool LookAtMatrixDirty = true;
         public bool ProjectionMatrixDirty = true;
@@ -89,14 +86,14 @@ namespace SrkOpenGLBasicSample
         public float Distance
         {
             get
-            { 
+            {
                 return this.distance;
             }
             set
-            { 
-                if (Math.Abs(this.dest_distance - value) < EPSILON) return; 
-                this.dest_distance = value; 
-                LookAtMatrixDirty = true; 
+            {
+                if (Math.Abs(this.dest_distance - value) < EPSILON) return;
+                this.dest_distance = value;
+                LookAtMatrixDirty = true;
             }
         }
 
@@ -132,50 +129,35 @@ namespace SrkOpenGLBasicSample
         public void KeyboardControl(KeyboardState keyboardState, KeyboardState oldKeyboardState)
         {
             if (keyboardState.IsKeyDown(Key.Keypad4))
-                this.RotationY = this.dest_rotation_y + 0.1f;
+                this.RotationY = this.dest_rotation.Y + 0.1f;
             if (keyboardState.IsKeyDown(Key.Keypad6))
-                this.RotationY = this.dest_rotation_y - 0.1f;
+                this.RotationY = this.dest_rotation.Y - 0.1f;
 
             if (keyboardState.IsKeyDown(Key.Keypad8))
-                this.RotationX = this.dest_rotation_x + 0.1f;
+                this.RotationX = this.dest_rotation.X + 0.1f;
             if (keyboardState.IsKeyDown(Key.Keypad2))
-                this.RotationX = this.dest_rotation_x - 0.1f;
+                this.RotationX = this.dest_rotation.X - 0.1f;
 
-            if (keyboardState.IsKeyDown(Key.Keypad1))
-                this.RotationZ = this.dest_rotation_z + 0.1f;
-            if (keyboardState.IsKeyDown(Key.Keypad9))
-                this.RotationZ = this.dest_rotation_z - 0.1f;
+            if (Grounded && keyboardState.IsKeyDown(Key.Keypad1))
+                this.RotationZ = this.dest_rotation.Z + 0.1f;
+            if (Grounded && keyboardState.IsKeyDown(Key.Keypad9))
+                this.RotationZ = this.dest_rotation.Z - 0.1f;
         }
-
+        public bool Grounded = true;
         public void Update(GameWindow window)
         {
             if (LookAtMatrixDirty)
             {
                 Vector3 diff = Vector3.Zero;
-
                 this.LookAtMatrixDirty = false;
 
-                diff.X = this.dest_rotation_x - this.rotation_x;
+                diff = (this.dest_rotation - this.rotation) * this.rotationStep;
+                this.rotation += diff;
 
-                if (Math.Cos(this.rotation_x) < 0 ^ Math.Cos(this.rotation_x + diff.X * this.rotationStep) < 0)
-                {
-                    this.dest_rotation_z = OpenTK.MathHelper.Pi - this.dest_rotation_z;
-                    this.rotation_z = this.dest_rotation_z;
-                }
-
-                this.rotation_x += diff.X * this.rotationStep;
-                if (Math.Abs(diff.X) > EPSILON)
+                if (diff.Length > EPSILON)
                     this.LookAtMatrixDirty = true;
 
-                diff.Y = this.dest_rotation_y - this.rotation_y;
-                this.rotation_y += diff.Y * this.rotationStep;
-                if (Math.Abs(diff.Y) > EPSILON)
-                    this.LookAtMatrixDirty = true;
-
-                diff.Z = this.dest_rotation_z - this.rotation_z;
-                this.rotation_z += diff.Z * this.rotationStep;
-                if (Math.Abs(diff.Z) > EPSILON)
-                    this.LookAtMatrixDirty = true;
+                ApplyRotation(diff);
 
                 diff = this.dest_lookAt - this.lookAt;
                 this.lookAt += diff * this.translationStep;
@@ -188,16 +170,8 @@ namespace SrkOpenGLBasicSample
                     this.LookAtMatrixDirty = true;
 
 
-                this.RotationMatrix =
-                    Matrix3.CreateRotationX(this.rotation_x) *
-                    Matrix3.CreateRotationY(this.rotation_y);// * Matrix3.CreateRotationZ(this.rotation_z);
-
                 this.Position = this.lookAt + Vector3.Transform(Vector3.UnitZ, this.RotationMatrix) * this.distance;
-
-                this.LookAtMatrix = Matrix4.LookAt(
-                    this.Position,
-                    this.lookAt,
-                    Vector3.Transform(Vector3.UnitY, Matrix3.CreateRotationZ(this.rotation_z)));
+                this.LookAtMatrix = Matrix4.LookAt(this.Position, this.lookAt, Vector3.Transform(Vector3.UnitY, this.RotationMatrix));
             }
             if (ProjectionMatrixDirty)
             {
@@ -209,16 +183,30 @@ namespace SrkOpenGLBasicSample
                 if (Math.Abs(diff.X) > EPSILON)
                     this.ProjectionMatrixDirty = true;
 
-                this.ProjectionMatrix = Matrix4.CreatePerspectiveFieldOfView(this.viewAngle, window.Width/ (float)window.Height, 30f,100000000f);
+                this.ProjectionMatrix = Matrix4.CreatePerspectiveFieldOfView(this.viewAngle, window.Width / (float)window.Height, 30f, 100000000f);
             }
         }
-        public void SkipTransitions()
+
+        public void ApplyRotation(Vector3 diff)
+        {
+            this.RotationMatrix = Matrix3.CreateRotationX(diff.X) * this.RotationMatrix;
+            if (Grounded)
+            {
+                this.RotationMatrix = this.RotationMatrix * Matrix3.CreateRotationY(diff.Y);
+            }
+            else
+            {
+                this.RotationMatrix = Matrix3.CreateRotationY(diff.Y) * this.RotationMatrix;
+                this.RotationMatrix = Matrix3.CreateRotationZ(diff.Z) * this.RotationMatrix;
+            }
+        }
+
+        public void SkipInterpolation()
         {
             this.distance = this.dest_distance * 1f;
             this.lookAt = this.dest_lookAt * 1f;
-            this.rotation_x = this.dest_rotation_x * 1f;
-            this.rotation_y = this.dest_rotation_y * 1f;
-            this.rotation_z = this.dest_rotation_z * 1f;
+            this.rotation = this.dest_rotation * 1f;
+            ApplyRotation(this.rotation);
             this.viewAngle = this.dest_viewAngle * 1f;
         }
     }

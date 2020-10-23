@@ -30,6 +30,10 @@ namespace SrkOpenGLBasicSample
         {
             if (keyboardState.IsKeyDown(Key.Escape))
                 Close();
+            Console.WriteLine("");
+            Console.WriteLine("RotationX: "+OpenTK.MathHelper.RadiansToDegrees(Camera.Current.RotationX));
+            Console.WriteLine("RotationY: " + OpenTK.MathHelper.RadiansToDegrees(Camera.Current.RotationY));
+            Console.WriteLine("RotationZ: " + OpenTK.MathHelper.RadiansToDegrees(Camera.Current.RotationZ));
 
             if (Camera.Current!=null)
             {

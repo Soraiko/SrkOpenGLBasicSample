@@ -35,8 +35,7 @@ namespace SrkOpenGLBasicSample
             Camera.Current.LookAt = new OpenTK.Vector3(0,80,0);
             Camera.Current.RotationX = -0.7f;
             Camera.Current.RotationY = 0.9f;
-           
-            Camera.Current.SkipTransitions();
+            Camera.Current.SkipInterpolation();
         }
     }
 }
