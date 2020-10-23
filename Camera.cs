@@ -138,9 +138,9 @@ namespace SrkOpenGLBasicSample
             if (keyboardState.IsKeyDown(Key.Keypad2))
                 this.RotationX = this.dest_rotation.X - 0.1f;
 
-            if (Grounded && keyboardState.IsKeyDown(Key.Keypad1))
+            if (!Grounded && keyboardState.IsKeyDown(Key.Keypad1))
                 this.RotationZ = this.dest_rotation.Z + 0.1f;
-            if (Grounded && keyboardState.IsKeyDown(Key.Keypad9))
+            if (!Grounded && keyboardState.IsKeyDown(Key.Keypad9))
                 this.RotationZ = this.dest_rotation.Z - 0.1f;
         }
         public bool Grounded = true;
@@ -189,16 +189,16 @@ namespace SrkOpenGLBasicSample
 
         public void ApplyRotation(Vector3 diff)
         {
-            this.RotationMatrix = Matrix3.CreateRotationX(diff.X) * this.RotationMatrix;
             if (Grounded)
             {
                 this.RotationMatrix = this.RotationMatrix * Matrix3.CreateRotationY(diff.Y);
             }
             else
             {
-                this.RotationMatrix = Matrix3.CreateRotationY(diff.Y) * this.RotationMatrix;
                 this.RotationMatrix = Matrix3.CreateRotationZ(diff.Z) * this.RotationMatrix;
+                this.RotationMatrix = Matrix3.CreateRotationY(diff.Y) * this.RotationMatrix;
             }
+            this.RotationMatrix = Matrix3.CreateRotationX(diff.X) * this.RotationMatrix;
         }
 
         public void SkipInterpolation()
