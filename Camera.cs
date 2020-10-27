@@ -11,7 +11,7 @@ namespace SrkOpenGLBasicSample
 {
     public class Camera
     {
-        const float EPSILON = 0.001f;
+        const float EPSILON = 0.000001f;
         public Camera() : this(350f)
         {
 
@@ -126,6 +126,7 @@ namespace SrkOpenGLBasicSample
             }
         }
 
+        float Speed = 20f;
         public void KeyboardControl(KeyboardState keyboardState, KeyboardState oldKeyboardState)
         {
             if (keyboardState.IsKeyDown(Key.Keypad4))
@@ -138,11 +139,48 @@ namespace SrkOpenGLBasicSample
             if (keyboardState.IsKeyDown(Key.Keypad2))
                 this.RotationX = this.dest_rotation.X - 0.1f;
 
-            if (!Grounded && keyboardState.IsKeyDown(Key.Keypad1))
-                this.RotationZ = this.dest_rotation.Z + 0.1f;
-            if (!Grounded && keyboardState.IsKeyDown(Key.Keypad9))
-                this.RotationZ = this.dest_rotation.Z - 0.1f;
+            Matrix3 rotation = Matrix3.Identity;
+            if (Grounded)
+            {
+                rotation = Matrix3.CreateRotationY(this.RotationY);
+            }
+            else
+            {
+                rotation = this.RotationMatrix;
+
+                if (keyboardState.IsKeyDown(Key.Keypad1))
+                    this.RotationZ = this.dest_rotation.Z + 0.1f;
+                if (keyboardState.IsKeyDown(Key.Keypad9))
+                    this.RotationZ = this.dest_rotation.Z - 0.1f;
+
+            }
+            if (keyboardState.IsKeyDown(Compatibility.FirstPerson_Left))
+            {
+                LookAtMatrixDirty = true;
+                this.dest_lookAt += Vector3.Transform(-Vector3.UnitX * Speed, rotation);
+            }
+
+            if (keyboardState.IsKeyDown(Compatibility.FirstPerson_Right))
+            {
+                LookAtMatrixDirty = true;
+                this.dest_lookAt += Vector3.Transform(Vector3.UnitX * Speed, rotation);
+            }
+
+            if (keyboardState.IsKeyDown(Compatibility.FirstPerson_Backward))
+            {
+                LookAtMatrixDirty = true;
+                this.dest_lookAt += Vector3.Transform(Vector3.UnitZ * Speed, rotation);
+            }
+
+            if (keyboardState.IsKeyDown(Compatibility.FirstPerson_Forward))
+            {
+                LookAtMatrixDirty = true;
+                this.dest_lookAt += Vector3.Transform(-Vector3.UnitZ * Speed, rotation);
+            }
+
         }
+
+
         public bool Grounded = true;
         public void Update(GameWindow window)
         {
@@ -154,10 +192,10 @@ namespace SrkOpenGLBasicSample
                 diff = (this.dest_rotation - this.rotation) * this.rotationStep;
                 this.rotation += diff;
 
+                ApplyRotation(diff);
+
                 if (diff.Length > EPSILON)
                     this.LookAtMatrixDirty = true;
-
-                ApplyRotation(diff);
 
                 diff = this.dest_lookAt - this.lookAt;
                 this.lookAt += diff * this.translationStep;

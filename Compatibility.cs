@@ -17,7 +17,7 @@ namespace SrkOpenGLBasicSample
 
         static Compatibility()
         {
-            if (AZERTY_keyboard)
+            if (false&&AZERTY_keyboard)
             {
                 FirstPerson_Forward = OpenTK.Input.Key.Z;
                 FirstPerson_Left = OpenTK.Input.Key.Q;

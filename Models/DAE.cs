@@ -1125,17 +1125,25 @@ namespace SrkOpenGLBasicSample
                     for (int j = 0; j < this.GeometryDataVertex_i[i].Count; j++)
                     {
                         //Vector3 n = this.GeometryDataNormals[i][this.GeometryDataNormals_i[i][j]];
-                        Vector2 t = this.GeometryDataTexcoordinates[i][this.GeometryDataTexcoordinates_i[i][j]];
+                        Vector2 t = Vector2.Zero;
                         if (j < this.GeometryDataTexcoordinates_i[i].Count && this.GeometryDataTexcoordinates_i[i][j] < this.GeometryDataTexcoordinates_i[i].Count)
                         {
-                            t = this.GeometryDataTexcoordinates[i][this.GeometryDataTexcoordinates_i[i][j]];
-                            mesh.TextureCoordinates[j] = t;
+                            int t_index = this.GeometryDataTexcoordinates_i[i][j];
+                            if (t_index> -1 && t_index < this.GeometryDataTexcoordinates[i].Length)
+                            {
+                                t = this.GeometryDataTexcoordinates[i][t_index];
+                                mesh.TextureCoordinates[j] = t;
+                            }
                         }
                         Color4 c = Color.White;
                         if (j < this.GeometryDataColors_i[i].Count && this.GeometryDataColors_i[i][j]<this.GeometryDataColors_i[i].Count)
                         {
-                            c = this.GeometryDataColors[i][this.GeometryDataColors_i[i][j]];
-                            mesh.Colors[j] = new Color((int)(c.R * 255), (int)(c.G * 255), (int)(c.B * 255), (int)(c.A * 255));
+                            int c_index = this.GeometryDataColors_i[i][j];
+                            if (c_index> -1 && c_index < this.GeometryDataColors[i].Length)
+                            {
+                                c = this.GeometryDataColors[i][c_index];
+                                mesh.Colors[j] = new Color((int)(c.R * 255), (int)(c.G * 255), (int)(c.B * 255), (int)(c.A * 255));
+                            }
                         }
                         Vector3 v = this.GeometryDataVertex[i][this.GeometryDataVertex_i[i][j]];
 

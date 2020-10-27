@@ -44,7 +44,7 @@ namespace SrkOpenGLBasicSample
                 GL.LoadMatrix(ref Camera.Current.ProjectionMatrix);
             }
 
-            if (true||keyboardState.IsKeyDown(Key.P))
+            if (keyboardState.IsKeyDown(Key.P))
             {
                 if (br.BaseStream.Position >= br.BaseStream.Length)
                     br.BaseStream.Position = 0x10;
@@ -116,6 +116,9 @@ namespace SrkOpenGLBasicSample
 
             sora = new DAE(@"debug_files\H_EX500\H_EX500.dae");
             sora.Compile();
+
+            /*sora = new DAE(@"C:\Users\Cdministrateur\Desktop\furnitures\local.dae");
+            sora.Compile();*/
 
 
             /*mdl = new DAE(@"D:\Desktop\KHDebug\KHDebug\bin\DesktopGL\AnyCPU\Debug\Content\Models\TT08\TT08 - Copie.dae");
