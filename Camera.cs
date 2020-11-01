@@ -56,9 +56,20 @@ namespace SrkOpenGLBasicSample
         Vector3 rotation;
         Vector3 dest_rotation;
 
-        public float RotationX { get { return MathHelper.PrincipalAngle(rotation.X); } set { if (Grounded && Math.Abs(value) > Math.PI * 0.499) return; dest_rotation.X = value; LookAtMatrixDirty = true; } }
-        public float RotationY { get { return MathHelper.PrincipalAngle(rotation.Y); } set { dest_rotation.Y = value; LookAtMatrixDirty = true; } }
-        public float RotationZ { get { return MathHelper.PrincipalAngle(rotation.Z); } set { dest_rotation.Z = value; LookAtMatrixDirty = true; } }
+        public float RotationX { get { return this.rotation.X; } set { value = MathHelper.PrincipalAngle(value); if (this.Type > 0 && Math.Abs(value) > Math.PI * 0.499) return; this.rotation.X = GetCloserPrincipalAngle(value, this.rotation.X); dest_rotation.X = value; LookAtMatrixDirty = true; } }
+        public float RotationY { get { return this.rotation.Y; } set { value = MathHelper.PrincipalAngle(value); this.rotation.Y = GetCloserPrincipalAngle(value, this.rotation.Y); dest_rotation.Y = value; LookAtMatrixDirty = true; } }
+        public float RotationZ { get { return this.rotation.Z; } set { value = MathHelper.PrincipalAngle(value); this.rotation.Z = GetCloserPrincipalAngle(value, this.rotation.Z); dest_rotation.Z = value; LookAtMatrixDirty = true; } }
+
+
+
+
+
+        public static float GetCloserPrincipalAngle(float from, float to)
+        {
+            while (to - from > Math.PI) to -= OpenTK.MathHelper.TwoPi;
+            while (to - from < -Math.PI) to += OpenTK.MathHelper.TwoPi;
+            return to;
+        }
 
         public bool LookAtMatrixDirty = true;
         public bool ProjectionMatrixDirty = true;
@@ -140,7 +151,7 @@ namespace SrkOpenGLBasicSample
                 this.RotationX = this.dest_rotation.X - 0.1f;
 
             Matrix3 rotation = Matrix3.Identity;
-            if (Grounded)
+            if (this.Type == CameraType.Grounded)
             {
                 rotation = Matrix3.CreateRotationY(this.RotationY);
             }
@@ -181,7 +192,14 @@ namespace SrkOpenGLBasicSample
         }
 
 
-        public bool Grounded = true;
+        public enum CameraType
+        {
+            ArcBall = 0,
+            ArcBall_AbsoluteY = 1,
+            Grounded = 2
+        }
+        public CameraType Type = CameraType.ArcBall;
+
         public void Update(GameWindow window)
         {
             if (LookAtMatrixDirty)
@@ -227,14 +245,18 @@ namespace SrkOpenGLBasicSample
 
         public void ApplyRotation(Vector3 diff)
         {
-            if (Grounded)
+            if (this.Type == CameraType.Grounded)
             {
                 this.RotationMatrix = this.RotationMatrix * Matrix3.CreateRotationY(diff.Y);
             }
             else
             {
                 this.RotationMatrix = Matrix3.CreateRotationZ(diff.Z) * this.RotationMatrix;
-                this.RotationMatrix = Matrix3.CreateRotationY(diff.Y) * this.RotationMatrix;
+                if (this.Type == CameraType.ArcBall_AbsoluteY)
+                    this.RotationMatrix = this.RotationMatrix * Matrix3.CreateRotationY(diff.Y);
+                else
+                    this.RotationMatrix = Matrix3.CreateRotationY(diff.Y) * this.RotationMatrix;
+
             }
             this.RotationMatrix = Matrix3.CreateRotationX(diff.X) * this.RotationMatrix;
         }

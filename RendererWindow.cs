@@ -77,15 +77,17 @@ namespace SrkOpenGLBasicSample
                 }
                 sora.Skeleton.ComputeMatrices(Matrix4.CreateTranslation(0,0,-150));
             }
+            if (keyboardState.IsKeyDown(Key.R))
+                Camera.Current.RotationY = -300000000f;
+            if (keyboardState.IsKeyDown(Key.T))
+                Camera.Current.RotationY = 3f;
 
+            Title = Camera.Current.RotationY.ToString();
 
             oldKeyboardState = keyboardState;
             oldMouseState = mouseState;
             base.OnUpdateFrame(e);
         }
-        bool Blend = false;
-        bool DepthTest = true;
-        bool AlphaTest = true;
 
         public static Color BackgroundColor = new Color(50,50,50,255);
         protected override void OnRenderFrame(FrameEventArgs e)
@@ -96,8 +98,7 @@ namespace SrkOpenGLBasicSample
             sora.Draw();
             mdl.Draw();
 
-            if (DateTime.Now.Millisecond <100)
-            Title = ((int)base.RenderFrequency).ToString();
+
             Context.SwapBuffers();
             base.OnRenderFrame(e);
         }
