@@ -1081,7 +1081,6 @@ namespace SrkOpenGLBasicSample
             for (int i=0;i<this.GeometryDataVertex_i.Count;i++)
             {
                 Mesh mesh = new Mesh();
-
                 mesh.Texture = StaticReferences.whitePixel1x1;
 
                 if (i < PerGeometryMaterials.Count)
@@ -1113,66 +1112,17 @@ namespace SrkOpenGLBasicSample
                         break;
                     }
                 }
-                mesh.primitiveType = OpenTK.Graphics.OpenGL.PrimitiveType.Triangles;
-                mesh.TextureCoordinates = new Vector2[this.GeometryDataTexcoordinates_i[i].Count];
-
-                if (indexof_cont < 0)
+                for (int j=0;j<this.GeometryDataVertex_i[i].Count;j++)
                 {
-                    //mesh.Normals = new Vector3[this.GeometryDataNormals_i[i].Count];
-                    mesh.Colors = new Color[this.GeometryDataColors_i[i].Count];
+                    Vector4 position = Vector4.UnitW;
+                    Vector2 textureCoordinate = Vector2.Zero;
+                    Vector3 normal = Vector3.Zero;
+                    Color color = Color.White;
+                    int influence = -1;
 
-                    //mesh.TextureCoordinates = null;
-                    for (int j = 0; j < this.GeometryDataVertex_i[i].Count; j++)
-                    {
-                        //Vector3 n = this.GeometryDataNormals[i][this.GeometryDataNormals_i[i][j]];
-                        Vector2 t = Vector2.Zero;
-                        if (j < this.GeometryDataTexcoordinates_i[i].Count && this.GeometryDataTexcoordinates_i[i][j] < this.GeometryDataTexcoordinates_i[i].Count)
-                        {
-                            int t_index = this.GeometryDataTexcoordinates_i[i][j];
-                            if (t_index> -1 && t_index < this.GeometryDataTexcoordinates[i].Length)
-                            {
-                                t = this.GeometryDataTexcoordinates[i][t_index];
-                                mesh.TextureCoordinates[j] = t;
-                            }
-                        }
-                        Color4 c = Color.White;
-                        if (j < this.GeometryDataColors_i[i].Count && this.GeometryDataColors_i[i][j]<this.GeometryDataColors_i[i].Count)
-                        {
-                            int c_index = this.GeometryDataColors_i[i][j];
-                            if (c_index> -1 && c_index < this.GeometryDataColors[i].Length)
-                            {
-                                c = this.GeometryDataColors[i][c_index];
-                                mesh.Colors[j] = new Color((int)(c.R * 255), (int)(c.G * 255), (int)(c.B * 255), (int)(c.A * 255));
-                            }
-                        }
-                        Vector3 v = this.GeometryDataVertex[i][this.GeometryDataVertex_i[i][j]];
-
-                        //mesh.Normals[j] = n;
-                        mesh.Vertices.Add(new Vector4(v.X, v.Y, v.Z, 1f));
-                    }
+                    //indexof_cont
                 }
-                else
-                {
-                    mesh.Influences = new int[this.GeometryDataVertex_i[i].Count][];
-                    for (int j = 0; j < this.GeometryDataVertex_i[i].Count; j++)
-                    {
-                        Vector2 t = this.GeometryDataTexcoordinates[i][this.GeometryDataTexcoordinates_i[i][j]];
-                        Vector3 v = this.GeometryDataVertex[i][this.GeometryDataVertex_i[i][j]];
-                        int j_ = this.GeometryDataVertex_i[i][j];
-
-                        mesh.Influences[j] = new int[this.ControllerDataJoints_i[indexof_cont][j_].Count];
-                        for (int k = 0; k < this.ControllerDataJoints_i[indexof_cont][j_].Count; k++)
-                        {
-                            mesh.Influences[j][k] = this.ControllerDataJoints_indices[indexof_cont][this.ControllerDataJoints_i[indexof_cont][j_][k]];
-                            mesh.Vertices.Add(new Vector4(v.X, v.Y, v.Z,
-
-                                this.ControllerDataWeights[indexof_cont][this.ControllerDataWeights_i[indexof_cont][j_][k]]
-                                ));
-                        }
-
-                        mesh.TextureCoordinates[j] = t;
-                    }
-                }
+                
                 this.Meshes[i] = mesh;
             }
         }

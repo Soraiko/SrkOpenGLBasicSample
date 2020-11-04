@@ -60,10 +60,6 @@ namespace SrkOpenGLBasicSample
         public float RotationY { get { return this.rotation.Y; } set { value = MathHelper.PrincipalAngle(value); this.rotation.Y = GetCloserPrincipalAngle(value, this.rotation.Y); dest_rotation.Y = value; LookAtMatrixDirty = true; } }
         public float RotationZ { get { return this.rotation.Z; } set { value = MathHelper.PrincipalAngle(value); this.rotation.Z = GetCloserPrincipalAngle(value, this.rotation.Z); dest_rotation.Z = value; LookAtMatrixDirty = true; } }
 
-
-
-
-
         public static float GetCloserPrincipalAngle(float from, float to)
         {
             while (to - from > Math.PI) to -= OpenTK.MathHelper.TwoPi;
@@ -198,7 +194,7 @@ namespace SrkOpenGLBasicSample
             ArcBall_AbsoluteY = 1,
             Grounded = 2
         }
-        public CameraType Type = CameraType.ArcBall;
+        public CameraType Type = CameraType.Grounded;
 
         public void Update(GameWindow window)
         {
