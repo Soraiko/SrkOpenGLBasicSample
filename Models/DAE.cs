@@ -71,7 +71,7 @@ namespace SrkOpenGLBasicSample
             this.GeometryDataVertex = new List<Vector3[]>(0);
             this.GeometryDataTexcoordinates = new List<Vector2[]>(0);
             this.GeometryDataNormals = new List<Vector3[]>(0);
-            this.GeometryDataColors = new List<Color4[]>(0);
+            this.GeometryDataColors = new List<Color[]>(0);
 
             this.GeometryDataVertex_i = new List<List<int>>(0);
             this.GeometryDataTexcoordinates_i = new List<List<int>>(0);
@@ -548,7 +548,7 @@ namespace SrkOpenGLBasicSample
                 Vector3[] Vertices = new Vector3[0];
                 Vector2[] TexCoordinates = new Vector2[0];
                 Vector3[] Normals = new Vector3[0];
-                Color4[] Colors = new Color4[0];
+                Color[] Colors = new Color[0];
 
                 #region Parsing POSITION-Array
                 XmlNode source = this.geometries[i].SelectNodes("descendant::source[@id='" + position_SourceID + "']")[0];
@@ -674,7 +674,7 @@ namespace SrkOpenGLBasicSample
                     count = int.Parse(accessor.Attributes["count"].Value);
                     floatArray = source.SelectNodes("float_array")[0].InnerText;
 
-                    Colors = new Color4[count];
+                    Colors = new Color[count];
                     split = floatArray.Split(new char[] { separator, '\x09', '\x20', '\xA0', '\r', '\n' });
                     currVal = 0;
                     valCount = 0;
@@ -699,7 +699,7 @@ namespace SrkOpenGLBasicSample
                             if (valCount % 4 == 3)
                             {
                                 currV4.W = currVal;
-                                Colors[valIndex] = new Color4(currV4.X, currV4.Y, currV4.Z, currV4.W);
+                                Colors[valIndex] = new Color((int)(currV4.X*255), (int)(currV4.Y*255), (int)(currV4.Z*255), (int)(currV4.W*255));
                                 valIndex++;
                             }
                             valCount++;
@@ -1112,15 +1112,69 @@ namespace SrkOpenGLBasicSample
                         break;
                     }
                 }
+                bool hascontroller = indexof_cont > -1;
                 for (int j=0;j<this.GeometryDataVertex_i[i].Count;j++)
                 {
-                    Vector4 position = Vector4.UnitW;
+                    Vector4 position = Vector4.Zero;
                     Vector2 textureCoordinate = Vector2.Zero;
                     Vector3 normal = Vector3.Zero;
                     Color color = Color.White;
                     int influence = -1;
 
-                    //indexof_cont
+                    int vertexIndex = this.GeometryDataVertex_i[i][j];
+                    if (vertexIndex < this.GeometryDataVertex[i].Length)
+                    {
+                        position = new Vector4(
+                            this.GeometryDataVertex[i][vertexIndex].X,
+                            this.GeometryDataVertex[i][vertexIndex].Y,
+                            this.GeometryDataVertex[i][vertexIndex].Z, 1f);
+                    }
+
+                    int textCoordIndex = -1;
+                    if (j< this.GeometryDataTexcoordinates_i[i].Count)
+                    {
+                        textCoordIndex = this.GeometryDataTexcoordinates_i[i][j];
+                        if (textCoordIndex < this.GeometryDataTexcoordinates[i].Length)
+                            textureCoordinate = this.GeometryDataTexcoordinates[i][textCoordIndex];
+                    }
+
+                    int normalIndex = -1;
+                    if (j < this.GeometryDataNormals_i[i].Count)
+                    {
+                        normalIndex = this.GeometryDataNormals_i[i][j];
+                        if (normalIndex < this.GeometryDataNormals[i].Length)
+                            normal = this.GeometryDataNormals[i][normalIndex];
+                    }
+                    int colorIndex = -1;
+                    if (j < this.GeometryDataColors_i[i].Count)
+                    {
+                        colorIndex = this.GeometryDataColors_i[i][j];
+                        if (colorIndex < this.GeometryDataColors[i].Length)
+                            color = this.GeometryDataColors[i][colorIndex];
+                    }
+
+                    if (hascontroller)
+                    {
+                        if (vertexIndex < this.ControllerDataJoints_i[indexof_cont].Count)
+                        {
+                            int infCount = this.ControllerDataJoints_i[indexof_cont][vertexIndex].Count;
+                            for (int k = 0; k < infCount; k++)
+                            {
+                                int jointIndex = this.ControllerDataJoints_i[indexof_cont][vertexIndex][k];
+                                int weightIndex = this.ControllerDataWeights_i[indexof_cont][vertexIndex][k];
+                                int matrixIndex = this.ControllerDataMatrices_i[indexof_cont][vertexIndex][k];
+
+                                influence = this.ControllerDataJoints_indices[indexof_cont][jointIndex];
+                                float weight = this.ControllerDataWeights[indexof_cont][weightIndex];
+                                Vector4 reverse = Vector4.Transform(position, this.ControllerDataMatrices[indexof_cont][matrixIndex]);
+                                position.W = weight;
+                                //int jointIndex = this.ControllerDataJoints_indices[indexof_cont][vertexIndex];
+                                mesh.Append_3D_Data(reverse, textureCoordinate, normal, color, influence);
+                            }
+                        }
+                    }
+                    else
+                        mesh.Append_3D_Data(position, textureCoordinate, normal, color, influence);
                 }
                 
                 this.Meshes[i] = mesh;
@@ -1145,7 +1199,7 @@ namespace SrkOpenGLBasicSample
         public readonly List<Vector3[]> GeometryDataVertex;
         public readonly List<Vector2[]> GeometryDataTexcoordinates;
         public readonly List<Vector3[]> GeometryDataNormals;
-        public readonly List<Color4[]> GeometryDataColors;
+        public readonly List<Color[]> GeometryDataColors;
         public readonly List<List<int>> GeometryDataVertex_i;
         public readonly List<List<int>> GeometryDataTexcoordinates_i;
         public readonly List<List<int>> GeometryDataNormals_i;

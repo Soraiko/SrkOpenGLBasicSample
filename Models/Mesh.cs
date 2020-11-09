@@ -15,7 +15,6 @@ namespace SrkOpenGLBasicSample
 
         }
 
-        BinaryReader binaryReader;
         public byte[] Data;
 
         public unsafe void Compile(ref Matrix4[] matrices)
