@@ -20,16 +20,16 @@ namespace SrkOpenGLBasicSample
 
         public static Shader VP;
         public static Shader VPC;
-        public static Shader VPCT;
-        public static Shader VPNT;
+        public static Shader VPTC;
+        public static Shader VPTN;
         public static Shader VPT;
         static Shader()
         {
             VP = new Shader(@"resources\graphics\vp_vert.c", @"resources\graphics\vp_frag.c");
-            VPC = new Shader(@"resources\graphics\vpc_vert.c", @"resources\graphics\vpc_frag.c");
-            VPCT = new Shader(@"resources\graphics\vpct_vert.c", @"resources\graphics\vpct_frag.c");
-            VPNT = new Shader(@"resources\graphics\vpnt_vert.c", @"resources\graphics\vpnt_frag.c");
             VPT = new Shader(@"resources\graphics\vpt_vert.c", @"resources\graphics\vpt_frag.c");
+            VPC = new Shader(@"resources\graphics\vpc_vert.c", @"resources\graphics\vpc_frag.c");
+            VPTC = new Shader(@"resources\graphics\vpct_vert.c", @"resources\graphics\vptc_frag.c");
+            VPTN = new Shader(@"resources\graphics\vpnt_vert.c", @"resources\graphics\vptn_frag.c");
         }
 
         public Shader(string vertexPath, string fragmentPath)

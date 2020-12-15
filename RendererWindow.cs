@@ -15,9 +15,8 @@ namespace SrkOpenGLBasicSample
         {
             this.Location = new Point(x, y);
             if (Preferences.Fullscreen)
-            {
                 WindowState = WindowState.Fullscreen;
-            }
+
             this.CursorVisible = true;
         }
 
@@ -44,45 +43,6 @@ namespace SrkOpenGLBasicSample
                 GL.LoadMatrix(ref Camera.Current.ProjectionMatrix);
             }
 
-            if (keyboardState.IsKeyDown(Key.P))
-            {
-                if (br.BaseStream.Position >= br.BaseStream.Length)
-                    br.BaseStream.Position = 0x10;
-
-                for (int i = 0; i < sora.Skeleton.Joints.Length; i++)
-                {
-                    Matrix4 m = Matrix4.Identity;
-                    m.M11 = br.ReadSingle();
-                    m.M12 = br.ReadSingle();
-                    m.M13 = br.ReadSingle();
-                    m.M14 = br.ReadSingle();
-
-                    m.M21 = br.ReadSingle();
-                    m.M22 = br.ReadSingle();
-                    m.M23 = br.ReadSingle();
-                    m.M24 = br.ReadSingle();
-
-                    m.M31 = br.ReadSingle();
-                    m.M32 = br.ReadSingle();
-                    m.M33 = br.ReadSingle();
-                    m.M34 = br.ReadSingle();
-
-                    m.M41 = br.ReadSingle();
-                    m.M42 = br.ReadSingle();
-                    m.M43 = br.ReadSingle();
-                    m.M44 = br.ReadSingle();
-
-                    sora.Skeleton.Joints[i].TransformLocal = m;
-
-                }
-                sora.Skeleton.ComputeMatrices(Matrix4.CreateTranslation(0,0,-150));
-            }
-            if (keyboardState.IsKeyDown(Key.R))
-                Camera.Current.RotationY = -300000000f;
-            if (keyboardState.IsKeyDown(Key.T))
-                Camera.Current.RotationY = 3f;
-
-            Title = Camera.Current.RotationY.ToString();
 
             oldKeyboardState = keyboardState;
             oldMouseState = mouseState;
@@ -95,40 +55,17 @@ namespace SrkOpenGLBasicSample
             GL.ClearColor(BackgroundColor);
             GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
 
-            sora.Draw();
-            mdl.Draw();
 
 
             Context.SwapBuffers();
             base.OnRenderFrame(e);
         }
 
-
-
-        Model sora;
-        Model mdl;
-        BinaryReader br;
         protected override void OnLoad(EventArgs e)
         {
             StaticReferences.GraphicsSettings();
             StaticReferences.InitReferences();
 
-
-
-            sora = new DAE(@"debug_files\H_EX500\H_EX500.dae");
-            sora.Compile();
-
-            /*sora = new DAE(@"C:\Users\Cdministrateur\Desktop\furnitures\local.dae");
-            sora.Compile();*/
-
-
-            /*mdl = new DAE(@"D:\Desktop\KHDebug\KHDebug\bin\DesktopGL\AnyCPU\Debug\Content\Models\TT08\TT08 - Copie.dae");
-            mdl.Compile();*/
-
-
-            FileStream input = new FileStream(@"binary_files\raw_anim.bin", FileMode.Open);
-            br = new BinaryReader(input);
-            br.BaseStream.Position = 0x10;
 
             OnUpdateFrame(null);
             base.OnLoad(e);
