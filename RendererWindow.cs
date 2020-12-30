@@ -44,8 +44,10 @@ namespace SrkOpenGLBasicSample
                 GL.LoadMatrix(ref Camera.Current.ProjectionMatrix);
             }
 
-            StaticReferences.Light0_Position.X = (float)(3000 * Math.Cos(angle));
-            StaticReferences.Light0_Position.Z = (float)(3000 * Math.Sin(angle));
+            if (keyboardState.IsKeyDown(Key.E))
+            StaticReferences.Light0_Position = Camera.Current.Position;
+            //StaticReferences.Light0_Position.X = (float)(3000 * Math.Cos(angle));
+            //StaticReferences.Light0_Position.Z = (float)(3000 * Math.Sin(angle));
             angle += 0.01f;
 
             map.Update();
@@ -122,7 +124,7 @@ namespace SrkOpenGLBasicSample
             br = new BinaryReader(raw_anim);
             br.BaseStream.Position = 0x10;
 
-
+            Title = "Press E key to set light position";
             map = new DAE(@"debug_files\BB00\BB00.dae").Parse();
             map.Compile();
 

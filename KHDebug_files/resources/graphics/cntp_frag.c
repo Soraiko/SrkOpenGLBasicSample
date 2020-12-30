@@ -18,15 +18,22 @@ void main()
 	
 	vec3 normal = texture(bump_mapping, f_texcoord).rgb;
 	normal = normal * 2.0 - 1.0;
+    if (f_normal.z<0)
+		normal = vec3(-normal.y, normal.x, normal.z);
+	else
+		normal = vec3(normal.y, -normal.x, normal.z);
 	normal = normalize(normal);
 
-	vec3 tangent0 = cross(f_normal, vec3(1, 0, 0));
-    if (dot(tangent0, tangent0) < 0.001)
-        tangent0 = cross(f_normal, vec3(0, 1, 0));
-    tangent0 = normalize(tangent0);
-    vec3 tangent1 = normalize(cross(f_normal, tangent0));
+	vec3 tangent = cross(f_normal, vec3(1, 0, 0));
+    if (dot(tangent, tangent) < 0.001)
+	{
+		normal = vec3(normal.y, -normal.x, normal.z);
+        tangent = cross(f_normal, vec3(0, 1, 0));
+	}
+    tangent = normalize(tangent);
+    vec3 bitangent = normalize(cross(f_normal, tangent));
 
-	mat3 tbn = mat3(tangent0, tangent1, f_normal);
+	mat3 tbn = mat3(tangent, bitangent, f_normal);
 	normal = normalize(tbn * normal);
 
 

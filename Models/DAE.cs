@@ -1076,7 +1076,7 @@ namespace SrkOpenGLBasicSample
                             }
                             if (valCount % 2 == 1)
                             {
-                                /*currVal = 1 - currVal;*/
+                                /*currVal = 1 - currVal;*/  /* maya */
                                 TexCoordinates[valIndex].Y = currVal;
                                 valIndex++;
                             }
