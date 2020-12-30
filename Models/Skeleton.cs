@@ -1,51 +1,155 @@
-﻿using OpenTK;
+﻿using System;
+using OpenTK;
+using System.Collections.Generic;
 
 namespace SrkOpenGLBasicSample
 {
     public class Skeleton
     {
-        public Joint[] Joints;
-        public Matrix4[] Matrices;
+        public float[] MatricesBuffer;
 
-        public Skeleton(int joints_count)
+        public List<Joint> Joints;
+        public Skeleton()
         {
-            this.Joints = new Joint[joints_count];
-            this.Matrices = new Matrix4[joints_count];
+            this.Joints = new List<Joint>(0);
+            this.MatricesBuffer = new float[1024 * 16];
         }
 
-        public Skeleton Clone()
+        public Joint GetJoint(string name)
         {
-            Skeleton output = new Skeleton(this.Joints.Length);
-            for (int i = 0; i < Joints.Length; i++)
+            for (int i = 0; i < this.Joints.Count; i++)
             {
-                output.Joints[i] = new Joint(this.Joints[i].Name, this.Joints[i].TransformLocal);
-                output.Joints[i].Parent = this.Joints[i].Parent;
+                if (this.Joints[i].Name == name)
+                    return this.Joints[i];
             }
-            return output;
+            return null;
         }
 
-        public void ComputeMatrices(Matrix4 globalTransform)
+        public int IndexOf(string name)
         {
-            for (int i = 0; i < Joints.Length; i++)
+            for (int i = 0; i < this.Joints.Count; i++)
             {
-                Joints[i].TransformModel = Joints[i].TransformLocal * 1f;
-
-                if (Joints[i].Parent > -1)
-                    Joints[i].TransformModel *= Joints[Joints[i].Parent].TransformModel;
-
-                Matrices[i] = Joints[i].TransformModel * globalTransform;
+                if (this.Joints[i].Name == name)
+                    return i;
             }
+            return -1;
         }
 
-        public void DeComputeMatrices()
+        public void Compile()
         {
-            for (int i = Joints.Length-1; i > 0; i--)
+            this.ComputeMatrices();
+            for (int i = 0; i < this.Joints.Count; i++)
             {
-                if (Joints[i].Parent > -1)
-                    Joints[i].TransformModel *= Matrix4.Invert(Joints[Joints[i].Parent].TransformModel);
+                Matrix4 mat = Matrix4.Invert(this.Joints[i].ComputedMatrix);
+                int pos = 512 * 16 + i * 16;
+                this.MatricesBuffer[pos++] = mat.M11;
+                this.MatricesBuffer[pos++] = mat.M21;
+                this.MatricesBuffer[pos++] = mat.M31;
+                this.MatricesBuffer[pos++] = mat.M41;
 
-                Joints[i].TransformLocal = Joints[i].TransformModel * 1f;
+                this.MatricesBuffer[pos++] = mat.M12;
+                this.MatricesBuffer[pos++] = mat.M22;
+                this.MatricesBuffer[pos++] = mat.M32;
+                this.MatricesBuffer[pos++] = mat.M42;
+
+                this.MatricesBuffer[pos++] = mat.M13;
+                this.MatricesBuffer[pos++] = mat.M23;
+                this.MatricesBuffer[pos++] = mat.M33;
+                this.MatricesBuffer[pos++] = mat.M43;
+
+                this.MatricesBuffer[pos++] = mat.M14;
+                this.MatricesBuffer[pos++] = mat.M24;
+                this.MatricesBuffer[pos++] = mat.M34;
+                this.MatricesBuffer[pos++] = mat.M44;
             }
         }
+
+        public void ComputeMatrices()
+        {
+            for (int i = 0; i < this.Joints.Count; i++)
+            {
+                this.Joints[i].ComputedMatrix = this.Joints[i].Matrix * 1f;
+                this.Joints[i].Dirty = true;
+            }
+            int dirtyCount;
+            do
+            {
+                dirtyCount = this.Joints.Count;
+                for (int i = 0; i < this.Joints.Count; i++)
+                {
+                    if (this.Joints[i].Parent == null || !this.Joints[i].Parent.Dirty)
+                    {
+                        if (this.Joints[i].Parent != null)
+                            this.Joints[i].ComputedMatrix *= this.Joints[i].Parent.ComputedMatrix;
+
+                        Matrix4 mat = this.Joints[i].ComputedMatrix;
+                        int pos = i * 16;
+                        this.MatricesBuffer[pos++] = mat.M11;
+                        this.MatricesBuffer[pos++] = mat.M21;
+                        this.MatricesBuffer[pos++] = mat.M31;
+                        this.MatricesBuffer[pos++] = mat.M41;
+
+                        this.MatricesBuffer[pos++] = mat.M12;
+                        this.MatricesBuffer[pos++] = mat.M22;
+                        this.MatricesBuffer[pos++] = mat.M32;
+                        this.MatricesBuffer[pos++] = mat.M42;
+
+                        this.MatricesBuffer[pos++] = mat.M13;
+                        this.MatricesBuffer[pos++] = mat.M23;
+                        this.MatricesBuffer[pos++] = mat.M33;
+                        this.MatricesBuffer[pos++] = mat.M43;
+
+                        this.MatricesBuffer[pos++] = mat.M14;
+                        this.MatricesBuffer[pos++] = mat.M24;
+                        this.MatricesBuffer[pos++] = mat.M34;
+                        this.MatricesBuffer[pos++] = mat.M44;
+
+                        this.Joints[i].Dirty = false;
+                        dirtyCount--;
+                    }
+                }
+            }
+            while (dirtyCount > 0);
+        }
+
+        public void ReverseComputedMatrices()
+        {
+            for (int i = 0; i < this.Joints.Count; i++)
+            {
+                this.Joints[i].Matrix = this.Joints[i].ComputedMatrix * 1f;
+                this.Joints[i].Dirty = true;
+            }
+            int dirtyCount;
+            do
+            {
+                dirtyCount = this.Joints.Count;
+                for (int i = 0; i < this.Joints.Count; i++)
+                {
+                    if (this.Joints[i].Dirty)
+                    {
+                        int childrenDirtyCount = 0;
+                        for (int j = 0; j < this.Joints[i].Children.Count; j++)
+                        {
+                            if (this.Joints[i].Children[j].Dirty)
+                                childrenDirtyCount++;
+                        }
+                        if (childrenDirtyCount == 0) /* Children's children are all calculated already. */
+                        {
+                            if (this.Joints[i].Parent != null)
+                                this.Joints[i].Matrix *= Matrix4.Invert(this.Joints[i].Parent.ComputedMatrix);
+                            this.Joints[i].Dirty = false;
+                            dirtyCount--;
+                        }
+                    }
+                    else
+                        dirtyCount--;
+                }
+            }
+            while (dirtyCount > 0);
+
+            for (int i = 0; i < this.Joints.Count; i++)
+                this.Joints[i].CalculateAnglesFromMatrices();
+        }
+
     }
 }

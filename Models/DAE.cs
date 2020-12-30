@@ -3,30 +3,56 @@ using System.IO;
 using System.Collections.Generic;
 using System.Text;
 using System.Xml;
-using System.Runtime.InteropServices;
-
 using OpenTK;
 using OpenTK.Graphics;
-using OpenTK.Graphics.OpenGL;
-using System.Drawing.Drawing2D;
 
 namespace SrkOpenGLBasicSample
 {
     public class DAE : Model
     {
+        public static System.Globalization.CultureInfo en = new System.Globalization.CultureInfo("en-US");
+
+        public static Single GetSingle(double d)
+        {
+            double rounded = Math.Round(d, 7);
+            float singleRound = (float)rounded;
+            float singleNoRound = (float)d;
+
+            if (Math.Abs(rounded - d) < Math.Abs((double)singleNoRound - d))
+                return singleRound;
+            return singleNoRound;
+        }
+
         public XmlNodeList images;
         public XmlNodeList materials;
         public XmlNodeList effects;
         public XmlNodeList geometries;
         public XmlNodeList controllers;
         public XmlNodeList visual_scenes;
-        
+        public XmlNodeList[] surfaces;
+        public XmlNodeList[] joints;
+
+        public static DAE SampleDAE;
+        public static bool SampleLoaded;
+
         XmlDocument Document;
-        public string Directory;
+
+        static XmlNode sampleImage;
+        static XmlNode sampleMaterial;
+        static XmlNode sampleEffect;
+        static XmlNode sampleGeomerty;
+        static XmlNode sampleController;
+        static XmlNode sampleScene;
+        static XmlNode sampleSurface;
+        static XmlNode sampleJoint;
+
+
 
         public DAE(string filename)
         {
+            this.Name = Path.GetFileNameWithoutExtension(filename);
             this.Directory = Path.GetDirectoryName(filename);
+
             byte[] fileData = File.ReadAllBytes(filename);
 
             for (int i = 0; i < 500; i++)
@@ -39,27 +65,28 @@ namespace SrkOpenGLBasicSample
                 fileData[i + 0] = 0x77;
             }
 
-            using (MemoryStream ms = new MemoryStream(fileData))
-            {
-                this.Document = new XmlDocument();
-                    this.Document.Load(ms);
-            }
-            Array.Clear(fileData, 0, fileData.Length);
-            fileData = null;
+            MemoryStream memoryStream = new MemoryStream(fileData);
 
+            this.Document = new XmlDocument();
+            this.Document.Load(memoryStream);
+            
             this.images = this.Document.SelectNodes("descendant::library_images/image");
             this.materials = this.Document.SelectNodes("descendant::library_materials/material");
             this.effects = this.Document.SelectNodes("descendant::library_effects/effect");
             this.geometries = this.Document.SelectNodes("descendant::library_geometries/geometry");
             this.controllers = this.Document.SelectNodes("descendant::library_controllers/controller");
             this.visual_scenes = this.Document.SelectNodes("descendant::library_visual_scenes/visual_scene");
+            this.surfaces = new XmlNodeList[this.visual_scenes.Count];
+            this.joints = new XmlNodeList[this.visual_scenes.Count];
+
+            for (int i = 0; i < this.visual_scenes.Count; i++)
+            {
+                this.joints[i] = this.visual_scenes[i].SelectNodes("descendant::node[translate(@type, 'ABCDEFGHIJKLMNOPQRSTUVWXYZ', 'abcdefghijklmnopqrstuvwxyz')='joint']");
+                this.surfaces[i] = this.visual_scenes[i].SelectNodes("node[not(@type)]");
+            }
 
             this.ImagesIDs = new List<string>(0);
             this.ImagesFilenames = new List<string>(0);
-
-            this.ImagesMinFilters = new List<TextureMinFilter>(0);
-            this.ImagesWrapS = new List<TextureWrapMode>(0);
-            this.ImagesWrapT = new List<TextureWrapMode>(0);
 
             this.PerGeometryMaterials = new List<string>(0);
             this.MaterialsIDs = new List<string>(0);
@@ -85,38 +112,660 @@ namespace SrkOpenGLBasicSample
             this.ControllersIDs = new List<string>(0);
             this.PerControllerGeometry = new List<string>(0);
 
-            this.ShapeMatrices = new List<Matrix4 >(0);
+            this.ShapeMatrices = new List<Matrix4>(0);
             this.ControllerDataJoints = new List<string[]>(0);
-            this.ControllerDataJoints_indices = new List<int[]>(0);
-            this.ControllerDataMatrices = new List<Matrix4 []>(0);
+            this.ControllerDataMatrices = new List<Matrix4[]>(0);
             this.ControllerDataWeights = new List<float[]>(0);
             this.VisualScenesIDs = new List<string>(0);
 
+            this.Skeleton = new Skeleton();
             this.JointsIDs = new List<List<string>>(0);
-            this.JointsMatrices = new List<List<Matrix4 >>(0);
+            this.JointsMatrices = new List<List<Matrix4>>(0);
             this.SurfacesIDs = new List<List<string>>(0);
             this.SurfacesMaterialsID = new List<List<string>>(0);
-
-            this.Parse();
         }
         
-        
-
-        public enum DisplayMode
+        public void Export(string fname)
         {
-            Normal = 0,
-            Color = 1
+            if (!SampleLoaded)
+            {
+                SampleLoaded = true;
+                if (!File.Exists("sample.dae"))
+                    throw new Exception("The sample file does not exist. Make sure that the file sample.dae is present near the executable.");
+                SampleDAE = new DAE("sample.dae");
+
+                sampleImage = SampleDAE.images[0];
+                sampleImage.ParentNode.RemoveChild(sampleImage);
+
+                sampleMaterial = SampleDAE.materials[0];
+                sampleMaterial.ParentNode.RemoveChild(sampleMaterial);
+
+                sampleEffect = SampleDAE.effects[0];
+                sampleEffect.ParentNode.RemoveChild(sampleEffect);
+
+                sampleGeomerty = SampleDAE.geometries[0];
+                sampleGeomerty.ParentNode.RemoveChild(sampleGeomerty);
+
+                sampleController = SampleDAE.controllers[0];
+                sampleController.ParentNode.RemoveChild(sampleController);
+
+                sampleScene = SampleDAE.visual_scenes[0];
+                sampleScene.ParentNode.RemoveChild(sampleScene);
+
+                sampleJoint = sampleScene.SelectNodes("descendant::node[translate(@type, 'ABCDEFGHIJKLMNOPQRSTUVWXYZ', 'abcdefghijklmnopqrstuvwxyz')='joint']")[0];
+                sampleJoint.ParentNode.RemoveChild(sampleJoint);
+
+                sampleSurface = sampleScene.SelectNodes("descendant::node")[0];
+                sampleSurface.ParentNode.RemoveChild(sampleSurface);
+            }
+
+            System.Threading.Thread.CurrentThread.CurrentUICulture = DAE.en;
+            System.Threading.Thread.CurrentThread.CurrentCulture = DAE.en;
+            string dir = Path.GetDirectoryName(fname);
+
+
+            XmlDocument doc = new XmlDocument();
+
+            string sampleDocText = File.ReadAllText("sample.dae");
+            doc.PreserveWhitespace = false;
+            sampleDocText = sampleDocText.Replace("xmlns=", "whocares=");
+
+            doc.LoadXml(sampleDocText);
+
+            var libraryImages = doc.SelectNodes("descendant::library_images")[0];
+            var libraryMaterials = doc.SelectNodes("descendant::library_materials")[0];
+            var libraryEffects = doc.SelectNodes("descendant::library_effects")[0];
+
+            var imageSample = libraryImages.SelectNodes("image")[0];
+            var materialSample = libraryMaterials.SelectNodes("material")[0];
+            var effectSample = libraryEffects.SelectNodes("effect")[0];
+
+            libraryImages.RemoveChild(imageSample);
+            libraryMaterials.RemoveChild(materialSample);
+            libraryEffects.RemoveChild(effectSample);
+
+            XmlNode contenuARemplacer;
+
+            for (int i = 0; i < this.ImagesIDs.Count; i++)
+            {
+                var newImage = imageSample.CloneNode(true);
+                contenuARemplacer = newImage.SelectNodes("descendant::init_from")[0];
+                contenuARemplacer.InnerText = ImagesFilenames[i];
+                newImage.Attributes["id"].Value = ImagesIDs[i];
+                string name = ImagesIDs[i];
+                if (name.Contains("-image"))
+                    name = name.Remove(name.IndexOf("-image"), 6);
+                newImage.Attributes["name"].Value = name;
+                libraryImages.AppendChild(newImage);
+            }
+
+            for (int i = 0; i < this.MaterialsIDs.Count; i++)
+            {
+                var newMaterial = materialSample.CloneNode(true);
+                contenuARemplacer = newMaterial.SelectNodes("descendant::instance_effect")[0];
+                contenuARemplacer.Attributes["url"].Value = "#"+MaterialsEffectIDs[i];
+                newMaterial.Attributes["id"].Value = MaterialsIDs[i];
+                newMaterial.Attributes["name"].Value = MaterialsIDs[i];
+                libraryMaterials.AppendChild(newMaterial);
+            }
+            for (int i = 0; i < this.EffectsIDs.Count; i++)
+            {
+                var newEffect = effectSample.CloneNode(true);
+                newEffect.Attributes["id"].Value = EffectsIDs[i];
+                string name = EffectsIDs[i];
+                if (name.Contains("-fx"))
+                    name = name.Remove(name.IndexOf("-fx"), 3);
+                newEffect.Attributes["name"].Value = name;
+
+                contenuARemplacer = newEffect.SelectNodes("descendant::texture")[0];
+                contenuARemplacer.Attributes["texture"].Value = EffectsImageIDs[i]; /* kokodayo*/
+                libraryEffects.AppendChild(newEffect);
+            }
+
+            var libraryGeometries = doc.SelectNodes("descendant::library_geometries")[0];
+            var libraryControllers = doc.SelectNodes("descendant::library_controllers")[0];
+            var visualScene = doc.SelectNodes("descendant::library_visual_scenes/visual_scene")[0];
+
+            var geometrySample = libraryGeometries.SelectNodes("geometry")[0];
+            var controllerSample = libraryControllers.SelectNodes("controller")[0];
+            var sceneNodeSample = visualScene.SelectNodes("node[@name='polySurface☺']")[0];
+
+            libraryGeometries.RemoveChild(geometrySample);
+            libraryControllers.RemoveChild(controllerSample);
+            visualScene.RemoveChild(sceneNodeSample);
+            XmlNodeList recherche;
+
+            for (int i = 0; i < this.GeometryIDs.Count; i++)
+            {
+                var newGeometry = geometrySample.CloneNode(true);
+
+                recherche = newGeometry.SelectNodes("//@*[contains(., '☺')]");
+
+                for (int mR = 0; mR < recherche.Count; mR++)
+                    recherche[mR].Value = this.GeometryIDs[i].Split('-')[0] + recherche[mR].Value.Split('☺')[1];
+
+                recherche = newGeometry.SelectNodes("//@material");
+                recherche[0].Value = PerGeometryMaterials[i];
+
+                Vector3[] vertices_List = GeometryDataVertex[i];
+
+
+                recherche = newGeometry.SelectNodes("descendant::accessor[contains(@source,'POSITION-array')]/@count");
+                for (int p = 0; p < recherche.Count; p++)
+                    recherche[p].Value = vertices_List.Length.ToString();
+
+
+                recherche = newGeometry.SelectNodes("descendant::float_array[text() = 'listeDeVertices']");
+                recherche[0].Attributes["count"].Value = (vertices_List.Length * 3).ToString();
+                recherche[0].InnerText = "";
+
+                for (int j = 0; j < vertices_List.Length; j++)
+                {
+                    recherche[0].InnerText += vertices_List[j].X.ToString("0.000000") + " " +
+                        vertices_List[j].Y.ToString("0.000000") + " " +
+                        vertices_List[j].Z.ToString("0.000000") + "\r\n";
+                }
+
+
+
+                Vector2[] uvs_List = GeometryDataTexcoordinates[i];
+
+                if (uvs_List.Length == 0)
+                {
+                    recherche = newGeometry.SelectNodes("descendant::triangles");
+                    XmlNodeList uvs = newGeometry.SelectNodes("descendant::input[@semantic='TEXCOORD']");
+                    recherche[0].RemoveChild(uvs[0]);
+
+                    recherche = newGeometry.SelectNodes("descendant::mesh");
+                    uvs = newGeometry.SelectNodes("descendant::source[contains(@id,'UV')]");
+                    recherche[0].RemoveChild(uvs[0]);
+                    uvs = null;
+
+                    XmlNodeList colors = newGeometry.SelectNodes("descendant::input[@semantic='COLOR']");
+                    colors[0].Attributes["offset"].Value = "1";
+                    colors = null;
+                }
+                else
+                {
+                    recherche = newGeometry.SelectNodes("descendant::accessor[contains(@source,'UV0-array')]/@count");
+                    for (int p = 0; p < recherche.Count; p++)
+                        recherche[p].Value = uvs_List.Length.ToString();
+
+                    recherche = newGeometry.SelectNodes("descendant::float_array[text() = 'listeDeUvs']");
+                    recherche[0].Attributes["count"].Value = (uvs_List.Length * 2).ToString();
+                    recherche[0].InnerText = "";
+                    for (int j = 0; j < uvs_List.Length; j++)
+                        recherche[0].InnerText +=
+                            uvs_List[j].X.ToString("0.000000") + " " +
+                            (uvs_List[j].Y).ToString("0.000000") + "\r\n";
+                }
+
+
+                Vector3[] normals_List = this.GeometryDataNormals[i];
+
+                if (normals_List.Length == 0)
+                {
+                    recherche = newGeometry.SelectNodes("descendant::vertices");
+                    XmlNodeList normals = newGeometry.SelectNodes("descendant::input[@semantic='NORMAL']");
+                    recherche[0].RemoveChild(normals[0]);
+
+                    recherche = newGeometry.SelectNodes("descendant::mesh");
+                    normals = newGeometry.SelectNodes("descendant::source[contains(@id,'Normal')]");
+                    recherche[0].RemoveChild(normals[0]);
+                    normals = null;
+                }
+                else
+                {
+                    recherche = newGeometry.SelectNodes("descendant::accessor[contains(@source,'Normal0-array')]/@count");
+                    for (int p = 0; p < recherche.Count; p++)
+                        recherche[p].Value = normals_List.Length.ToString();
+
+                    recherche = newGeometry.SelectNodes("descendant::float_array[text() = 'listeDeNormals']");
+                    recherche[0].Attributes[1].Value = (normals_List.Length * 3).ToString();
+                    recherche[0].InnerText = "";
+                    for (int j = 0; j < normals_List.Length; j++)
+                        recherche[0].InnerText += normals_List[j].X.ToString("0.000000") + " " +
+                            normals_List[j].Y.ToString("0.000000") + " " +
+                            normals_List[j].Z.ToString("0.000000") + "\r\n";
+                }
+                Color[] colors_List = this.GeometryDataColors[i];
+
+                if (colors_List.Length == 0)
+                {
+                    recherche = newGeometry.SelectNodes("descendant::triangles");
+                    XmlNodeList colors = newGeometry.SelectNodes("descendant::input[@semantic='COLOR']");
+                    recherche[0].RemoveChild(colors[0]);
+
+                    recherche = newGeometry.SelectNodes("descendant::mesh");
+                    colors = newGeometry.SelectNodes("descendant::source[contains(@id,'COLOR')]");
+                    recherche[0].RemoveChild(colors[0]);
+                    colors = null;
+                }
+                else
+                {
+                    recherche = newGeometry.SelectNodes("descendant::accessor[contains(@source,'COLOR0-array')]/@count");
+                    for (int p = 0; p < recherche.Count; p++)
+                        recherche[p].Value = colors_List.Length.ToString();
+
+                    recherche = newGeometry.SelectNodes("descendant::float_array[text() = 'listeDeColors']");
+                    recherche[0].Attributes[1].Value = (colors_List.Length * 3).ToString();
+                    recherche[0].InnerText = "";
+                    for (int j = 0; j < colors_List.Length; j++)
+                        recherche[0].InnerText +=
+                        (colors_List[j].R / 255f).ToString("0.000000") + " " +
+                        (colors_List[j].G / 255f).ToString("0.000000") + " " +
+                        (colors_List[j].B / 255f).ToString("0.000000") + " " +
+                        (colors_List[j].A / 255f).ToString("0.000000") + "\r\n";
+                }
+
+
+
+
+                recherche = newGeometry.SelectNodes("descendant::triangles");
+                recherche[0].Attributes[0].Value = (GeometryDataVertex_i[i].Count / 3).ToString();
+                var paragraphe = doc.CreateElement("p");
+
+                if (uvs_List.Length == 0 && colors_List.Length == 0)
+                {
+                    for (int t = 0; t < GeometryDataVertex_i[i].Count; t++)
+                    {
+                        paragraphe.InnerText +=
+                            GeometryDataVertex_i[i][t] + " ";
+                    }
+                }
+                else
+                if (uvs_List.Length == 0 && colors_List.Length > 0)
+                {
+                    for (int t = 0; t < GeometryDataVertex_i[i].Count; t++)
+                    {
+                        paragraphe.InnerText +=
+                            GeometryDataVertex_i[i][t] + " " +
+                            GeometryDataColors_i[i][t] + " ";
+                    }
+                }
+                else
+                if (uvs_List.Length > 0 && colors_List.Length == 0)
+                {
+                    for (int t = 0; t < GeometryDataVertex_i[i].Count; t++)
+                    {
+                        paragraphe.InnerText +=
+                            GeometryDataVertex_i[i][t] + " " +
+                            GeometryDataTexcoordinates_i[i][t] + " ";
+                    }
+                }
+                else
+                    for (int t = 0; t < GeometryDataVertex_i[i].Count; t++)
+                    {
+                        paragraphe.InnerText +=
+                            GeometryDataVertex_i[i][t] + " " +
+                            GeometryDataTexcoordinates_i[i][t] + " " +
+                            GeometryDataColors_i[i][t] + " ";
+                    }
+                recherche[0].AppendChild(paragraphe);
+
+
+
+                libraryGeometries.AppendChild(newGeometry);
+
+                var newController = controllerSample.CloneNode(true);
+                recherche = newController.SelectNodes("//@*[contains(., '@')]");
+
+                for (int mR = 0; mR < recherche.Count; mR++)
+                    recherche[mR].Value = this.GeometryIDs[i].Split('-')[0] + recherche[mR].Value.Split('@')[1];
+
+                List<Joint> joints = new List<Joint>(0);
+                List<Matrix4> matrices = new List<Matrix4>(0);
+                List<float> infs = new List<float>(0);
+                List<int> vcount = new List<int>(0);
+                List<int> v = new List<int>(0);
+
+                
+                int controllerIndex = this.PerControllerGeometry.IndexOf(this.GeometryIDs[i]);
+
+                if (controllerIndex >-1)
+                {
+                    for (int j = 0; j < this.ControllerDataJoints[controllerIndex].Length; j++)
+                    {
+                        joints.Add(this.Skeleton.GetJoint(this.ControllerDataJoints[controllerIndex][j]));
+                        matrices.Add(this.ControllerDataMatrices[controllerIndex][j]);
+                    }
+
+                    for (int j = 0; j < this.ControllerDataWeights[controllerIndex].Length; j++)
+                        infs.Add(this.ControllerDataWeights[controllerIndex][j]);
+
+                    for (int j = 0; j < this.ControllerDataJoints_i[controllerIndex].Count; j++)
+                    {
+                        vcount.Add(this.ControllerDataJoints_i[controllerIndex][j].Count);
+                        for (int k = 0; k < this.ControllerDataJoints_i[controllerIndex][j].Count; k++)
+                        {
+                            v.Add(this.ControllerDataJoints_i[controllerIndex][j][k]);
+                            v.Add(this.ControllerDataWeights_i[controllerIndex][j][k]);
+                        }
+                    }
+
+                    recherche = newController.SelectNodes("descendant::Name_array[text() = 'listeDeJoints']");
+                    recherche[0].Attributes[1].Value = matrices.Count.ToString();
+                    recherche[0].InnerText = "";
+                    for (int j = 0; j < matrices.Count; j++)
+                    {
+                        recherche[0].InnerText += joints[j].Name + " ";
+                    }
+                    recherche[0].InnerText = recherche[0].InnerText.Remove(recherche[0].InnerText.Length - 1);
+
+
+                    recherche = newController.SelectNodes("descendant::accessor[@stride='16']/@count");
+                    for (int p = 0; p < recherche.Count; p++)
+                        recherche[p].Value = matrices.Count.ToString();
+
+                    recherche = newController.SelectNodes("descendant::accessor[contains(@source,'oints')]/@count");
+                    for (int p = 0; p < recherche.Count; p++)
+                        recherche[p].Value = matrices.Count.ToString();
+
+
+
+                    recherche = newController.SelectNodes("descendant::float_array[text() = 'listeDeMatrices']");
+                    recherche[0].Attributes[1].Value = (matrices.Count * 16).ToString();
+                    recherche[0].InnerText = "";
+                    for (int j = 0; j < matrices.Count; j++)
+                    {
+                        Matrix4 mat = matrices[j];
+
+                        recherche[0].InnerText += mat.M11.ToString() + " ";
+                        recherche[0].InnerText += mat.M21.ToString() + " ";
+                        recherche[0].InnerText += mat.M31.ToString() + " ";
+                        recherche[0].InnerText += mat.M41.ToString() + " ";
+
+                        recherche[0].InnerText += mat.M12.ToString() + " ";
+                        recherche[0].InnerText += mat.M22.ToString() + " ";
+                        recherche[0].InnerText += mat.M32.ToString() + " ";
+                        recherche[0].InnerText += mat.M42.ToString() + " ";
+
+                        recherche[0].InnerText += mat.M13.ToString() + " ";
+                        recherche[0].InnerText += mat.M23.ToString() + " ";
+                        recherche[0].InnerText += mat.M33.ToString() + " ";
+                        recherche[0].InnerText += mat.M43.ToString() + " ";
+
+                        recherche[0].InnerText += mat.M14.ToString() + " ";
+                        recherche[0].InnerText += mat.M24.ToString() + " ";
+                        recherche[0].InnerText += mat.M34.ToString() + " ";
+                        recherche[0].InnerText += mat.M44.ToString() + " ";
+                    }
+                    recherche[0].InnerText = recherche[0].InnerText.Remove(recherche[0].InnerText.Length - 1);
+
+                    recherche = newController.SelectNodes("descendant::float_array[text() = 'listeDeWeigths']");
+                    recherche[0].Attributes[1].Value = infs.Count.ToString();
+                    recherche[0].InnerText = "";
+
+                    for (int j = 0; j < infs.Count; j++)
+                    {
+                        recherche[0].InnerText += infs[j].ToString() + " ";
+                    }
+                    recherche[0].InnerText = recherche[0].InnerText.Remove(recherche[0].InnerText.Length - 1);
+
+
+                    recherche = newController.SelectNodes("descendant::accessor[contains(@source,'eights')]/@count");
+                    for (int p = 0; p < recherche.Count; p++)
+                        recherche[p].Value = infs.Count.ToString();
+
+
+                    recherche = newController.SelectNodes("descendant::vertex_weights");
+                    recherche[0].Attributes[0].Value = vcount.Count.ToString();
+                    recherche = newController.SelectNodes("descendant::vertex_weights/vcount");
+
+                    for (int j = 0; j < vcount.Count; j++)
+                    {
+                        recherche[0].InnerText += vcount[j] + " ";
+                    }
+                    recherche[0].InnerText = recherche[0].InnerText.Remove(recherche[0].InnerText.Length - 1);
+
+                    recherche = newController.SelectNodes("descendant::vertex_weights/v");
+
+                    for (int j = 0; j < v.Count; j++)
+                        recherche[0].InnerText += v[j] + " ";
+                    recherche[0].InnerText = recherche[0].InnerText.Remove(recherche[0].InnerText.Length - 1);
+
+                    libraryControllers.AppendChild(newController);
+                }
+
+                var newSceneNode = sceneNodeSample.CloneNode(true);
+
+                recherche = newSceneNode.SelectNodes("//@*[contains(., '☺')]");
+                string suffixe = controllerIndex > -1 ? "Controller" : "-lib";
+                
+                for (int mR = 0; mR < recherche.Count; mR++)
+                {
+                    recherche[mR].Value = this.GeometryIDs[i].Split('-')[0] + suffixe;
+                }
+                
+                if (controllerIndex<0)
+                {
+                    newSceneNode.InnerXml = newSceneNode.InnerXml.Replace("instance_controller","instance_geometry");
+                }
+
+                recherche = newSceneNode.SelectNodes("descendant::instance_material");
+                for (int mR = 0; mR < recherche.Count; mR++)
+                {
+                    recherche[mR].Attributes["symbol"].Value = PerGeometryMaterials[i];
+                    recherche[mR].Attributes["target"].Value = "#"+PerGeometryMaterials[i];
+                }
+
+                visualScene.AppendChild(newSceneNode);
+                matrices = null;
+                infs = null;
+                vcount = null;
+                v = null;
+            }
+
+            var jointSample = visualScene.SelectNodes("node[@name = 'joint000']")[0];
+            visualScene.RemoveChild(jointSample);
+
+            for (int i = 0; i < this.Skeleton.Joints.Count; i++)
+            {
+                var newJoint = jointSample.CloneNode(true);
+                newJoint.Attributes[0].Value = this.Skeleton.Joints[i].Name;
+                newJoint.Attributes[1].Value = this.Skeleton.Joints[i].Name;// + "_" + this.Skeleton.Bones[i].Flag1+"_"+ this.Skeleton.Bones[i].Flag2;
+                newJoint.Attributes[2].Value = this.Skeleton.Joints[i].Name;
+
+                recherche = newJoint.SelectNodes("matrix");
+                recherche[0].InnerText = "";
+                Matrix4 mat = this.Skeleton.Joints[i].Matrix;
+
+                recherche[0].InnerText += mat.M11.ToString() + " ";
+                recherche[0].InnerText += mat.M21.ToString() + " ";
+                recherche[0].InnerText += mat.M31.ToString() + " ";
+                recherche[0].InnerText += mat.M41.ToString() + " ";
+
+                recherche[0].InnerText += mat.M12.ToString() + " ";
+                recherche[0].InnerText += mat.M22.ToString() + " ";
+                recherche[0].InnerText += mat.M32.ToString() + " ";
+                recherche[0].InnerText += mat.M42.ToString() + " ";
+
+                recherche[0].InnerText += mat.M13.ToString() + " ";
+                recherche[0].InnerText += mat.M23.ToString() + " ";
+                recherche[0].InnerText += mat.M33.ToString() + " ";
+                recherche[0].InnerText += mat.M43.ToString() + " ";
+
+                recherche[0].InnerText += mat.M14.ToString() + " ";
+                recherche[0].InnerText += mat.M24.ToString() + " ";
+                recherche[0].InnerText += mat.M34.ToString() + " ";
+                recherche[0].InnerText += mat.M44.ToString() + " ";
+
+
+                Joint parent = this.Skeleton.Joints[i].Parent;
+                if (parent == null)
+                {
+                    visualScene.AppendChild(newJoint);
+                }
+                else
+                {
+                    recherche = visualScene.SelectNodes("descendant::node[@name='" + parent.Name + "']");
+                    if (recherche.Count > 0)
+                    {
+                        recherche[0].AppendChild(newJoint);
+                    }
+                    else
+                    {
+                        visualScene.AppendChild(newJoint);
+                    }
+                }
+
+            }
+            visualScene.AppendChild(visualScene.FirstChild);
+            visualScene.AppendChild(visualScene.FirstChild);
+
+            recherche = doc.SelectNodes("//*/@url");
+            for (int i = 0; i < recherche.Count; i++)
+                if (recherche[i].Value[0] != '#')
+                    recherche[i].Value = "#" + recherche[i].Value;
+
+            recherche = doc.SelectNodes("//*/@target");
+            for (int i = 0; i < recherche.Count; i++)
+                if (recherche[i].Value[0] != '#')
+                    recherche[i].Value = "#" + recherche[i].Value;
+
+            recherche = doc.SelectNodes("//*/@source");
+            for (int i = 0; i < recherche.Count; i++)
+                if (recherche[i].Value[0] != '#')
+                    recherche[i].Value = "#" + recherche[i].Value;
+
+
+            FileStream mStream = new FileStream(fname, System.IO.FileMode.Create);
+            XmlTextWriter writer = new XmlTextWriter(mStream, Encoding.GetEncoding("ISO-8859-1"))
+            {
+                Formatting = Formatting.Indented,
+                Indentation = 1,
+                IndentChar = '	'
+            };
+
+            XmlNode collada = doc.SelectNodes("descendant::COLLADA")[0];
+            XmlAttribute xmlns = doc.CreateAttribute("xmlns");
+            xmlns.InnerText = "http://www.collada.org/2005/11/COLLADASchema";
+            collada.Attributes.Remove(collada.Attributes["whocares"]);
+            collada.Attributes.InsertBefore(xmlns, collada.Attributes[0]);
+            
+
+            doc.WriteContentTo(writer);
+            writer.Flush();
+            mStream.Flush();
+
+            writer.Close();
+            mStream.Close();
+
         }
-       
-
         
-        
-        
-
-        public void Parse()
+        public void ResolveFileName(ref string filename)
         {
-            System.Threading.Thread.CurrentThread.CurrentUICulture = Compatibility.us_cultureinfo_for_decimal_separator;
-            System.Threading.Thread.CurrentThread.CurrentCulture = Compatibility.us_cultureinfo_for_decimal_separator;
+            string[] possible_extenstions = new string[] { string.Empty, ".png", ".jpg", ".jpeg", ".dds" };
+            for (int pe = 0; pe < possible_extenstions.Length; pe++)
+            {
+                string fname = filename;
+                if (pe > 0)
+                    fname += possible_extenstions[pe];
+                int subDir = 0;
+
+                string[] split = fname.Split(new char[] { '\\', '/' });
+                if (split.Length > 0 && split[0].Length > 0)
+                {
+                    int countPoint = 0;
+                    for (int sp = 0; sp < split[0].Length; sp++)
+                    {
+                        if (split[0][sp] == '.')
+                        {
+                            countPoint++;
+                        }
+                    }
+                    if (countPoint == split[0].Length)
+                    {
+                        while (fname[0] == '.')
+                        {
+                            fname = fname.Remove(0, 1);
+                            subDir++;
+                        }
+                        fname = fname.Remove(0, 1);
+                        string dir = this.Directory;
+
+                        while (subDir > 0)
+                        {
+                            for (int sp = dir.Length - 1; sp > 0; sp--)
+                            {
+                                if (dir[sp] == '\\')
+                                {
+                                    dir = dir.Substring(0, sp);
+                                    break;
+                                }
+                            }
+                            subDir--;
+                        }
+                        if (File.Exists(dir + @"\" + fname))
+                        {
+                            fname = dir + @"\" + fname;
+                        }
+                        else if (File.Exists(this.Directory + @"\" + fname))
+                        {
+                            fname = this.Directory + @"\" + fname;
+                        }
+                    }
+                }
+
+
+                Uri uri;
+
+                if (Uri.TryCreate(fname, UriKind.Absolute, out uri))
+                {
+                    fname = uri.AbsolutePath;
+                }
+                if (File.Exists(this.Directory + @"\" + fname))
+                {
+                    fname = this.Directory + @"\" + fname;
+                }
+                else
+                if (!File.Exists(fname))
+                {
+                    int fileslashIndex = fname.IndexOf("file://");
+                    if (fileslashIndex > -1)
+                    {
+                        fname = fname.Remove(fileslashIndex, 7);
+                    }
+                    fname = fname.Replace("/", "\\");
+                    if (File.Exists(this.Directory + @"\" + fname))
+                    {
+                        fname = this.Directory + @"\" + fname;
+                    }
+                    else
+                        if (!File.Exists(fname))
+                    {
+                        if (!fname.Contains(":\\") && File.Exists(this.Directory + @"\" + fname))
+                        {
+                            fname = this.Directory + @"\" + fname;
+                        }
+                        else
+                        {
+                            if (File.Exists(this.Directory + @"\" + Path.GetFileName(fname)))
+                            {
+                                fname = this.Directory + @"\" + Path.GetFileName(fname);
+                            }
+                        }
+                    }
+
+                }
+                fname = fname.Replace("%20", " ");
+                if (File.Exists(fname))
+                {
+                    /*int ind = fname.IndexOf(Program.ExecutableDirectory + @"\");
+                    if (ind > -1)
+                    {
+                        fname = fname.Remove(ind, Program.ExecutableDirectory.Length + 1);
+                    }*/
+                    filename = fname;
+                    break;
+                }
+            }
+        }
+
+        public DAE Parse()
+        {
+            System.Threading.Thread.CurrentThread.CurrentUICulture = DAE.en;
+            System.Threading.Thread.CurrentThread.CurrentCulture = DAE.en;
 
             int maxOffset = -1;
             float currVal = 0;
@@ -126,35 +775,7 @@ namespace SrkOpenGLBasicSample
 
             #region Parsing Joints
 
-
-            XmlNodeList joints = this.Document.SelectNodes("descendant::library_visual_scenes//node[translate(@type, 'ABCDEFGHIJKLMNOPQRSTUVWXYZ', 'abcdefghijklmnopqrstuvwxyz')='joint']");
-
-            this.Skeleton = new Skeleton(joints.Count);
-
-            for (int i = 0; i < joints.Count; i++)
-            {
-                string jointName = joints[i].Attributes["name"].Value;
-                this.Skeleton.Joints[i] = new Joint(jointName, this.ParseMatrices(joints[i].SelectNodes("matrix")[0].InnerText, 1)[0]);
-            }
-
-            for (int i = 0; i < joints.Count; i++)
-            {
-                XmlNode parent = joints[i].ParentNode;
-                if (parent.Attributes["type"] != null && parent.Attributes["type"].Value.ToLower() == "joint")
-                {
-                    string parentJointName = parent.Attributes["name"].Value;
-                    for (int p = 0; p < this.Skeleton.Joints.Length; p++)
-                    {
-                        if (this.Skeleton.Joints[p].Name == parentJointName)
-                        {
-                            this.Skeleton.Joints[i].Parent = p;
-                            break;
-                        }
-                    }
-                }
-            }
-            this.Skeleton.ComputeMatrices(Matrix4.CreateScale(1f));
-
+            GetJoints(false);
 
             #endregion
 
@@ -165,181 +786,15 @@ namespace SrkOpenGLBasicSample
                 if (initFromNode.Count > 0)
                 {
                     this.ImagesIDs.Add(this.images[i].Attributes["id"].Value);
-                    string innerText = initFromNode[0].InnerText;
-
-                    TextureMinFilter minFilter = TextureMinFilter.Linear;
-                    TextureWrapMode wrapS = TextureWrapMode.Repeat;
-                    TextureWrapMode wrapT = TextureWrapMode.Repeat;
-
-                    if (innerText.Contains("?"))
-                    {
-                        string[] parameters = innerText.Split('?')[1].Split(';');
-                        for (int j=0;j< parameters.Length;j++)
-                        {
-                            string left = parameters[j].Split('=')[0];
-                            int right = 0;
-                            if (parameters[j].Contains("="))
-                            {
-                                right = int.Parse(parameters[j].Split('=')[1]);
-                            }
-                            switch (left)
-                            {
-                                case "TexFilter":
-                                    minFilter = (TextureMinFilter)right;
-                                    break;
-                                case "TexWrapS":
-                                    wrapS = (TextureWrapMode)right;
-                                    break;
-                                case "TexWrapT":
-                                    wrapT = (TextureWrapMode)right;
-                                    break;
-                            }
-                        }
-                        innerText = innerText.Split('?')[0];
-                    }
-
-
-                    string[] possible_extenstions = new string[] { string.Empty, ".png", ".jpg", ".jpeg", ".dds" };
-                    for (int pe = 0; pe < possible_extenstions.Length; pe++)
-                    {
-                        string fname = innerText;
-                        if (pe > 0)
-                        {
-                            fname += possible_extenstions[pe];
-                        }
-                        int subDir = 0;
-
-                        string[] split = fname.Split(new char[] { '\\', '/' });
-                        if (split.Length > 0 && split[0].Length > 0)
-                        {
-                            int countPoint = 0;
-                            for (int sp = 0; sp < split[0].Length; sp++)
-                            {
-                                if (split[0][sp] == '.')
-                                {
-                                    countPoint++;
-                                }
-                            }
-                            if (countPoint == split[0].Length)
-                            {
-                                while (fname[0] == '.')
-                                {
-                                    fname = fname.Remove(0, 1);
-                                    subDir++;
-                                }
-                                fname = fname.Remove(0, 1);
-                                string dir = this.Directory;
-
-                                while (subDir > 0)
-                                {
-                                    for (int sp = dir.Length - 1; sp > 0; sp--)
-                                    {
-                                        if (dir[sp] == '\\')
-                                        {
-                                            dir = dir.Substring(0, sp);
-                                            break;
-                                        }
-                                    }
-                                    subDir--;
-                                }
-                                if (File.Exists(dir + @"\" + fname))
-                                {
-                                    fname = dir + @"\" + fname;
-                                }
-                                else if (File.Exists(this.Directory + @"\" + fname))
-                                {
-                                    fname = this.Directory + @"\" + fname;
-                                }
-                            }
-                        }
-
-
-                        Uri uri;
-
-                        if (Uri.TryCreate(fname, UriKind.Absolute, out uri))
-                        {
-                            fname = uri.AbsolutePath;
-                        }
-                        if (File.Exists(this.Directory + @"\" + fname))
-                        {
-                            fname = this.Directory + @"\" + fname;
-                        }
-                        else
-                        if (!File.Exists(fname))
-                        {
-                            int fileslashIndex = fname.IndexOf("file://");
-                            if (fileslashIndex > -1)
-                            {
-                                fname = fname.Remove(fileslashIndex, 7);
-                            }
-                            fname = fname.Replace("/", "\\");
-                            if (File.Exists(this.Directory + @"\" + fname))
-                            {
-                                fname = this.Directory + @"\" + fname;
-                            }
-                            else
-                                if (!File.Exists(fname))
-                            {
-                                if (!fname.Contains(":\\") && File.Exists(this.Directory + @"\" + fname))
-                                {
-                                    fname = this.Directory + @"\" + fname;
-                                }
-                                else
-                                {
-                                    if (File.Exists(this.Directory + @"\" + Path.GetFileName(fname)))
-                                    {
-                                        fname = this.Directory + @"\" + Path.GetFileName(fname);
-                                    }
-                                }
-                            }
-
-                        }
-                        fname = fname.Replace("%20", " ");
-                        if (File.Exists(fname))
-                        {
-                            /*int ind = fname.IndexOf(Program.ExecutableDirectory + @"\");
-                            if (ind > -1)
-                            {
-                                fname = fname.Remove(ind, Program.ExecutableDirectory.Length + 1);
-                            }*/
-                            innerText = fname;
-                            break;
-                        }
-                    }
-
-                    this.ImagesFilenames.Add(innerText);
-                    this.ImagesMinFilters.Add(minFilter);
-                    this.ImagesWrapS.Add(wrapS);
-                    this.ImagesWrapT.Add(wrapT);
+                    string fileName = initFromNode[0].InnerText;
+                    ResolveFileName(ref fileName);
+                    this.ImagesFilenames.Add(fileName);
                 }
             }
-			/*string[] pngs = System.IO.Directory.GetFiles(@"D:\Desktop\KHDebug\KHDebug\bin\DesktopGL\AnyCPU\Debug\Content\Models\TT08", "*.png");
-			ResourceLoader.EmptyBMP.SetPixel(0, 0, System.Drawing.Color.Red);
-			for (int i = 0; i < pngs.Length; i++)
-			{
-				ResourceLoader.EmptyBMP.Save(pngs[i]);
-			}*/
-                    /*string[] pngs = System.IO.Directory.GetFiles(@"D:\Desktop\KHDebug\KHDebug\bin\DesktopGL\AnyCPU\Debug\resources\Models\TT08","*.png");
-                    for (int i=0;i< pngs.Length;i++)
-                    {
-                        bool has_ = false;
-                        for (int j = 0; j < this.ImagesFilenames.Count; j++)
-                        {
-                            if (this.ImagesFilenames[j] == Path.GetFileName(pngs[i]))
-                            {
-                                has_ = true;
-                                break;
-                            }
 
-                        }
-                        if (!has_)
-                        {
-                            File.Move(pngs[i], pngs[i].Replace(".png", ".deleteme"));
-                        }
-                    }*/
-#endregion
+            #endregion
 
-                    #region Parsing Materials
+            #region Parsing Materials
                     for (int i = 0; i < this.materials.Count; i++)
             {
                 var instanceEffectNode = this.materials[i].SelectNodes("instance_effect");
@@ -443,7 +898,11 @@ namespace SrkOpenGLBasicSample
                         countTri += count_;
                     }
                 }
-                string matID = trianglesNode[0].Attributes["material"].Value;
+                string matID = "";
+                var materialAttribute = trianglesNode[0].Attributes["material"];
+                if (materialAttribute != null)
+                    matID = materialAttribute.Value;
+
 
                 if (!MaterialsIDs.Contains(matID))
                 {
@@ -577,11 +1036,11 @@ namespace SrkOpenGLBasicSample
                     {
                         if (valCount % 3 == 0)
                         {
-                            Vertices[valIndex].X = currVal;// -currVal; kokodayo
+                            Vertices[valIndex].X = currVal;
                         }
                         if (valCount % 3 == 1)
                         {
-                            Vertices[valIndex].Y = currVal;// -currVal;
+                            Vertices[valIndex].Y = currVal;
                         }
                         if (valCount % 3 == 2)
                         {
@@ -617,7 +1076,7 @@ namespace SrkOpenGLBasicSample
                             }
                             if (valCount % 2 == 1)
                             {
-                                currVal = 1 - currVal;
+                                /*currVal = 1 - currVal;*/
                                 TexCoordinates[valIndex].Y = currVal;
                                 valIndex++;
                             }
@@ -699,7 +1158,7 @@ namespace SrkOpenGLBasicSample
                             if (valCount % 4 == 3)
                             {
                                 currV4.W = currVal;
-                                Colors[valIndex] = new Color((int)(currV4.X*255), (int)(currV4.Y*255), (int)(currV4.Z*255), (int)(currV4.W*255));
+                                Colors[valIndex] = new Color((int)(currV4.X * 255), (int)(currV4.Y * 255), (int)(currV4.Z * 255), (int)(currV4.W * 255));
                                 valIndex++;
                             }
                             valCount++;
@@ -724,7 +1183,7 @@ namespace SrkOpenGLBasicSample
                 maxOffset++;
                 valCount = 0;
                 int currInt = 0;
-
+                int[] indicesOrdered = new int[maxOffset];
 
 
                 this.GeometryDataVertex.Add(Vertices);
@@ -787,7 +1246,7 @@ namespace SrkOpenGLBasicSample
                     }
                 }
 
-                Matrix4  shapeMatrix = Matrix4 .Identity;
+                Matrix4 shapeMatrix = Matrix4.Identity;
 
                 string joints_SourceID = "";
                 string matrices_SourceID = "";
@@ -799,7 +1258,7 @@ namespace SrkOpenGLBasicSample
 
                 var shapeMatrixNode = this.controllers[i].SelectNodes("descendant::skin/bind_shape_matrix");
                 if (shapeMatrixNode.Count > 0)
-                    shapeMatrix = Matrix4 .Identity;// ParseMatrices(shapeMatrixNode[0].InnerText, 1)[0];
+                    shapeMatrix = Matrix4.Identity;// ParseMatrices(shapeMatrixNode[0].InnerText, 1)[0];
 
                 var jointsNode = this.controllers[i].SelectNodes("descendant::joints");
                 var vertexWeightsNode = this.controllers[i].SelectNodes("descendant::vertex_weights");
@@ -891,14 +1350,14 @@ namespace SrkOpenGLBasicSample
                 valIndex = 0;
 
                 string[] Joints = new string[count];
-                Matrix4 [] Matrices = new Matrix4 [0];
+                Matrix4[] Matrices = new Matrix4[0];
                 float[] Weights = new float[0];
 
                 string[] split = nameArray.Split(new char[] { separator, '\x09', '\x20', '\xA0', '\r', '\n' });
 
                 for (int j = 0; j < split.Length; j++)
                 {
-                    for (int k = 0; k < this.Skeleton.Joints.Length; k++)
+                    for (int k = 0; k < this.Skeleton.Joints.Count; k++)
                         if (this.Skeleton.Joints[k].Name ==  split[j])
                         {
                             Joints[valIndex] = split[j];
@@ -962,22 +1421,10 @@ namespace SrkOpenGLBasicSample
                 if (weights_SourceOffset > maxOffset)
                     maxOffset = weights_SourceOffset;
                 maxOffset++;
-                
+
+                int[] indicesOrdered = new int[maxOffset];
 
                 this.ControllerDataJoints.Add(Joints);
-                int[] ji_array = new int[Joints.Length];
-
-                for (int ji=0;ji< Joints.Length;ji++)
-                {
-                    for (int s = 0; s < this.Skeleton.Joints.Length; s++)
-                        if (this.Skeleton.Joints[s].Name == Joints[ji])
-                        {
-                            ji_array[ji] = s;
-                            break;
-                        }
-                }
-                this.ControllerDataJoints_indices.Add(ji_array);
-
                 this.ControllerDataMatrices.Add(Matrices);
                 this.ControllerDataWeights.Add(Weights);
 
@@ -1037,18 +1484,13 @@ namespace SrkOpenGLBasicSample
 
                 this.ShapeMatrices.Add(shapeMatrix);
                 this.ControllersIDs.Add(this.controllers[i].Attributes["id"].Value);
-                string pcg = "";
-                var node = this.controllers[i].SelectSingleNode("skin");
-                if (node !=null && node.Attributes["source"] !=null)
-                {
-                    pcg = node.Attributes["source"].Value.Remove(0, 1);
-                }
-                this.PerControllerGeometry.Add(pcg);
+                this.PerControllerGeometry.Add(this.controllers[i].SelectSingleNode("skin").Attributes["source"].Value.Remove(0, 1));
             }
 
             #endregion
+
             #region Get Per-Geometry Textures
-            /*for (int i = 0; i < this.PerGeometryMaterials.Count; i++)
+            for (int i = 0; i < this.PerGeometryMaterials.Count; i++)
             {
                 //string currEffectID = this.MaterialsEffectIDs[MaterialsIDs.IndexOf(this.PerGeometryMaterials[i])];
                 //string currImageID = this.EffectsImageIDs[this.EffectsIDs.IndexOf(currEffectID)];
@@ -1071,124 +1513,301 @@ namespace SrkOpenGLBasicSample
                 {
                     currImageFileName = this.ImagesFilenames[ind];
                 }
-            }*/
+            }
 
             #endregion
 
-
-            this.Meshes = new Mesh[this.GeometryDataVertex_i.Count];
-
-            for (int i=0;i<this.GeometryDataVertex_i.Count;i++)
+            /*if (this.ControllerDataJoints.Count == 0)
             {
-                Mesh mesh = new Mesh();
-                mesh.Texture = StaticReferences.whitePixel1x1;
+                Joint b = new Joint("bone000");
+                b.Matrix = Matrix4.CreateScale(1f);
+                this.Skeleton.Joints.Add(b);
+                this.Skeleton.Compile();
 
-                if (i < PerGeometryMaterials.Count)
+                for (int i=0;i<this.GeometryIDs.Count;i++)
                 {
-                    string materialID = PerGeometryMaterials[i];
-                    int effectIndex = MaterialsIDs.IndexOf(materialID);
-                    if (effectIndex > -1)
+                    this.PerControllerGeometry.Add(this.GeometryIDs[i]);
+                    this.ControllersIDs.Add("id" + i.ToString("d3"));
+                    this.ControllerDataJoints.Add(new string[] { "bone000" });
+                    this.ControllerDataWeights.Add(new float[] { 1f });
+                    this.ControllerDataMatrices.Add(new Matrix4[] { Matrix4.CreateScale(1f) });
+
+
+                    this.ControllerDataJoints_i.Add(new List<List<int>>(0));
+                    this.ControllerDataMatrices_i.Add(new List<List<int>>(0));
+                    this.ControllerDataWeights_i.Add(new List<List<int>>(0));
+
+                    for (int j = 0; j < this.GeometryDataVertex[i].Length; j++)
                     {
-                        string effectID = MaterialsEffectIDs[effectIndex];
-                        int imageIndex = EffectsIDs.IndexOf(effectID);
-                        if (imageIndex > -1)
-                        {
-                            string imageID = EffectsImageIDs[imageIndex];
-                            int fnameIndex = ImagesIDs.IndexOf(imageID);
-                            if (fnameIndex > -1)
-                            {
-                                mesh.Texture = Texture.LoadTexture(ImagesFilenames[fnameIndex], ImagesMinFilters[fnameIndex], ImagesWrapS[fnameIndex], ImagesWrapT[fnameIndex]);
-                            }
-                        }
+                        this.ControllerDataJoints_i[this.ControllerDataJoints_i.Count - 1].Add(new List<int>(new int[] {0}));
+                        this.ControllerDataMatrices_i[this.ControllerDataMatrices_i.Count - 1].Add(new List<int>(new int[] {0 }));
+                        this.ControllerDataWeights_i[this.ControllerDataWeights_i.Count - 1].Add(new List<int>(new int[] {0 }));
                     }
                 }
-                int indexof_cont = -1;
+            }*/
 
-                for (int pcg = 0; pcg < this.PerControllerGeometry.Count; pcg++)
+            this.Meshes = new Mesh[this.GeometryIDs.Count];
+
+            for (int i=0;i<this.GeometryIDs.Count;i++)
+            {
+                int controllerIndex = -1;
+                for (int j=0;j< this.PerControllerGeometry.Count;j++)
                 {
-                    if (this.PerControllerGeometry[pcg] == this.GeometryIDs[i])
+                    if (this.PerControllerGeometry[j] == this.GeometryIDs[i])
                     {
-                        indexof_cont = pcg;
+                        controllerIndex = j;
                         break;
                     }
                 }
-                bool hascontroller = indexof_cont > -1;
-                for (int j=0;j<this.GeometryDataVertex_i[i].Count;j++)
+
+
+                bool hasController = controllerIndex > -1;
+
+                Mesh mesh = null;
+                if (hasController)
+                    mesh = new DynamicMesh();
+                else
+                    mesh = new StaticMesh();
+
+                mesh.Name = this.GeometryIDs[i];
+
+                bool hasTexCoords = this.GeometryDataTexcoordinates[i].Length > 0;
+                bool hasNormals = hasController && this.GeometryDataNormals[i].Length > 0;
+                bool hasColors = this.GeometryDataColors[i].Length > 0;
+
+                List<float[]> weights = new List<float[]>(0);
+                List<ushort[]> influences = new List<ushort[]>(0);
+
+                List<Vector3> positions = new List<Vector3>(0);
+                List<Vector2> textureCoords = new List<Vector2>(0);
+                List<Vector3> normals = new List<Vector3>(0);
+                List<Color> colors = new List<Color>(0);
+
+                for (int j = 0; j < this.GeometryDataVertex_i[i].Count; j++)
                 {
-                    Vector4 position = Vector4.Zero;
-                    Vector2 textureCoordinate = Vector2.Zero;
+                    int vertexIndex = this.GeometryDataVertex_i[i][j];
+                    Vector3 position = this.GeometryDataVertex[i][vertexIndex];
+                    Vector2 textureCoord = Vector2.Zero;
                     Vector3 normal = Vector3.Zero;
                     Color color = Color.White;
-                    int influence = -1;
+                    List<KeyValuePair<ushort, float>> weight_influence = new List<KeyValuePair<ushort, float>>(0);
 
-                    int vertexIndex = this.GeometryDataVertex_i[i][j];
-                    if (vertexIndex < this.GeometryDataVertex[i].Length)
-                    {
-                        position = new Vector4(
-                            this.GeometryDataVertex[i][vertexIndex].X,
-                            this.GeometryDataVertex[i][vertexIndex].Y,
-                            this.GeometryDataVertex[i][vertexIndex].Z, 1f);
-                    }
 
-                    int textCoordIndex = -1;
-                    if (j< this.GeometryDataTexcoordinates_i[i].Count)
+                    if (hasTexCoords)
                     {
-                        textCoordIndex = this.GeometryDataTexcoordinates_i[i][j];
-                        if (textCoordIndex < this.GeometryDataTexcoordinates[i].Length)
-                            textureCoordinate = this.GeometryDataTexcoordinates[i][textCoordIndex];
+                        int texCoordIndex = this.GeometryDataTexcoordinates_i[i][j];
+                        textureCoord = this.GeometryDataTexcoordinates[i][texCoordIndex];
                     }
-
-                    int normalIndex = -1;
-                    if (j < this.GeometryDataNormals_i[i].Count)
+                    if (hasNormals)
                     {
-                        normalIndex = this.GeometryDataNormals_i[i][j];
-                        if (normalIndex < this.GeometryDataNormals[i].Length)
-                            normal = this.GeometryDataNormals[i][normalIndex];
+                        int normalIndex = this.GeometryDataNormals_i[i][j];
+                        normal = this.GeometryDataNormals[i][normalIndex];
                     }
-                    int colorIndex = -1;
-                    if (j < this.GeometryDataColors_i[i].Count)
+                    if (hasColors)
                     {
-                        colorIndex = this.GeometryDataColors_i[i][j];
-                        if (colorIndex < this.GeometryDataColors[i].Length)
-                            color = this.GeometryDataColors[i][colorIndex];
+                        int colorIndex = this.GeometryDataColors_i[i][j];
+                        color = this.GeometryDataColors[i][colorIndex];
                     }
-
-                    if (hascontroller)
+                    if (hasController)
                     {
-                        if (vertexIndex < this.ControllerDataJoints_i[indexof_cont].Count)
+                        int infCount = this.ControllerDataWeights_i[controllerIndex][vertexIndex].Count;
+                        for (int k=0;k< infCount;k++)
                         {
-                            int infCount = this.ControllerDataJoints_i[indexof_cont][vertexIndex].Count;
-                            for (int k = 0; k < infCount; k++)
-                            {
-                                int jointIndex = this.ControllerDataJoints_i[indexof_cont][vertexIndex][k];
-                                int weightIndex = this.ControllerDataWeights_i[indexof_cont][vertexIndex][k];
-                                int matrixIndex = this.ControllerDataMatrices_i[indexof_cont][vertexIndex][k];
+                            int weightIndex = this.ControllerDataWeights_i[controllerIndex][vertexIndex][k];
+                            int influenceIndex = this.ControllerDataJoints_i[controllerIndex][vertexIndex][k];
+                            float weight = this.ControllerDataWeights[controllerIndex][weightIndex];
+                            ushort influence = (ushort)this.Skeleton.IndexOf(this.ControllerDataJoints[controllerIndex][influenceIndex]);
+                            weight_influence.Add(new KeyValuePair<ushort, float>(influence, weight));
+                        }
+                        weight_influence.Sort((x, y) => (x.Value.CompareTo(y.Value)));
+                    }
 
-                                influence = this.ControllerDataJoints_indices[indexof_cont][jointIndex];
-                                float weight = this.ControllerDataWeights[indexof_cont][weightIndex];
-                                Vector4 reverse = Vector4.Transform(position, this.ControllerDataMatrices[indexof_cont][matrixIndex]);
-                                position.W = weight;
-                                //int jointIndex = this.ControllerDataJoints_indices[indexof_cont][vertexIndex];
-                                mesh.Append_3D_Data(reverse, textureCoordinate, normal, color, influence);
+                    int foundIndex = -1;
+                    for (int k = 0; k < positions.Count; k++)
+                    {
+                        if (colors[k].A != color.A) continue;
+                        if (colors[k].R != color.R) continue;
+                        if (colors[k].G != color.G) continue;
+                        if (colors[k].B != color.B) continue;
+                        if (Vector3.Distance(positions[k], position) > 0.0001) continue;
+                        if (Vector2.Distance(textureCoords[k], textureCoord) > 0.0001) continue;
+                        if (Vector3.Distance(normals[k], normal) > 0.0001) continue;
+                        if (hasController && influences.Count>0)
+                        {
+                            if (influences[k].Length != weight_influence.Count)
+                                continue;
+                            bool cont = false;
+                            for (int l = 0; l < influences[k].Length; l++)
+                            {
+                                if (influences[k][l] != weight_influence[l].Key)
+                                {
+                                    cont = true;
+                                    break;
+                                }
+                                if (Math.Abs(weights[k][l] - weight_influence[l].Value) > 0.01)
+                                {
+                                    cont = true;
+                                    break;
+                                }
+                            }
+                            if (cont)
+                                continue;
+                        }
+                        foundIndex = k;
+                        break;
+                    }
+                    if (foundIndex < 0)
+                    {
+                        foundIndex = positions.Count;
+                        positions.Add(position);
+                        textureCoords.Add(textureCoord);
+                        colors.Add(color);
+                        normals.Add(normal);
+                        if (hasController)
+                        {
+                            ushort[] influence = new ushort[weight_influence.Count];
+                            float[] weight = new float[weight_influence.Count];
+                            for (int k=0;k< influence.Length;k++)
+                            {
+                                influence[k] = weight_influence[k].Key;
+                                weight[k] = weight_influence[k].Value;
+                            }
+                            influences.Add(influence);
+                            weights.Add(weight);
+                        }
+                    }
+                    mesh.Indices.Add((ushort)foundIndex);
+                }
+                mesh.Positions.AddRange(positions);
+                if (hasTexCoords)
+                    mesh.TextureCoords.AddRange(textureCoords);
+                if (hasNormals)
+                    mesh.Normals.AddRange(normals);
+                if (hasColors)
+                    mesh.Colors.AddRange(colors);
+
+                if (hasController)
+                {
+                    mesh.Influences.AddRange(influences);
+                    mesh.Weights.AddRange(weights);
+                }
+
+                mesh.Texture = StaticReferences.whitePixel1x1;
+                mesh.BumpMapping = StaticReferences.bumpPixel1x1;
+
+                int materialIndex = this.MaterialsIDs.IndexOf(this.PerGeometryMaterials[i]);
+                if (materialIndex>-1)
+                {
+                    string effect = this.MaterialsEffectIDs[materialIndex];
+                    int effectIndex = this.EffectsIDs.IndexOf(effect);
+                    if (effectIndex > -1)
+                    {
+                        string imageID = this.EffectsImageIDs[effectIndex];
+                        int imageIndex = this.ImagesIDs.IndexOf(imageID);
+                        if (imageIndex > -1)
+                        {
+                            mesh.Texture = Texture.LoadTexture(this.ImagesFilenames[imageIndex], OpenTK.Graphics.OpenGL.TextureMinFilter.Linear,
+                                OpenTK.Graphics.OpenGL.TextureWrapMode.Repeat, OpenTK.Graphics.OpenGL.TextureWrapMode.Repeat);
+
+                            string assumed_bump = Path.GetDirectoryName(this.ImagesFilenames[imageIndex]) + @"\" + Path.GetFileNameWithoutExtension(this.ImagesFilenames[imageIndex]) + "_bump" + Path.GetExtension(this.ImagesFilenames[imageIndex]);
+                            if (File.Exists(assumed_bump))
+                            {
+                                mesh.BumpMapping = Texture.LoadTexture(assumed_bump, OpenTK.Graphics.OpenGL.TextureMinFilter.Linear,
+                                    OpenTK.Graphics.OpenGL.TextureWrapMode.Repeat, OpenTK.Graphics.OpenGL.TextureWrapMode.Repeat);
                             }
                         }
                     }
-                    else
-                        mesh.Append_3D_Data(position, textureCoordinate, normal, color, influence);
                 }
-                
+
+
                 this.Meshes[i] = mesh;
             }
+            return this;
         }
-        
+
+
+        public int MultiAnim_Count;
+        public int[] FrameCounts;
+        public Matrix4[][] Anims = new Matrix4[0][];
+        public Matrix4[][] AnimsBackup = new Matrix4[0][];
+
+        public Matrix4[] Anim = new Matrix4[0];
+        public Matrix4[] AnimBackup = new Matrix4[0];
+        public int FrameCount = 0;
+
+
+        public int GetJoints(bool removeTransforms)
+        {
+            int transformCount = 0;
+            this.Skeleton.Joints.Clear();
+
+            if (removeTransforms)
+            {
+                XmlNodeList transforms = this.Document.SelectNodes("descendant::library_visual_scenes//node[matrix]");
+                for (int i = 0; i < transforms.Count; i++)
+                {
+                    if (transforms[i].Attributes["type"] == null || transforms[i].Attributes["type"].Value.ToLower() != "joint")
+                    {
+                        Matrix4 m = ParseMatrices(transforms[i].SelectNodes("matrix")[0].InnerText, 1)[0];
+
+                        XmlNodeList children = transforms[i].SelectNodes("node[matrix]");
+                        int childrenCount = children.Count;
+
+                        for (int c = 0; c < children.Count; c++)
+                        {
+                            if (children[c].Attributes["type"] != null && children[c].Attributes["type"].Value.ToLower() == "joint")
+                            {
+                                childrenCount--;
+                            }
+                            Matrix4 m2 = ParseMatrices(children[c].SelectNodes("matrix")[0].InnerText, 1)[0];
+                            m2 *= m;
+                            transformCount++;
+                            children[c].SelectNodes("matrix")[0].InnerText =
+                                m2.M11 + " " + m2.M21 + " " + m2.M31 + " " + m2.M41 + " " +
+                                m2.M12 + " " + m2.M22 + " " + m2.M32 + " " + m2.M42 + " " +
+                                m2.M13 + " " + m2.M23 + " " + m2.M33 + " " + m2.M43 + " " +
+                                m2.M14 + " " + m2.M24 + " " + m2.M34 + " " + m2.M44;
+                        }
+                        if (childrenCount == 0)
+                        {
+                            var parent = transforms[i].ParentNode;
+
+                            parent.RemoveChild(transforms[i]);
+                            for (int c = 0; c < children.Count; c++)
+                                parent.AppendChild(children[c]);
+                        }
+                    }
+                }
+            }
+            
+            XmlNodeList joints = this.Document.SelectNodes("descendant::library_visual_scenes//node[translate(@type, 'ABCDEFGHIJKLMNOPQRSTUVWXYZ', 'abcdefghijklmnopqrstuvwxyz')='joint']");
+
+            for (int i = 0; i < joints.Count; i++)
+            {
+                string jointName = joints[i].Attributes["name"].Value;
+                Joint joint = new Joint(jointName);
+                joint.Matrix = this.ParseMatrices(joints[i].SelectNodes("matrix")[0].InnerText, 1)[0];
+                this.Skeleton.Joints.Add(joint);
+            }
+            for (int i = 0; i < joints.Count; i++)
+            {
+                XmlNode parent = joints[i].ParentNode;
+                if (parent.Attributes["type"] != null && parent.Attributes["type"].Value.ToLower() == "joint")
+                {
+                    string jointName = joints[i].Attributes["name"].Value;
+                    string parentJointName = parent.Attributes["name"].Value;
+                    this.Skeleton.GetJoint(jointName).Parent = this.Skeleton.GetJoint(parentJointName);
+                }
+            }
+
+            /* Computing Joints */
+
+            this.Skeleton.Compile();
+            return transformCount;
+        }
 
         readonly List<string> ImagesIDs;
         readonly List<string> ImagesFilenames;
-
-        readonly List<TextureMinFilter> ImagesMinFilters;
-        readonly List<TextureWrapMode> ImagesWrapS;
-        readonly List<TextureWrapMode> ImagesWrapT;
-
         readonly List<string> PerGeometryMaterials;
         List<string> MaterialsIDs;
         readonly List<string> MaterialsEffectIDs; /* Data is corresponding effect ID (an URL, with #) */
@@ -1205,26 +1824,24 @@ namespace SrkOpenGLBasicSample
         public readonly List<List<int>> GeometryDataNormals_i;
         public readonly List<List<int>> GeometryDataColors_i;
 
-        readonly List<Matrix4 > ShapeMatrices;
+        readonly List<Matrix4> ShapeMatrices;
         public readonly List<string> ControllersIDs;
         public readonly List<string> PerControllerGeometry;
         public readonly List<string[]> ControllerDataJoints;
-        public readonly List<int[]> ControllerDataJoints_indices;
-        public readonly List<Matrix4 []> ControllerDataMatrices;
+        public readonly List<Matrix4[]> ControllerDataMatrices;
         public readonly List<float[]> ControllerDataWeights;
         public readonly List<List<List<int>>> ControllerDataJoints_i;
         public readonly List<List<List<int>>> ControllerDataMatrices_i;
         public readonly List<List<List<int>>> ControllerDataWeights_i;
         readonly List<string> VisualScenesIDs;
         readonly List<List<string>> JointsIDs;
-        readonly List<List<Matrix4 >> JointsMatrices;
+        readonly List<List<Matrix4>> JointsMatrices;
         readonly List<List<string>> SurfacesIDs;
         readonly List<List<string>> SurfacesMaterialsID;
 
-
-        public Matrix4 [] ParseMatrices(string content, int count)
+        public Matrix4[] ParseMatrices(string content, int count)
         {
-            Matrix4 [] output = new Matrix4 [count];
+            Matrix4[] output = new Matrix4[count];
             char separator = ' ';
 
             for (int j = 2; j < content.Length && j < 20; j++)
@@ -1283,8 +1900,6 @@ namespace SrkOpenGLBasicSample
                     if (valCount % 16 == 15)
                     {
                         output[valIndex].M44 = currVal;
-
-
                         valIndex++;
                     }
                     valCount++;
@@ -1293,8 +1908,7 @@ namespace SrkOpenGLBasicSample
             return output;
         }
 
-
-        public static string ToString(Matrix4  m)
+        public static string ToString(Matrix4 m)
         {
             string s = "";
             s += m.M11.ToString("0.000000") + " " + m.M21.ToString("0.000000") + " " + m.M31.ToString("0.000000") + " " + m.M41.ToString("0.000000") + "\r\n";
@@ -1303,7 +1917,7 @@ namespace SrkOpenGLBasicSample
             s += m.M14.ToString("0.000000") + " " + m.M24.ToString("0.000000") + " " + m.M34.ToString("0.000000") + " " + m.M44.ToString("0.000000") + "\r\n";
             return s;
         }
-        public static string ToStringAccurate(Matrix4  m)
+        public static string ToStringAccurate(Matrix4 m)
         {
             string s = "";
             s += ((Decimal)m.M11) + " " + ((Decimal)m.M21) + " " + ((Decimal)m.M31) + " " + ((Decimal)m.M41) + "\r\n";
@@ -1312,6 +1926,5 @@ namespace SrkOpenGLBasicSample
             s += ((Decimal)m.M14) + " " + ((Decimal)m.M24) + " " + ((Decimal)m.M34) + " " + ((Decimal)m.M44) + "\r\n";
             return s;
         }
-
     }
 }

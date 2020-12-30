@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using OpenTK;
 using OpenTK.Graphics.OpenGL;
 using OpenTK.Graphics;
@@ -43,11 +44,21 @@ namespace SrkOpenGLBasicSample
                 GL.LoadMatrix(ref Camera.Current.ProjectionMatrix);
             }
 
+            StaticReferences.Light0_Position.X = (float)(3000 * Math.Cos(angle));
+            StaticReferences.Light0_Position.Z = (float)(3000 * Math.Sin(angle));
+            angle += 0.01f;
+
+            map.Update();
+
+            for (int i = 0; i < models.Count; i++)
+                models[i].Update();
+
 
             oldKeyboardState = keyboardState;
             oldMouseState = mouseState;
             base.OnUpdateFrame(e);
         }
+        double angle = 0;
 
         public static Color BackgroundColor = new Color(50,50,50,255);
         protected override void OnRenderFrame(FrameEventArgs e)
@@ -55,17 +66,35 @@ namespace SrkOpenGLBasicSample
             GL.ClearColor(BackgroundColor);
             GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
 
+            map.Draw();
 
+            for (int i = 0; i < models.Count; i++)
+                models[i].Draw();
+            
 
             Context.SwapBuffers();
             base.OnRenderFrame(e);
         }
 
+        List<Model> models;
+
+        Model map;
+
         protected override void OnLoad(EventArgs e)
         {
             StaticReferences.GraphicsSettings();
             StaticReferences.InitReferences();
+            models = new List<Model>(0);
 
+            map = new DAE(@"debug_files\BB00\BB00.dae").Parse();
+            map.Compile();
+
+            for (int i=0;i<1;i++)
+            {
+                Model model = new DAE(@"debug_files\H_EX500\H_EX500.dae").Parse();
+                model.Compile();
+                models.Add(model);
+            }
 
             OnUpdateFrame(null);
             base.OnLoad(e);

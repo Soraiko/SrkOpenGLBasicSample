@@ -11,13 +11,23 @@
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
     <Optimize>false</Optimize>
     <DefineConstants>TRACE;DEBUG</DefineConstants>
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="KHDebug_files\debug_files\MdlxViewer\**" />
+    <EmbeddedResource Remove="KHDebug_files\debug_files\MdlxViewer\**" />
+    <None Remove="KHDebug_files\debug_files\MdlxViewer\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Compile Remove="Camera - Copie.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Remove="KHDebug_files\debug_files\P_EX100.mdlx" />
   </ItemGroup>
 
   <ItemGroup>
@@ -424,6 +434,51 @@
     <None Update="KHDebug_files\debug_files\SIMPLE\SIMPLE.dae">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <None Update="KHDebug_files\resources\bumpPixel1x1.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="KHDebug_files\resources\graphics\ctp_frag.c">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="KHDebug_files\resources\graphics\ctp_vert.c">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="KHDebug_files\resources\graphics\ntp_frag.c">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="KHDebug_files\resources\graphics\ntp_vert.c">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="KHDebug_files\resources\graphics\numbers.txt">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </None>
+    <None Update="KHDebug_files\resources\graphics\p_frag.c">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="KHDebug_files\resources\graphics\p_vert.c">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="KHDebug_files\resources\graphics\sk_p_vert.c">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="KHDebug_files\resources\graphics\sk_ctp_vert.c">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="KHDebug_files\resources\graphics\sk_ntp_vert.c">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="KHDebug_files\resources\graphics\sk_cntp_vert.c">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="KHDebug_files\resources\graphics\tp_frag.c">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="KHDebug_files\resources\graphics\sk_tp_vert.c">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="KHDebug_files\resources\graphics\tp_vert.c">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Update="KHDebug_files\texture000.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
@@ -460,34 +515,16 @@
     <None Update="KHDebug_files\resources\graphics\vpct_vert.c">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="KHDebug_files\resources\graphics\vpc_frag.c">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="KHDebug_files\resources\graphics\vpc_vert.c">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
     <None Update="KHDebug_files\resources\graphics\vpnt_frag.c">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Update="KHDebug_files\resources\graphics\vpnt_vert.c">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="KHDebug_files\resources\graphics\vptc_frag.c">
+    <None Update="KHDebug_files\resources\graphics\cntp_frag.c">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="KHDebug_files\resources\graphics\vptc_vert.c">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="KHDebug_files\resources\graphics\vpt_frag.c">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="KHDebug_files\resources\graphics\vpt_vert.c">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="KHDebug_files\resources\graphics\vp_frag.c">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="KHDebug_files\resources\graphics\vp_vert.c">
+    <None Update="KHDebug_files\resources\graphics\cntp_vert.c">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Update="KHDebug_files\resources\sample.dae">

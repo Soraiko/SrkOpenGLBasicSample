@@ -18,18 +18,36 @@ namespace SrkOpenGLBasicSample
         int VertexShader;
         int FragmentShader;
 
-        public static Shader VP;
-        public static Shader VPC;
-        public static Shader VPTC;
-        public static Shader VPTN;
-        public static Shader VPT;
+        public static Shader P;
+        public static Shader skP;
+
+        public static Shader TP;
+        public static Shader skTP;
+
+        public static Shader CTP;
+        public static Shader skCTP;
+
+        public static Shader NTP;
+        public static Shader skNTP;
+
+        public static Shader CNTP;
+        public static Shader skCNTP;
         static Shader()
         {
-            VP = new Shader(@"resources\graphics\vp_vert.c", @"resources\graphics\vp_frag.c");
-            VPT = new Shader(@"resources\graphics\vpt_vert.c", @"resources\graphics\vpt_frag.c");
-            VPC = new Shader(@"resources\graphics\vpc_vert.c", @"resources\graphics\vpc_frag.c");
-            VPTC = new Shader(@"resources\graphics\vpct_vert.c", @"resources\graphics\vptc_frag.c");
-            VPTN = new Shader(@"resources\graphics\vpnt_vert.c", @"resources\graphics\vptn_frag.c");
+            P = new Shader(@"resources\graphics\p_vert.c", @"resources\graphics\p_frag.c");
+            skP = new Shader(@"resources\graphics\sk_p_vert.c", @"resources\graphics\p_frag.c");
+
+            TP = new Shader(@"resources\graphics\tp_vert.c", @"resources\graphics\tp_frag.c");
+            skTP = new Shader(@"resources\graphics\sk_tp_vert.c", @"resources\graphics\tp_frag.c");
+
+            CTP = new Shader(@"resources\graphics\ctp_vert.c", @"resources\graphics\ctp_frag.c");
+            skCTP = new Shader(@"resources\graphics\sk_ctp_vert.c", @"resources\graphics\ctp_frag.c");
+
+            NTP = new Shader(@"resources\graphics\ntp_vert.c", @"resources\graphics\ntp_frag.c");
+            skNTP = new Shader(@"resources\graphics\sk_ntp_vert.c", @"resources\graphics\ntp_frag.c");
+
+            CNTP = new Shader(@"resources\graphics\cntp_vert.c", @"resources\graphics\cntp_frag.c");
+            skCNTP = new Shader(@"resources\graphics\sk_cntp_vert.c", @"resources\graphics\cntp_frag.c");
         }
 
         public Shader(string vertexPath, string fragmentPath)
@@ -68,13 +86,32 @@ namespace SrkOpenGLBasicSample
             GL.DeleteProgram(Handle);
         }
 
-
+        int light0_position = -1;
+        int light0_color = -1;
+        int light0_ambiant_strength = -1;
+        int bump_mapping = -1;
+        
         public void Use()
         {
-            GL.UseProgram(Handle);
-            /*if (this.skipAlpha<0)
-            this.skipAlpha = GL.GetUniformLocation(Handle, "skipAlpha");
-            GL.Uniform1(this.skipAlpha, skipAlpha);*/
+            GL.UseProgram(this.Handle);
+
+            if (light0_position < 0)
+                light0_position = GL.GetUniformLocation(this.Handle, "light0_position");
+            if (light0_color < 0)
+                light0_color = GL.GetUniformLocation(this.Handle, "light0_color");
+            if (light0_ambiant_strength < 0)
+                light0_ambiant_strength = GL.GetUniformLocation(this.Handle, "light0_ambiant_strength");
+            if (bump_mapping < 0)
+                bump_mapping = GL.GetUniformLocation(this.Handle, "bump_mapping");
+
+            if (light0_position > -1)
+                GL.Uniform3(light0_position, StaticReferences.Light0_Position);
+            if (light0_color > -1)
+                GL.Uniform3(light0_color, StaticReferences.Light0_Color);
+            if (light0_ambiant_strength > -1)
+                GL.Uniform1(light0_ambiant_strength, StaticReferences.Light0_AmbientStrentgh);
+            if (bump_mapping > -1)
+                GL.Uniform1(bump_mapping, 1);
         }
 
         private bool disposedValue = false;
