@@ -15,7 +15,7 @@ namespace SrkOpenGLBasicSample
         }
 
         const int POSITIONS_SIZE = 3 * sizeof(float);
-        const int TEXTURECOORDINATES_SIZE = 2 * sizeof(float);
+        const int TEXTURECOORDINATES_SIZE = 2 * sizeof(short);
         const int COLORS_SIZE = 4 * sizeof(byte);
         const int NORMALS_SIZE = 3 * sizeof(float);
 
@@ -61,8 +61,8 @@ namespace SrkOpenGLBasicSample
                         binaryWriter.Write(this.Positions[i].X);
                         binaryWriter.Write(this.Positions[i].Y);
                         binaryWriter.Write(this.Positions[i].Z);
-                        binaryWriter.Write(this.TextureCoords[i].X);
-                        binaryWriter.Write(this.TextureCoords[i].Y);
+                        binaryWriter.Write((short)(this.TextureCoords[i].X * 4096));
+                        binaryWriter.Write((short)(this.TextureCoords[i].Y * 4096));
                     }
                     positionsOffset = 0;
                     textureCoordinatesOffset = POSITIONS_SIZE;
@@ -77,8 +77,8 @@ namespace SrkOpenGLBasicSample
                         binaryWriter.Write(this.Positions[i].X);
                         binaryWriter.Write(this.Positions[i].Y);
                         binaryWriter.Write(this.Positions[i].Z);
-                        binaryWriter.Write(this.TextureCoords[i].X);
-                        binaryWriter.Write(this.TextureCoords[i].Y);
+                        binaryWriter.Write((short)(this.TextureCoords[i].X * 4096));
+                        binaryWriter.Write((short)(this.TextureCoords[i].Y * 4096));
                         binaryWriter.Write(this.Normals[i].X);
                         binaryWriter.Write(this.Normals[i].Y);
                         binaryWriter.Write(this.Normals[i].Z);
@@ -95,8 +95,8 @@ namespace SrkOpenGLBasicSample
                         binaryWriter.Write(this.Positions[i].X);
                         binaryWriter.Write(this.Positions[i].Y);
                         binaryWriter.Write(this.Positions[i].Z);
-                        binaryWriter.Write(this.TextureCoords[i].X);
-                        binaryWriter.Write(this.TextureCoords[i].Y);
+                        binaryWriter.Write((short)(this.TextureCoords[i].X * 4096));
+                        binaryWriter.Write((short)(this.TextureCoords[i].Y * 4096));
                         binaryWriter.Write(this.Colors[i].R);
                         binaryWriter.Write(this.Colors[i].G);
                         binaryWriter.Write(this.Colors[i].B);
@@ -116,8 +116,8 @@ namespace SrkOpenGLBasicSample
                         binaryWriter.Write(this.Positions[i].X);
                         binaryWriter.Write(this.Positions[i].Y);
                         binaryWriter.Write(this.Positions[i].Z);
-                        binaryWriter.Write(this.TextureCoords[i].X);
-                        binaryWriter.Write(this.TextureCoords[i].Y);
+                        binaryWriter.Write((short)(this.TextureCoords[i].X * 4096));
+                        binaryWriter.Write((short)(this.TextureCoords[i].Y * 4096));
                         binaryWriter.Write(this.Normals[i].X);
                         binaryWriter.Write(this.Normals[i].Y);
                         binaryWriter.Write(this.Normals[i].Z);
@@ -162,7 +162,7 @@ namespace SrkOpenGLBasicSample
 
             if (textureCoordinatesOffset > -1)
             {
-                GL.VertexAttribPointer(1, 2, VertexAttribPointerType.Float, false, VertexStride, textureCoordinatesOffset);
+                GL.VertexAttribPointer(1, 2, VertexAttribPointerType.Short, false, VertexStride, textureCoordinatesOffset);
                 GL.EnableVertexAttribArray(1);
             }
 

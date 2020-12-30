@@ -95,5 +95,5 @@ void main()
 	}
 
     gl_Position =  gl_ProjectionMatrix * gl_ModelViewMatrix *  pos;
-	f_texcoord = v_texcoord;
+	f_texcoord = vec2(v_texcoord.x/4096.0, v_texcoord.y/4096.0);
 }

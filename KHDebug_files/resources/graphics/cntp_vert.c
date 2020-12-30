@@ -13,7 +13,7 @@ void main()
 {
     gl_Position =  gl_ProjectionMatrix * gl_ModelViewMatrix *  vec4(v_position, 1);
 	f_position = v_position;
-	f_texcoord = v_texcoord;
+	f_texcoord = vec2(v_texcoord.x/4096.0, v_texcoord.y/4096.0);
 	f_normal = v_normal;
 	f_color = v_color;
 }

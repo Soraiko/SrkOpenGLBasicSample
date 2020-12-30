@@ -1572,8 +1572,10 @@ namespace SrkOpenGLBasicSample
                 mesh.Name = this.GeometryIDs[i];
 
                 bool hasTexCoords = this.GeometryDataTexcoordinates[i].Length > 0;
-                bool hasNormals = hasController && this.GeometryDataNormals[i].Length > 0;
+                bool hasNormals = this.GeometryDataNormals[i].Length > 0;
                 bool hasColors = this.GeometryDataColors[i].Length > 0;
+
+                bool otherThanZeroFound = false;
 
                 List<float[]> weights = new List<float[]>(0);
                 List<ushort[]> influences = new List<ushort[]>(0);
@@ -1586,7 +1588,9 @@ namespace SrkOpenGLBasicSample
                 for (int j = 0; j < this.GeometryDataVertex_i[i].Count; j++)
                 {
                     int vertexIndex = this.GeometryDataVertex_i[i][j];
-                    Vector3 position = this.GeometryDataVertex[i][vertexIndex];
+                    Vector3 position = Vector3.Zero;
+                    if (vertexIndex< this.GeometryDataVertex[i].Length)
+                        position = this.GeometryDataVertex[i][vertexIndex];
                     Vector2 textureCoord = Vector2.Zero;
                     Vector3 normal = Vector3.Zero;
                     Color color = Color.White;
@@ -1596,21 +1600,30 @@ namespace SrkOpenGLBasicSample
                     if (hasTexCoords)
                     {
                         int texCoordIndex = this.GeometryDataTexcoordinates_i[i][j];
-                        textureCoord = this.GeometryDataTexcoordinates[i][texCoordIndex];
+                        if (texCoordIndex < this.GeometryDataTexcoordinates[i].Length)
+                            textureCoord = this.GeometryDataTexcoordinates[i][texCoordIndex];
                     }
                     if (hasNormals)
                     {
                         int normalIndex = this.GeometryDataNormals_i[i][j];
-                        normal = this.GeometryDataNormals[i][normalIndex];
+                        if (normalIndex < this.GeometryDataNormals[i].Length)
+                        {
+                            normal = this.GeometryDataNormals[i][normalIndex];
+                            if (!otherThanZeroFound && Vector3.Distance(normal, Vector3.Zero) > 0)
+                                otherThanZeroFound = true;
+                        }
                     }
                     if (hasColors)
                     {
                         int colorIndex = this.GeometryDataColors_i[i][j];
-                        color = this.GeometryDataColors[i][colorIndex];
+                        if (colorIndex < this.GeometryDataColors[i].Length)
+                            color = this.GeometryDataColors[i][colorIndex];
                     }
                     if (hasController)
                     {
-                        int infCount = this.ControllerDataWeights_i[controllerIndex][vertexIndex].Count;
+                        int infCount = 0;
+                        if (vertexIndex < this.ControllerDataWeights_i[controllerIndex].Count)
+                            infCount = this.ControllerDataWeights_i[controllerIndex][vertexIndex].Count;
                         for (int k=0;k< infCount;k++)
                         {
                             int weightIndex = this.ControllerDataWeights_i[controllerIndex][vertexIndex][k];
@@ -1681,7 +1694,7 @@ namespace SrkOpenGLBasicSample
                 mesh.Positions.AddRange(positions);
                 if (hasTexCoords)
                     mesh.TextureCoords.AddRange(textureCoords);
-                if (hasNormals)
+                if (hasNormals && otherThanZeroFound)
                     mesh.Normals.AddRange(normals);
                 if (hasColors)
                     mesh.Colors.AddRange(colors);
