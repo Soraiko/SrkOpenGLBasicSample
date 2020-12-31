@@ -14,7 +14,6 @@ namespace SrkOpenGLBasicSample
         public Skeleton Skeleton;
         public Mesh[] Meshes;
 
-
         public void Compile()
         {
             for (int i = 0; i < this.Meshes.Length; i++)

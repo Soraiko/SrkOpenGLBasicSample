@@ -9,8 +9,10 @@ namespace SrkOpenGLBasicSample
         public float[] MatricesBuffer;
 
         public List<Joint> Joints;
+        public Matrix4 TransformMatrix;
         public Skeleton()
         {
+            this.TransformMatrix = Matrix4.CreateScale(1f);
             this.Joints = new List<Joint>(0);
             this.MatricesBuffer = new float[1024 * 16];
         }
@@ -70,6 +72,8 @@ namespace SrkOpenGLBasicSample
             {
                 this.Joints[i].ComputedMatrix = this.Joints[i].Matrix * 1f;
                 this.Joints[i].Dirty = true;
+                if (this.Joints[i].Parent == null)
+                    this.Joints[i].ComputedMatrix *= this.TransformMatrix;
             }
             int dirtyCount;
             do
@@ -83,7 +87,7 @@ namespace SrkOpenGLBasicSample
                             this.Joints[i].ComputedMatrix *= this.Joints[i].Parent.ComputedMatrix;
 
                         Matrix4 mat = this.Joints[i].ComputedMatrix;
-                        int pos = i * 16;
+                        int pos = 16 + i * 16;
                         this.MatricesBuffer[pos++] = mat.M11;
                         this.MatricesBuffer[pos++] = mat.M21;
                         this.MatricesBuffer[pos++] = mat.M31;
@@ -110,6 +114,29 @@ namespace SrkOpenGLBasicSample
                 }
             }
             while (dirtyCount > 0);
+
+            int pos_ = 0;
+
+            Matrix4 mat_ = this.TransformMatrix;
+            this.MatricesBuffer[pos_++] = mat_.M11;
+            this.MatricesBuffer[pos_++] = mat_.M21;
+            this.MatricesBuffer[pos_++] = mat_.M31;
+            this.MatricesBuffer[pos_++] = mat_.M41;
+
+            this.MatricesBuffer[pos_++] = mat_.M12;
+            this.MatricesBuffer[pos_++] = mat_.M22;
+            this.MatricesBuffer[pos_++] = mat_.M32;
+            this.MatricesBuffer[pos_++] = mat_.M42;
+
+            this.MatricesBuffer[pos_++] = mat_.M13;
+            this.MatricesBuffer[pos_++] = mat_.M23;
+            this.MatricesBuffer[pos_++] = mat_.M33;
+            this.MatricesBuffer[pos_++] = mat_.M43;
+
+            this.MatricesBuffer[pos_++] = mat_.M14;
+            this.MatricesBuffer[pos_++] = mat_.M24;
+            this.MatricesBuffer[pos_++] = mat_.M34;
+            this.MatricesBuffer[pos_++] = mat_.M44;
         }
 
         public void ReverseComputedMatrices()

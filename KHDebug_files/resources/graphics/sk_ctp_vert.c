@@ -30,7 +30,7 @@ void main()
 		float inf0_weighting = ((uint(inf0) & uint(4294901760)) >> 16) / 65535.0;
 
 		vec4 reverse = vec4(v_position, 1) * matrices[uint(512) + inf0_index];
-		reverse = vec4(reverse.x,reverse.y,reverse.z, 1) * matrices[inf0_index];
+		reverse = vec4(reverse.x,reverse.y,reverse.z, 1) * matrices[uint(1) + inf0_index];
 		pos += reverse * inf0_weighting;
 
 
@@ -40,7 +40,7 @@ void main()
 			float inf1_weighting = ((uint(inf1) & uint(4294901760)) >> 16) / 65535.0;
 
 			reverse = vec4(v_position, 1) * matrices[uint(512) + inf1_index];
-			reverse = vec4(reverse.x,reverse.y,reverse.z, 1) * matrices[inf1_index];
+			reverse = vec4(reverse.x,reverse.y,reverse.z, 1) * matrices[uint(1) + inf1_index];
 			pos += reverse * inf1_weighting;
 
 			if (uint(v_infCount)>uint(2))
@@ -49,7 +49,7 @@ void main()
 				float inf2_weighting = ((uint(inf2) & uint(4294901760)) >> 16) / 65535.0;
 			
 				reverse = vec4(v_position, 1) * matrices[uint(512) + inf2_index];
-				reverse = vec4(reverse.x,reverse.y,reverse.z, 1) * matrices[inf2_index];
+				reverse = vec4(reverse.x,reverse.y,reverse.z, 1) * matrices[uint(1) + inf2_index];
 				pos += reverse * inf2_weighting;
 
 				if (uint(v_infCount)>uint(3))
@@ -58,7 +58,7 @@ void main()
 					float inf3_weighting = ((uint(inf3) & uint(4294901760)) >> 16) / 65535.0;
 			
 					reverse = vec4(v_position, 1) * matrices[uint(512) + inf3_index];
-					reverse = vec4(reverse.x,reverse.y,reverse.z, 1) * matrices[inf3_index];
+					reverse = vec4(reverse.x,reverse.y,reverse.z, 1) * matrices[uint(1) + inf3_index];
 					pos += reverse * inf3_weighting;
 
 					if (uint(v_infCount)>uint(4))
@@ -68,7 +68,7 @@ void main()
 
 						
 						reverse = vec4(v_position, 1) * matrices[uint(512) + inf4_index];
-						reverse = vec4(reverse.x,reverse.y,reverse.z, 1) * matrices[inf4_index];
+						reverse = vec4(reverse.x,reverse.y,reverse.z, 1) * matrices[uint(1) + inf4_index];
 						pos += reverse * inf4_weighting;
 
 						if (uint(v_infCount)>uint(5))
@@ -77,7 +77,7 @@ void main()
 							float inf5_weighting = ((uint(inf5) & uint(4294901760)) >> 16) / 65535.0;
 
 							reverse = vec4(v_position, 1) * matrices[uint(512) + inf5_index];
-							reverse = vec4(reverse.x,reverse.y,reverse.z, 1) * matrices[inf5_index];
+							reverse = vec4(reverse.x,reverse.y,reverse.z, 1) * matrices[uint(1) + inf5_index];
 							pos += reverse * inf5_weighting;
 
 							if (uint(v_infCount)>uint(6))
@@ -86,7 +86,7 @@ void main()
 								float inf6_weighting = ((uint(inf6) & uint(4294901760)) >> 16) / 65535.0;
 
 								reverse = vec4(v_position, 1) * matrices[uint(512) + inf6_index];
-								reverse = vec4(reverse.x,reverse.y,reverse.z, 1) * matrices[inf6_index];
+								reverse = vec4(reverse.x,reverse.y,reverse.z, 1) * matrices[uint(1) + inf6_index];
 								pos += reverse * inf6_weighting;
 							}
 						}

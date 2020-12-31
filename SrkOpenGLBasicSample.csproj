@@ -444,6 +444,18 @@
     <None Update="KHDebug_files\binary_files\raw_anim.bin">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <None Update="KHDebug_files\debug_files\P_EX100\P_EX100.dae">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="KHDebug_files\debug_files\P_EX100\texture000.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="KHDebug_files\debug_files\P_EX100\texture001.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="KHDebug_files\debug_files\P_EX100\texture002.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Update="KHDebug_files\debug_files\SIMPLE\SIMPLE.dae">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>

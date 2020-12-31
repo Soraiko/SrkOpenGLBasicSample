@@ -318,7 +318,7 @@ namespace SrkOpenGLBasicSample
             GL.BindBuffer(BufferTarget.UniformBuffer, UBO);
 
             IntPtr matricesPtr = GL.MapBuffer(BufferTarget.UniformBuffer, BufferAccess.WriteOnly);
-            System.Runtime.InteropServices.Marshal.Copy(matricesBuffer, 0, matricesPtr, bonesCount*16);
+            System.Runtime.InteropServices.Marshal.Copy(matricesBuffer, 0, matricesPtr, (1+bonesCount)*16);
             GL.UnmapBuffer(BufferTarget.UniformBuffer);
 
             if (matrices_loc < 0)

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <COLLADA xmlns="http://www.collada.org/2005/11/COLLADASchema" version="1.4.1">
-  <asset><contributor><author></author><authoring_tool>FBX COLLADA exporter</authoring_tool><comments></comments></contributor><created>2020-12-30T18:24:58Z</created><keywords></keywords><modified>2020-12-30T18:24:58Z</modified><revision></revision><subject></subject><title></title><unit meter="0.010000" name="centimeter"></unit><up_axis>Y_UP</up_axis></asset>
+  <asset><contributor><author></author><authoring_tool>FBX COLLADA exporter</authoring_tool><comments></comments></contributor><created>2020-12-30T19:57:59Z</created><keywords></keywords><modified>2020-12-30T19:57:59Z</modified><revision></revision><subject></subject><title></title><unit meter="0.010000" name="centimeter"></unit><up_axis>Y_UP</up_axis></asset>
   <library_images>
     <image id="file1-image" name="file1"><init_from>file://C:/Users/brazd/Documents/GitHub/SrkOpenGLBasicSample/KHDebug_files/debug_files/cube/texture000.png</init_from></image>
   </library_images>
@@ -167,9 +167,58 @@
       </mesh>
     </geometry>
   </library_geometries>
+  <library_controllers>
+    <controller id="pCube1Controller">
+      <skin source="#pCube1-lib">
+        <bind_shape_matrix>1.000000 -0.000000 0.000000 0.000000 0.000000 1.000000 -0.000000 0.000000 0.000000 0.000000 1.000000 0.000000 0.000000 0.000000 0.000000 1.000000
+</bind_shape_matrix>
+        <source id="pCube1Controller-Joints">
+          <Name_array id="pCube1Controller-Joints-array" count="1">
+ joint1</Name_array>
+          <technique_common>
+            <accessor source="#pCube1Controller-Joints-array" count="1">
+              <param type="name"/>
+            </accessor>
+          </technique_common>
+        </source>
+        <source id="pCube1Controller-Matrices">
+          <float_array id="pCube1Controller-Matrices-array" count="16">
+
+1.000000 0.000000 0.000000 -0.000000 -0.000000 1.000000 0.000000 -107.599409 0.000000 -0.000000 1.000000 -0.000000 0.000000 0.000000 0.000000 1.000000</float_array>
+          <technique_common>
+            <accessor source="#pCube1Controller-Matrices-array" count="1" stride="16">
+              <param type="float4x4"/>
+            </accessor>
+          </technique_common>
+        </source>
+        <source id="pCube1Controller-Weights">
+          <float_array id="pCube1Controller-Weights-array" count="21">
+
+1.000000 1.000000 1.000000 1.000000 1.000000 1.000000 1.000000 1.000000 1.000000 1.000000 1.000000 1.000000 1.000000 1.000000 1.000000 1.000000
+1.000000 1.000000 1.000000 1.000000 1.000000</float_array>
+          <technique_common>
+            <accessor source="#pCube1Controller-Weights-array" count="21">
+              <param type="float"/>
+            </accessor>
+          </technique_common>
+        </source>
+        <joints>
+          <input semantic="JOINT" source="#pCube1Controller-Joints"/>
+          <input semantic="INV_BIND_MATRIX" source="#pCube1Controller-Matrices"/>
+        </joints>
+        <vertex_weights count="20">
+          <input semantic="JOINT" offset="0" source="#pCube1Controller-Joints"/>
+          <input semantic="WEIGHT" offset="1" source="#pCube1Controller-Weights"/>
+          <vcount>1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1</vcount>
+          <v>0 1 0 2 0 3 0 4 0 5 0 6 0 7 0 8 0 9 0 10 0 11 0 12 0 13 0 14 0 15 0 16 0 17 0 18 0 19 0 20</v>
+        </vertex_weights>
+      </skin>
+    </controller>
+  </library_controllers>
   <library_visual_scenes>
     <visual_scene id="cube" name="cube">
-      <node name="pCube1" id="pCube1" sid="pCube1"><matrix sid="matrix">1.000000 0.000000 0.000000 0.000000 0.000000 1.000000 0.000000 0.000000 0.000000 0.000000 1.000000 0.000000 0.000000 0.000000 0.000000 1.000000</matrix><instance_geometry url="#pCube1-lib"><bind_material><technique_common><instance_material symbol="lambert2" target="#lambert2"/></technique_common></bind_material></instance_geometry><extra><technique profile="FCOLLADA"><visibility>1.000000</visibility></technique></extra></node>
+      <node name="pCube1" id="pCube1" sid="pCube1"><instance_controller url="#pCube1Controller"><bind_material><technique_common><instance_material symbol="lambert2" target="#lambert2"/></technique_common></bind_material></instance_controller><extra><technique profile="FCOLLADA"><visibility>1.000000</visibility></technique></extra></node>
+      <node name="joint1" id="joint1" sid="joint1" type="JOINT"><matrix sid="matrix">1.000000 0.000000 0.000000 0.000000 0.000000 1.000000 0.000000 107.599411 0.000000 0.000000 1.000000 0.000000 0.000000 0.000000 0.000000 1.000000</matrix><extra><technique profile="FCOLLADA"><visibility>1.000000</visibility></technique></extra></node>
       <extra><technique profile="MAX3D"><frame_rate>24.000000</frame_rate></technique><technique profile="FCOLLADA"><start_time>0.041667</start_time><end_time>8.333333</end_time></technique></extra>
     </visual_scene>
   </library_visual_scenes>

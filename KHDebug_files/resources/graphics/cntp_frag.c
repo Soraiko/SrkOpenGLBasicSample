@@ -8,7 +8,7 @@ in vec2 f_texcoord;
 in vec3 f_normal;
 in vec4 f_color;
 
-uniform vec3 light0_position;
+in vec3 f_light0_position;
 uniform vec3 light0_color;
 uniform float light0_ambiant_strength;
 
@@ -37,7 +37,7 @@ void main()
 	normal = normalize(tbn * normal);
 
 
-	vec3 lightDir = normalize(light0_position - f_position);
+	vec3 lightDir = normalize(f_light0_position - f_position);
 	
 	float diff = max(dot(normal, lightDir), 0.0);
 	vec3 diffuse = diff * light0_color;

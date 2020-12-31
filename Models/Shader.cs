@@ -96,7 +96,7 @@ namespace SrkOpenGLBasicSample
             GL.UseProgram(this.Handle);
 
             if (light0_position < 0)
-                light0_position = GL.GetUniformLocation(this.Handle, "light0_position");
+                light0_position = GL.GetUniformLocation(this.Handle, "v_light0_position");
             if (light0_color < 0)
                 light0_color = GL.GetUniformLocation(this.Handle, "light0_color");
             if (light0_ambiant_strength < 0)

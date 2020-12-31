@@ -44,11 +44,10 @@ namespace SrkOpenGLBasicSample
                 GL.LoadMatrix(ref Camera.Current.ProjectionMatrix);
             }
 
-            if (keyboardState.IsKeyDown(Key.E))
-            StaticReferences.Light0_Position = Camera.Current.Position;
             //StaticReferences.Light0_Position.X = (float)(3000 * Math.Cos(angle));
             //StaticReferences.Light0_Position.Z = (float)(3000 * Math.Sin(angle));
-            angle += 0.01f;
+            //if (keyboardState.IsKeyDown(Key.R))
+                angle += 0.01f;
 
             map.Update();
             for (int i=0;i<models[0].Skeleton.Joints.Count;i++)
@@ -73,16 +72,33 @@ namespace SrkOpenGLBasicSample
                 m.M42 = br.ReadSingle();
                 m.M43 = br.ReadSingle();
                 m.M44 = br.ReadSingle();
-                if (i == 0)
-                {
-                    m *= Matrix4.CreateTranslation(0, 0, -250f);
-                }
                 models[0].Skeleton.Joints[i].Matrix = m;
             }
-            if (br.BaseStream.Position>= br.BaseStream.Length)
+
+            if (keyboardState.IsKeyDown(Key.KeypadAdd))
             {
-                br.BaseStream.Position = 0x10;
+                y += 2f;
             }
+            if (keyboardState.IsKeyDown(Key.KeypadSubtract))
+            {
+                y -= 2f;
+            }
+            if (keyboardState.IsKeyUp(Key.E))
+            {
+                StaticReferences.Light0_Position = Camera.Current.LookAt;
+                StaticReferences.Light0_Position.Y = y;
+            }
+
+            models[3].Skeleton.TransformMatrix = Matrix4.CreateScale(0.1f) * Matrix4.CreateTranslation(StaticReferences.Light0_Position);
+
+            models[0].Skeleton.TransformMatrix = Matrix4.CreateRotationY((float)angle) * Matrix4.CreateTranslation(-200, 0f, -200f);
+            models[1].Skeleton.TransformMatrix = Matrix4.CreateRotationY((float)angle) * Matrix4.CreateTranslation(0f, 100f, -200f);
+            models[2].Skeleton.TransformMatrix = Matrix4.CreateRotationY((float)angle) * Matrix4.CreateTranslation(200, 0f, -200f);
+
+            if (br.BaseStream.Position>= br.BaseStream.Length)
+                br.BaseStream.Position = 0x10;
+            
+            
             for (int i = 0; i < models.Count; i++)
                 models[i].Update();
 
@@ -92,6 +108,7 @@ namespace SrkOpenGLBasicSample
             base.OnUpdateFrame(e);
         }
         double angle = 0;
+        float y = 120;
 
         public static Color BackgroundColor = new Color(50,50,50,255);
         protected override void OnRenderFrame(FrameEventArgs e)
@@ -131,6 +148,14 @@ namespace SrkOpenGLBasicSample
             for (int i=0;i<1;i++)
             {
                 Model model = new DAE(@"debug_files\H_EX500\H_EX500.dae").Parse();
+                model.Compile();
+                models.Add(model);
+
+                model = new DAE(@"debug_files\cube\cube.dae").Parse();
+                model.Compile();
+                models.Add(model);
+
+                model = new DAE(@"debug_files\P_EX100\P_EX100.dae").Parse();
                 model.Compile();
                 models.Add(model);
 

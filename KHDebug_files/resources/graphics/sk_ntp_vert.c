@@ -11,9 +11,12 @@ layout (location = 13) in uint inf4;
 layout (location = 14) in uint inf5;
 layout (location = 15) in uint inf6;
 
+uniform vec3 v_light0_position;
+
 out vec3 f_position;
 out vec2 f_texcoord;
 out vec3 f_normal;
+out vec3 f_light0_position;
 
 layout(std140) uniform transform_data
 {
@@ -23,7 +26,11 @@ layout(std140) uniform transform_data
 
 void main()
 {
-	vec4 pos = vec4(0,0,0, 0);
+	vec4 pos = vec4(0, 0, 0, 0);
+
+	vec3 light0_position = v_light0_position;
+
+	vec4 light0_position_v4 = vec4(0,0,0, 0);
 
 	if (uint(v_infCount)>uint(0))
 	{
@@ -31,9 +38,12 @@ void main()
 		float inf0_weighting = ((uint(inf0) & uint(4294901760)) >> 16) / 65535.0;
 
 		vec4 reverse = vec4(v_position, 1) * matrices[uint(512) + inf0_index];
-		reverse = vec4(reverse.x,reverse.y,reverse.z, 1) * matrices[inf0_index];
+		reverse = vec4(reverse.xyz, 1) * matrices[uint(1) + inf0_index];
 		pos += reverse * inf0_weighting;
-
+		
+		reverse = vec4(light0_position, 1) * inverse(matrices[uint(1) + inf0_index]);
+		reverse = vec4(reverse.xyz, 1) * inverse(matrices[uint(512) + inf0_index]);
+		light0_position_v4 += reverse * inf0_weighting;
 
 		if (uint(v_infCount)>uint(1))
 		{
@@ -41,8 +51,12 @@ void main()
 			float inf1_weighting = ((uint(inf1) & uint(4294901760)) >> 16) / 65535.0;
 
 			reverse = vec4(v_position, 1) * matrices[uint(512) + inf1_index];
-			reverse = vec4(reverse.x,reverse.y,reverse.z, 1) * matrices[inf1_index];
+			reverse = vec4(reverse.x,reverse.y,reverse.z, 1) * matrices[uint(1) + inf1_index];
 			pos += reverse * inf1_weighting;
+		
+			reverse = vec4(light0_position, 1) * inverse(matrices[uint(1) + inf1_index]);
+			reverse = vec4(reverse.xyz, 1) * inverse(matrices[uint(512) + inf1_index]);
+			light0_position_v4 += reverse * inf1_weighting;
 
 			if (uint(v_infCount)>uint(2))
 			{
@@ -50,8 +64,12 @@ void main()
 				float inf2_weighting = ((uint(inf2) & uint(4294901760)) >> 16) / 65535.0;
 			
 				reverse = vec4(v_position, 1) * matrices[uint(512) + inf2_index];
-				reverse = vec4(reverse.x,reverse.y,reverse.z, 1) * matrices[inf2_index];
+				reverse = vec4(reverse.x,reverse.y,reverse.z, 1) * matrices[uint(1) + inf2_index];
 				pos += reverse * inf2_weighting;
+		
+				reverse = vec4(light0_position, 1) * inverse(matrices[uint(1) + inf2_index]);
+				reverse = vec4(reverse.xyz, 1) * inverse(matrices[uint(512) + inf2_index]);
+				light0_position_v4 += reverse * inf2_weighting;
 
 				if (uint(v_infCount)>uint(3))
 				{
@@ -59,8 +77,12 @@ void main()
 					float inf3_weighting = ((uint(inf3) & uint(4294901760)) >> 16) / 65535.0;
 			
 					reverse = vec4(v_position, 1) * matrices[uint(512) + inf3_index];
-					reverse = vec4(reverse.x,reverse.y,reverse.z, 1) * matrices[inf3_index];
+					reverse = vec4(reverse.x,reverse.y,reverse.z, 1) * matrices[uint(1) + inf3_index];
 					pos += reverse * inf3_weighting;
+		
+					reverse = vec4(light0_position, 1) * inverse(matrices[uint(1) + inf3_index]);
+					reverse = vec4(reverse.xyz, 1) * inverse(matrices[uint(512) + inf3_index]);
+					light0_position_v4 += reverse * inf3_weighting;
 
 					if (uint(v_infCount)>uint(4))
 					{
@@ -69,8 +91,12 @@ void main()
 
 						
 						reverse = vec4(v_position, 1) * matrices[uint(512) + inf4_index];
-						reverse = vec4(reverse.x,reverse.y,reverse.z, 1) * matrices[inf4_index];
+						reverse = vec4(reverse.x,reverse.y,reverse.z, 1) * matrices[uint(1) + inf4_index];
 						pos += reverse * inf4_weighting;
+		
+						reverse = vec4(light0_position, 1) * inverse(matrices[uint(1) + inf4_index]);
+						reverse = vec4(reverse.xyz, 1) * inverse(matrices[uint(512) + inf4_index]);
+						light0_position_v4 += reverse * inf4_weighting;
 
 						if (uint(v_infCount)>uint(5))
 						{
@@ -78,8 +104,12 @@ void main()
 							float inf5_weighting = ((uint(inf5) & uint(4294901760)) >> 16) / 65535.0;
 
 							reverse = vec4(v_position, 1) * matrices[uint(512) + inf5_index];
-							reverse = vec4(reverse.x,reverse.y,reverse.z, 1) * matrices[inf5_index];
+							reverse = vec4(reverse.x,reverse.y,reverse.z, 1) * matrices[uint(1) + inf5_index];
 							pos += reverse * inf5_weighting;
+		
+							reverse = vec4(light0_position, 1) * inverse(matrices[uint(1) + inf5_index]);
+							reverse = vec4(reverse.xyz, 1) * inverse(matrices[uint(512) + inf5_index]);
+							light0_position_v4 += reverse * inf5_weighting;
 
 							if (uint(v_infCount)>uint(6))
 							{
@@ -87,8 +117,13 @@ void main()
 								float inf6_weighting = ((uint(inf6) & uint(4294901760)) >> 16) / 65535.0;
 
 								reverse = vec4(v_position, 1) * matrices[uint(512) + inf6_index];
-								reverse = vec4(reverse.x,reverse.y,reverse.z, 1) * matrices[inf6_index];
+								reverse = vec4(reverse.x,reverse.y,reverse.z, 1) * matrices[uint(1) + inf6_index];
 								pos += reverse * inf6_weighting;
+		
+								reverse = vec4(light0_position, 1) * inverse(matrices[uint(1) + inf6_index]);
+								reverse = vec4(reverse.xyz, 1) * inverse(matrices[uint(512) + inf6_index]);
+								light0_position_v4 += reverse * inf6_weighting;
+
 							}
 						}
 					}
@@ -96,9 +131,10 @@ void main()
 			}
 		}
 	}
-
+	
     gl_Position =  gl_ProjectionMatrix * gl_ModelViewMatrix *  pos;
 	f_position = vec3(pos.x,pos.y,pos.z);
 	f_texcoord = vec2(v_texcoord.x/4096.0, v_texcoord.y/4096.0);
 	f_normal = v_normal;
+	f_light0_position = light0_position_v4.xyz + (vec4(0, 0, 0, 1) * (matrices[0])).xyz;
 }
