@@ -31,7 +31,7 @@ namespace SrkOpenGLBasicSample
             if (keyboardState.IsKeyDown(Key.Escape))
                 Close();
 
-            if (Camera.Current!=null)
+            if (Camera.Current != null)
             {
                 Camera.Current.MouseControl(mouseState, oldMouseState);
                 Camera.Current.KeyboardControl(keyboardState, oldKeyboardState);
@@ -47,10 +47,10 @@ namespace SrkOpenGLBasicSample
             //StaticReferences.Light0_Position.X = (float)(3000 * Math.Cos(angle));
             //StaticReferences.Light0_Position.Z = (float)(3000 * Math.Sin(angle));
             //if (keyboardState.IsKeyDown(Key.R))
-                angle += 0.01f;
+            angle += 0.01f;
 
             map.Update();
-            for (int i=0;i<models[0].Skeleton.Joints.Count;i++)
+            for (int i = 0; i < models[0].Skeleton.Joints.Count; i++)
             {
                 Matrix4 m = Matrix4.Identity;
                 m.M11 = br.ReadSingle();
@@ -77,28 +77,29 @@ namespace SrkOpenGLBasicSample
 
             if (keyboardState.IsKeyDown(Key.KeypadAdd))
             {
-                y += 2f;
+                y += 0.5f;
             }
             if (keyboardState.IsKeyDown(Key.KeypadSubtract))
             {
-                y -= 2f;
+                y -= 0.5f;
             }
+            Camera.Current.LookAt = Camera.Current.LookAt * new Vector3(1, 0, 1) + new Vector3(0, y, 0);
+
             if (keyboardState.IsKeyUp(Key.E))
             {
                 StaticReferences.Light0_Position = Camera.Current.LookAt;
-                StaticReferences.Light0_Position.Y = y;
             }
 
-            models[3].Skeleton.TransformMatrix = Matrix4.CreateScale(0.1f) * Matrix4.CreateTranslation(StaticReferences.Light0_Position);
+            models[3].Skeleton.TransformMatrix = Matrix4.CreateScale(0.05f) * Matrix4.CreateTranslation(StaticReferences.Light0_Position);
 
             models[0].Skeleton.TransformMatrix = Matrix4.CreateRotationY((float)angle) * Matrix4.CreateTranslation(-200, 0f, -200f);
             models[1].Skeleton.TransformMatrix = Matrix4.CreateRotationY((float)angle) * Matrix4.CreateTranslation(0f, 100f, -200f);
             models[2].Skeleton.TransformMatrix = Matrix4.CreateRotationY((float)angle) * Matrix4.CreateTranslation(200, 0f, -200f);
 
-            if (br.BaseStream.Position>= br.BaseStream.Length)
+            if (br.BaseStream.Position >= br.BaseStream.Length)
                 br.BaseStream.Position = 0x10;
-            
-            
+
+
             for (int i = 0; i < models.Count; i++)
                 models[i].Update();
 
@@ -108,9 +109,9 @@ namespace SrkOpenGLBasicSample
             base.OnUpdateFrame(e);
         }
         double angle = 0;
-        float y = 120;
+        float y = 130;
 
-        public static Color BackgroundColor = new Color(50,50,50,255);
+        public static Color BackgroundColor = new Color(50, 50, 50, 255);
         protected override void OnRenderFrame(FrameEventArgs e)
         {
             GL.ClearColor(BackgroundColor);
@@ -120,7 +121,7 @@ namespace SrkOpenGLBasicSample
 
             for (int i = 0; i < models.Count; i++)
                 models[i].Draw();
-            
+
 
             Context.SwapBuffers();
             base.OnRenderFrame(e);
@@ -141,11 +142,11 @@ namespace SrkOpenGLBasicSample
             br = new BinaryReader(raw_anim);
             br.BaseStream.Position = 0x10;
 
-            Title = "Press E key to set light position";
+            Title = "Press E key to freeze light position";
             map = new DAE(@"debug_files\BB00\BB00.dae").Parse();
             map.Compile();
 
-            for (int i=0;i<1;i++)
+            for (int i = 0; i < 1; i++)
             {
                 Model model = new DAE(@"debug_files\H_EX500\H_EX500.dae").Parse();
                 model.Compile();

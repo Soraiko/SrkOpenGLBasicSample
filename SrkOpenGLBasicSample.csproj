@@ -459,6 +459,15 @@
     <None Update="KHDebug_files\debug_files\SIMPLE\SIMPLE.dae">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <None Update="KHDebug_files\debug_files\sphere\sphere.dae">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="KHDebug_files\debug_files\sphere\texture000.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="KHDebug_files\debug_files\sphere\texture000_bump.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Update="KHDebug_files\resources\bumpPixel1x1.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
@@ -555,10 +564,6 @@
     <None Update="KHDebug_files\resources\whitePixel1x1.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="KHDebug_files\debug_files\" />
   </ItemGroup>
 
 </Project>

@@ -99,6 +99,7 @@ namespace SrkOpenGLBasicSample
             set
             {
                 if (Math.Abs(this.dest_distance - value) < EPSILON) return;
+                if (value < 1) return;
                 this.dest_distance = value;
                 LookAtMatrixDirty = true;
             }
@@ -235,7 +236,7 @@ namespace SrkOpenGLBasicSample
                 if (Math.Abs(diff.X) > EPSILON)
                     this.ProjectionMatrixDirty = true;
 
-                this.ProjectionMatrix = Matrix4.CreatePerspectiveFieldOfView(this.viewAngle, window.Width / (float)window.Height, 30f, 100000000f);
+                this.ProjectionMatrix = Matrix4.CreatePerspectiveFieldOfView(this.viewAngle, window.Width / (float)window.Height, 5f, 100000000f);
             }
         }
 

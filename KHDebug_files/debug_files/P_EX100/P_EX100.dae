@@ -2,9 +2,9 @@
 <COLLADA xmlns="http://www.collada.org/2005/11/COLLADASchema" version="1.4.1">
   <asset><contributor><author></author><authoring_tool>FBX COLLADA exporter</authoring_tool><comments></comments></contributor><created>2020-12-31T09:45:24Z</created><keywords></keywords><modified>2020-12-31T09:45:24Z</modified><revision></revision><subject></subject><title></title><unit meter="0.010000" name="centimeter"></unit><up_axis>Y_UP</up_axis></asset>
   <library_images>
-    <image id="file0-image" name="file0"><init_from>file://C:\Users\brazd\Documents\GitHub\SrkOpenGLBasicSample\KHDebug_files\debug_files\P_EX100\texture000.png</init_from></image>
-    <image id="file1-image" name="file1"><init_from>file://C:\Users\brazd\Documents\GitHub\SrkOpenGLBasicSample\KHDebug_files\debug_files\P_EX100\texture001.png</init_from></image>
-    <image id="file2-image" name="file2"><init_from>file://C:\Users\brazd\Documents\GitHub\SrkOpenGLBasicSample\KHDebug_files\debug_files\P_EX100\texture002.png</init_from></image>
+    <image id="file0-image" name="file0"><init_from>texture000.png</init_from></image>
+    <image id="file1-image" name="file1"><init_from>texture001.png</init_from></image>
+    <image id="file2-image" name="file2"><init_from>texture002.png</init_from></image>
   </library_images>
   <library_materials>
     <material id="lambert0" name="lambert0">

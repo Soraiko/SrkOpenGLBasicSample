@@ -8,7 +8,7 @@ in vec2 f_texcoord;
 in vec3 f_normal;
 in vec4 f_color;
 
-in vec3 f_light0_position;
+uniform vec3 light0_position;
 uniform vec3 light0_color;
 uniform float light0_ambiant_strength;
 
@@ -25,7 +25,7 @@ void main()
 	normal = normalize(normal);
 
 	vec3 tangent = cross(f_normal, vec3(1, 0, 0));
-    if (dot(tangent, tangent) < 0.001)
+    if (dot(tangent, tangent) < 0.001 && f_normal.z>=0)
 	{
 		normal = vec3(normal.y, -normal.x, normal.z);
         tangent = cross(f_normal, vec3(0, 1, 0));
@@ -37,7 +37,7 @@ void main()
 	normal = normalize(tbn * normal);
 
 
-	vec3 lightDir = normalize(f_light0_position - f_position);
+	vec3 lightDir = normalize(light0_position - f_position);
 	
 	float diff = max(dot(normal, lightDir), 0.0);
 	vec3 diffuse = diff * light0_color;
