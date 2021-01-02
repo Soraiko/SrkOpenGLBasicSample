@@ -9,10 +9,45 @@ namespace SrkOpenGLBasicSample
 {
     public class Model
     {
+        public int UBO = -1;
+        public int matrices_loc = -1;
+
         public string Directory;
         public string Name;
         public Skeleton Skeleton;
         public Mesh[] Meshes;
+        static List<Model> References;
+
+        public Model Reference;
+
+        static Model()
+        {
+            References = new List<Model>(0);
+        }
+
+        public Model(string filename)
+        {
+            this.Name = Path.GetFileNameWithoutExtension(filename);
+            this.Directory = Path.GetDirectoryName(filename);
+
+            for (int i=0;i< References.Count;i++)
+            {
+                if (References[i].Name == this.Name &&
+                    References[i].Directory == this.Directory)
+                {
+                    this.Reference = References[i];
+                    break;
+                }
+            }
+            if (this.Reference == null)
+                References.Add(this);
+            else
+            {
+                this.Meshes = Reference.Meshes;
+                this.Skeleton = Reference.Skeleton.Clone();
+                this.Skeleton.Compile();
+            }
+        }
 
         public void Compile()
         {
@@ -38,6 +73,8 @@ namespace SrkOpenGLBasicSample
         public void Draw()
         {
             GL.Enable(EnableCap.Texture2D);
+            if (this.Meshes.Length>0)
+                this.Meshes[0].Update(this.Skeleton);
 
             for (int i = 0; i < this.Meshes.Length; i++)
             {
@@ -66,7 +103,6 @@ namespace SrkOpenGLBasicSample
                 lastTexture = this.Meshes[i].Texture.Integer;
                 lastBump = this.Meshes[i].BumpMapping.Integer;
 
-                this.Meshes[i].Update(this.Skeleton);
                 this.Meshes[i].Draw();
             }
         }

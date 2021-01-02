@@ -30,9 +30,7 @@ namespace SrkOpenGLBasicSample
             bumpPixel1x1 = Texture.LoadTexture(@"resources\bumpPixel1x1.png", TextureMinFilter.Nearest, TextureWrapMode.Repeat, TextureWrapMode.Repeat);
 
             Camera.Current = new Camera(400f);
-            Camera.Current.LookAt = new OpenTK.Vector3(0,80,0);
-            Camera.Current.RotationX = -0.7f;
-            Camera.Current.RotationY = 0.9f;
+            Camera.Current.LookAt = new OpenTK.Vector3(0,0,100);
             Camera.Current.SkipInterpolation();
         }
     }

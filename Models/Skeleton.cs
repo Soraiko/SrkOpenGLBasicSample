@@ -39,6 +39,9 @@ namespace SrkOpenGLBasicSample
 
         public void Compile()
         {
+            for (int i = 0; i < this.Joints.Count; i++)
+                this.Joints[i].DummyMatrix = this.Joints[i].Matrix * 1f;
+
             this.ComputeMatrices();
             for (int i = 0; i < this.Joints.Count; i++)
             {
@@ -155,5 +158,33 @@ namespace SrkOpenGLBasicSample
                 this.Joints[i].CalculateAnglesFromMatrices();
         }
 
+        public Skeleton Clone()
+        {
+            Skeleton skeleton = new Skeleton();
+            for (int i = 0; i < this.Joints.Count; i++)
+            {
+                Joint joint = new Joint(this.Joints[i].Name);
+                joint.Matrix = this.Joints[i].DummyMatrix * 1f;
+                joint.Scale = this.Joints[i].Scale * 1f;
+                joint.Rotate = this.Joints[i].Rotate * 1f;
+                joint.Translate = this.Joints[i].Translate * 1f;
+                skeleton.Joints.Add(joint);
+            }
+            for (int i = 0; i < this.Joints.Count; i++)
+            {
+                if (this.Joints[i].Parent != null)
+                {
+                    for (int j = 0; j < this.Joints.Count; j++)
+                    {
+                        if (this.Joints[j].Name == this.Joints[i].Parent.Name)
+                        {
+                            skeleton.Joints[i].Parent = skeleton.Joints[j];
+                            break;
+                        }
+                    }
+                }
+            }
+            return skeleton;
+        }
     }
 }

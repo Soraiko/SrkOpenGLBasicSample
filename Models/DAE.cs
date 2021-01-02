@@ -48,11 +48,10 @@ namespace SrkOpenGLBasicSample
 
 
 
-        public DAE(string filename)
+        public DAE(string filename) : base(filename)
         {
-            this.Name = Path.GetFileNameWithoutExtension(filename);
-            this.Directory = Path.GetDirectoryName(filename);
-
+            if (this.Reference != null)
+                return;
             byte[] fileData = File.ReadAllBytes(filename);
 
             for (int i = 0; i < 500; i++)
@@ -764,6 +763,8 @@ namespace SrkOpenGLBasicSample
 
         public DAE Parse()
         {
+            if (this.Reference != null)
+                return this;
             System.Threading.Thread.CurrentThread.CurrentUICulture = DAE.en;
             System.Threading.Thread.CurrentThread.CurrentCulture = DAE.en;
 
@@ -1565,9 +1566,9 @@ namespace SrkOpenGLBasicSample
 
                 Mesh mesh = null;
                 if (hasController)
-                    mesh = new DynamicMesh();
+                    mesh = new DynamicMesh(this);
                 else
-                    mesh = new StaticMesh();
+                    mesh = new StaticMesh(this);
 
                 mesh.Name = this.GeometryIDs[i];
 

@@ -24,6 +24,7 @@ namespace SrkOpenGLBasicSample
         public bool Dirty;
         public Matrix4 ComputedMatrix;
         public Matrix4 Matrix;
+        public Matrix4 DummyMatrix;
 
         Joint parent;
         public Joint Parent

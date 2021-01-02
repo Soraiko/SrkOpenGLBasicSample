@@ -9,7 +9,7 @@ namespace SrkOpenGLBasicSample
 {
     public class DynamicMesh : Mesh
     {
-        public DynamicMesh()
+        public DynamicMesh(Model model):base(model)
         {
 
         }
@@ -296,38 +296,33 @@ namespace SrkOpenGLBasicSample
                 this.PrimitiveCount = this.Data.Length / VertexStride;
             }
 
-
-            UBO = GL.GenBuffer();
-            GL.BindBuffer(BufferTarget.UniformBuffer, UBO);
-            GL.BufferData(BufferTarget.UniformBuffer, matricesBuffer.Length * sizeof(float), matricesBuffer, BufferUsageHint.DynamicCopy);
-            GL.BindBuffer(BufferTarget.UniformBuffer, 0);
-
+            if (this.Model.UBO<0)
+            {
+                this.Model.UBO = GL.GenBuffer();
+                GL.BindBuffer(BufferTarget.UniformBuffer, this.Model.UBO);
+                GL.BufferData(BufferTarget.UniformBuffer, matricesBuffer.Length * sizeof(float), matricesBuffer, BufferUsageHint.DynamicCopy);
+                GL.BindBuffer(BufferTarget.UniformBuffer, 0);
+            }
             GL.BindBuffer(BufferTarget.ArrayBuffer, 0);
             GL.BindBuffer(BufferTarget.ElementArrayBuffer, 0);
             GL.BindVertexArray(0);
-
-
-
         }
-
-        int UBO = -1;
-        int matrices_loc = -1;
 
         public void Update(float[] matricesBuffer, int bonesCount)
         {
-            GL.BindBuffer(BufferTarget.UniformBuffer, UBO);
+            GL.BindBuffer(BufferTarget.UniformBuffer, this.Model.UBO);
 
             IntPtr matricesPtr = GL.MapBuffer(BufferTarget.UniformBuffer, BufferAccess.WriteOnly);
             System.Runtime.InteropServices.Marshal.Copy(matricesBuffer, 0, matricesPtr, bonesCount*16);
             GL.UnmapBuffer(BufferTarget.UniformBuffer);
 
-            if (matrices_loc < 0)
-                matrices_loc = GL.GetUniformBlockIndex(this.shader.Handle, "transform_data");
+            if (this.Model.matrices_loc < 0)
+                this.Model.matrices_loc = GL.GetUniformBlockIndex(this.shader.Handle, "transform_data");
 
-            if (matrices_loc > -1)
+            if (this.Model.matrices_loc > -1)
             {
-                GL.UniformBlockBinding(this.shader.Handle, matrices_loc, 0);
-                GL.BindBufferBase(BufferRangeTarget.UniformBuffer, 0, UBO);
+                GL.UniformBlockBinding(this.shader.Handle, this.Model.matrices_loc, 0);
+                GL.BindBufferBase(BufferRangeTarget.UniformBuffer, 0, this.Model.UBO);
             }
         }
 

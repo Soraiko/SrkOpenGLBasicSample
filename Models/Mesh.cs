@@ -27,8 +27,10 @@ namespace SrkOpenGLBasicSample
         public List<ushort> Indices;
         public int PrimitiveCount;
 
-        public Mesh()
+        public Model Model;
+        public Mesh(Model model)
         {
+            this.Model = model;
             this.Positions = new List<Vector3>();
             this.Influences = new List<ushort[]>();
             this.Weights = new List<float[]>();
@@ -49,7 +51,6 @@ namespace SrkOpenGLBasicSample
 
         public void Update(Skeleton skeleton)
         {
-
             if (this is DynamicMesh)
                 (this as DynamicMesh).Update(skeleton.MatricesBuffer, skeleton.Joints.Count);
         }

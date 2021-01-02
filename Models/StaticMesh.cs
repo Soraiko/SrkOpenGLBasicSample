@@ -9,7 +9,7 @@ namespace SrkOpenGLBasicSample
 {
     public class StaticMesh : Mesh
     {
-        public StaticMesh()
+        public StaticMesh(Model model) : base(model)
         {
 
         }

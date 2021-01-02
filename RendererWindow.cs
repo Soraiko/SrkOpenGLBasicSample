@@ -72,16 +72,17 @@ namespace SrkOpenGLBasicSample
                 m.M42 = br.ReadSingle();
                 m.M43 = br.ReadSingle();
                 m.M44 = br.ReadSingle();
-                models[0].Skeleton.Joints[i].Matrix = m;
+                models[index].Skeleton.Joints[i].Matrix = m;
             }
+
 
             if (keyboardState.IsKeyDown(Key.KeypadAdd))
             {
-                y += 0.5f;
+                y += 2f;
             }
             if (keyboardState.IsKeyDown(Key.KeypadSubtract))
             {
-                y -= 0.5f;
+                y -= 2f;
             }
             Camera.Current.LookAt = Camera.Current.LookAt * new Vector3(1, 0, 1) + new Vector3(0, y, 0);
 
@@ -89,12 +90,6 @@ namespace SrkOpenGLBasicSample
             {
                 StaticReferences.Light0_Position = Camera.Current.LookAt;
             }
-
-            models[3].Skeleton.TransformMatrix = Matrix4.CreateScale(0.05f) * Matrix4.CreateTranslation(StaticReferences.Light0_Position);
-
-            models[0].Skeleton.TransformMatrix = Matrix4.CreateRotationY((float)angle) * Matrix4.CreateTranslation(-200, 0f, -200f);
-            models[1].Skeleton.TransformMatrix = Matrix4.CreateRotationY((float)angle) * Matrix4.CreateTranslation(0f, 100f, -200f);
-            models[2].Skeleton.TransformMatrix = Matrix4.CreateRotationY((float)angle) * Matrix4.CreateTranslation(200, 0f, -200f);
 
             if (br.BaseStream.Position >= br.BaseStream.Length)
                 br.BaseStream.Position = 0x10;
@@ -108,6 +103,8 @@ namespace SrkOpenGLBasicSample
             oldMouseState = mouseState;
             base.OnUpdateFrame(e);
         }
+        int index = 50;
+
         double angle = 0;
         float y = 130;
 
@@ -146,22 +143,11 @@ namespace SrkOpenGLBasicSample
             map = new DAE(@"debug_files\BB00\BB00.dae").Parse();
             map.Compile();
 
-            for (int i = 0; i < 1; i++)
+            for (int i = 0; i < 100; i++)
             {
                 Model model = new DAE(@"debug_files\H_EX500\H_EX500.dae").Parse();
                 model.Compile();
-                models.Add(model);
-
-                model = new DAE(@"debug_files\cube\cube.dae").Parse();
-                model.Compile();
-                models.Add(model);
-
-                model = new DAE(@"debug_files\P_EX100\P_EX100.dae").Parse();
-                model.Compile();
-                models.Add(model);
-
-                model = new DAE(@"debug_files\cube\cube.dae").Parse();
-                model.Compile();
+                model.Skeleton.TransformMatrix = Matrix4.CreateTranslation(-2500 + i*50,0,0);
                 models.Add(model);
             }
 
