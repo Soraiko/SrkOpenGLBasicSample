@@ -296,10 +296,10 @@ namespace SrkOpenGLBasicSample
                 this.PrimitiveCount = this.Data.Length / VertexStride;
             }
 
-            if (this.Model.UBO<0)
+            if (this.Model.UniformBufferObject<0)
             {
-                this.Model.UBO = GL.GenBuffer();
-                GL.BindBuffer(BufferTarget.UniformBuffer, this.Model.UBO);
+                this.Model.UniformBufferObject = GL.GenBuffer();
+                GL.BindBuffer(BufferTarget.UniformBuffer, this.Model.UniformBufferObject);
                 GL.BufferData(BufferTarget.UniformBuffer, matricesBuffer.Length * sizeof(float), matricesBuffer, BufferUsageHint.DynamicCopy);
                 GL.BindBuffer(BufferTarget.UniformBuffer, 0);
             }
@@ -310,7 +310,7 @@ namespace SrkOpenGLBasicSample
 
         public void Update(float[] matricesBuffer, int bonesCount)
         {
-            GL.BindBuffer(BufferTarget.UniformBuffer, this.Model.UBO);
+            GL.BindBuffer(BufferTarget.UniformBuffer, this.Model.UniformBufferObject);
 
             IntPtr matricesPtr = GL.MapBuffer(BufferTarget.UniformBuffer, BufferAccess.WriteOnly);
             System.Runtime.InteropServices.Marshal.Copy(matricesBuffer, 0, matricesPtr, bonesCount*16);
@@ -322,7 +322,7 @@ namespace SrkOpenGLBasicSample
             if (this.Model.matrices_loc > -1)
             {
                 GL.UniformBlockBinding(this.shader.Handle, this.Model.matrices_loc, 0);
-                GL.BindBufferBase(BufferRangeTarget.UniformBuffer, 0, this.Model.UBO);
+                GL.BindBufferBase(BufferRangeTarget.UniformBuffer, 0, this.Model.UniformBufferObject);
             }
         }
 

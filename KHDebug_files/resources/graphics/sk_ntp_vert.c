@@ -23,102 +23,74 @@ layout(std140) uniform transform_data
 
 void main()
 {
-	vec4 pos = vec4(0, 0, 0, 0);
-	vec4 light0_position_v4 = vec4(0,0,0, 0);
-	vec4 v4_normal = vec4(0,0,0, 1);
-	vec3 on_vertex_normal = v_position + v_normal * 100.0;
+	vec4 position_v4 = vec4(v_position, 1);
+	vec4 influenced_position = vec4(0, 0, 0, 0);
+
+	vec4 influenced_normal = vec4(0, 0, 0, 0);
+	vec4 transformed_normal_v4 = vec4(v_position + v_normal * 100.0, 1);
 
 	if (uint(v_infCount)>uint(0))
 	{
 		uint inf0_index = (uint(inf0) & uint(65535));
 		float inf0_weighting = ((uint(inf0) & uint(4294901760)) >> 16) / 65535.0;
-		
-		vec4 reverse = vec4(v_position, 1) * matrices[uint(512) + inf0_index];
-		reverse = vec4(reverse.xyz, 1) * matrices[inf0_index];
-		pos += reverse * inf0_weighting;
 
-		reverse = vec4(on_vertex_normal, 1) * matrices[uint(512) + inf0_index];
-		reverse = vec4(reverse.xyz, 1) * matrices[inf0_index];
-		v4_normal += reverse * inf0_weighting;
+		mat4 inf0_matrix = matrices[uint(512) + inf0_index] * matrices[inf0_index] * inf0_weighting;
+		influenced_position += position_v4 * inf0_matrix;
+		influenced_normal += transformed_normal_v4 * inf0_matrix;
 		
-
 		if (uint(v_infCount)>uint(1))
 		{
 			uint inf1_index = (uint(inf1) & uint(65535));
 			float inf1_weighting = ((uint(inf1) & uint(4294901760)) >> 16) / 65535.0;
-
-			reverse = vec4(v_position, 1) * matrices[uint(512) + inf1_index];
-			reverse = vec4(reverse.xyz, 1) * matrices[inf1_index];
-			pos += reverse * inf1_weighting;
-		
-			reverse = vec4(on_vertex_normal, 1) * matrices[uint(512) + inf1_index];
-			reverse = vec4(reverse.xyz, 1) * matrices[inf1_index];
-			v4_normal += reverse * inf1_weighting;
+			
+			mat4 inf1_matrix = matrices[uint(512) + inf1_index] * matrices[inf1_index] * inf1_weighting;
+			influenced_position += position_v4 * inf1_matrix;
+			influenced_normal += transformed_normal_v4 * inf1_matrix;
 
 			if (uint(v_infCount)>uint(2))
 			{
 				uint inf2_index = (uint(inf2) & uint(65535));
 				float inf2_weighting = ((uint(inf2) & uint(4294901760)) >> 16) / 65535.0;
 			
-				reverse = vec4(v_position, 1) * matrices[uint(512) + inf2_index];
-				reverse = vec4(reverse.xyz, 1) * matrices[inf2_index];
-				pos += reverse * inf2_weighting;
-		
-				reverse = vec4(on_vertex_normal, 1) * matrices[uint(512) + inf2_index];
-				reverse = vec4(reverse.xyz, 1) * matrices[inf2_index];
-				v4_normal += reverse * inf2_weighting;
+				mat4 inf2_matrix = matrices[uint(512) + inf2_index] * matrices[inf2_index] * inf2_weighting;
+				influenced_position += position_v4 * inf2_matrix;
+				influenced_normal += transformed_normal_v4 * inf2_matrix;
 
 				if (uint(v_infCount)>uint(3))
 				{
 					uint inf3_index = (uint(inf3) & uint(65535));
 					float inf3_weighting = ((uint(inf3) & uint(4294901760)) >> 16) / 65535.0;
 			
-					reverse = vec4(v_position, 1) * matrices[uint(512) + inf3_index];
-					reverse = vec4(reverse.xyz, 1) * matrices[inf3_index];
-					pos += reverse * inf3_weighting;
-		
-					reverse = vec4(on_vertex_normal, 1) * matrices[uint(512) + inf3_index];
-					reverse = vec4(reverse.xyz, 1) * matrices[inf3_index];
-					v4_normal += reverse * inf3_weighting;
+					mat4 inf3_matrix = matrices[uint(512) + inf3_index] * matrices[inf3_index] * inf3_weighting;
+					influenced_position += position_v4 * inf3_matrix;
+					influenced_normal += transformed_normal_v4 * inf3_matrix;
 
 					if (uint(v_infCount)>uint(4))
 					{
 						uint inf4_index = (uint(inf4) & uint(65535));
 						float inf4_weighting = ((uint(inf4) & uint(4294901760)) >> 16) / 65535.0;
-
-						reverse = vec4(v_position, 1) * matrices[uint(512) + inf4_index];
-						reverse = vec4(reverse.xyz, 1) * matrices[inf4_index];
-						pos += reverse * inf4_weighting;
-		
-						reverse = vec4(on_vertex_normal, 1) * matrices[uint(512) + inf4_index];
-						reverse = vec4(reverse.xyz, 1) * matrices[inf4_index];
-						v4_normal += reverse * inf4_weighting;
+						
+						mat4 inf4_matrix = matrices[uint(512) + inf4_index] * matrices[inf4_index] * inf4_weighting;
+						influenced_position += position_v4 * inf4_matrix;
+						influenced_normal += transformed_normal_v4 * inf4_matrix;
 
 						if (uint(v_infCount)>uint(5))
 						{
 							uint inf5_index = (uint(inf5) & uint(65535));
 							float inf5_weighting = ((uint(inf5) & uint(4294901760)) >> 16) / 65535.0;
-
-							reverse = vec4(v_position, 1) * matrices[uint(512) + inf5_index];
-							reverse = vec4(reverse.xyz, 1) * matrices[inf5_index];
-							pos += reverse * inf5_weighting;
-		
-							reverse = vec4(on_vertex_normal, 1) * matrices[uint(512) + inf5_index];
-							reverse = vec4(reverse.xyz, 1) * matrices[inf5_index];
-							v4_normal += reverse * inf5_weighting;
+							
+							mat4 inf5_matrix = matrices[uint(512) + inf5_index] * matrices[inf5_index] * inf5_weighting;
+							influenced_position += position_v4 * inf5_matrix;
+							influenced_normal += transformed_normal_v4 * inf5_matrix;
 
 							if (uint(v_infCount)>uint(6))
 							{
 								uint inf6_index = (uint(inf6) & uint(65535));
 								float inf6_weighting = ((uint(inf6) & uint(4294901760)) >> 16) / 65535.0;
-
-								reverse = vec4(v_position, 1) * matrices[uint(512) + inf6_index];
-								reverse = vec4(reverse.xyz, 1) * matrices[inf6_index];
-								pos += reverse * inf6_weighting;
-		
-								reverse = vec4(on_vertex_normal, 1) * matrices[uint(512) + inf6_index];
-								reverse = vec4(reverse.xyz, 1) * matrices[inf6_index];
-								v4_normal += reverse * inf6_weighting;
+								
+								mat4 inf6_matrix = matrices[uint(512) + inf6_index] * matrices[inf6_index] * inf6_weighting;
+								influenced_position += position_v4 * inf6_matrix;
+								influenced_normal += transformed_normal_v4 * inf6_matrix;
 							}
 						}
 					}
@@ -127,8 +99,8 @@ void main()
 		}
 	}
 	
-    gl_Position =  gl_ProjectionMatrix * gl_ModelViewMatrix *  pos;
-	f_position = pos.xyz;
-	f_texcoord = vec2(v_texcoord.x/4096.0, v_texcoord.y/4096.0);
-	f_normal = (v4_normal.xyz - pos.xyz)/100.0;
+    gl_Position =  gl_ProjectionMatrix * gl_ModelViewMatrix *  influenced_position;
+	f_position = influenced_position.xyz;
+	f_texcoord = v_texcoord/4096.0;
+	f_normal = (influenced_normal.xyz - influenced_position.xyz)/100.0;
 }

@@ -15,13 +15,14 @@ uniform float light0_ambiant_strength;
 void main()
 {
     vec3 ambient = light0_ambiant_strength * light0_color;
-	
 	vec3 normal = texture(bump_mapping, f_texcoord).rgb;
 	normal = normal * 2.0 - 1.0;
+
     if (f_normal.z<0)
 		normal = vec3(-normal.y, normal.x, normal.z);
 	else
 		normal = vec3(normal.y, -normal.x, normal.z);
+
 	normal = normalize(normal);
 
 	vec3 tangent = cross(f_normal, vec3(1, 0, 0));
@@ -30,12 +31,12 @@ void main()
 		normal = vec3(normal.y, -normal.x, normal.z);
         tangent = cross(f_normal, vec3(0, 1, 0));
 	}
+
     tangent = normalize(tangent);
     vec3 bitangent = normalize(cross(f_normal, tangent));
-
+	
 	mat3 tbn = mat3(tangent, bitangent, f_normal);
 	normal = normalize(tbn * normal);
-
 
 	vec3 lightDir = normalize(light0_position - f_position);
 	
@@ -43,7 +44,6 @@ void main()
 	vec3 diffuse = diff * light0_color;
 
 	vec3 amb_n_diffuse = (ambient + diffuse);
-
 
 	vec4 color = f_color * texture(texture0, f_texcoord);
 

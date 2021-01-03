@@ -46,8 +46,6 @@ namespace SrkOpenGLBasicSample
         static XmlNode sampleSurface;
         static XmlNode sampleJoint;
 
-
-
         public DAE(string filename) : base(filename)
         {
             if (this.Reference != null)
@@ -122,6 +120,8 @@ namespace SrkOpenGLBasicSample
             this.JointsMatrices = new List<List<Matrix4>>(0);
             this.SurfacesIDs = new List<List<string>>(0);
             this.SurfacesMaterialsID = new List<List<string>>(0);
+
+            this.Parse();
         }
         
         public void Export(string fname)
@@ -761,10 +761,8 @@ namespace SrkOpenGLBasicSample
             }
         }
 
-        public DAE Parse()
+        void Parse()
         {
-            if (this.Reference != null)
-                return this;
             System.Threading.Thread.CurrentThread.CurrentUICulture = DAE.en;
             System.Threading.Thread.CurrentThread.CurrentCulture = DAE.en;
 
@@ -1736,7 +1734,6 @@ namespace SrkOpenGLBasicSample
 
                 this.Meshes[i] = mesh;
             }
-            return this;
         }
 
 

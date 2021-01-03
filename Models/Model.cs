@@ -9,7 +9,7 @@ namespace SrkOpenGLBasicSample
 {
     public class Model
     {
-        public int UBO = -1;
+        public int UniformBufferObject = -1;
         public int matrices_loc = -1;
 
         public string Directory;

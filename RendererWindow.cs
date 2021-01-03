@@ -76,13 +76,23 @@ namespace SrkOpenGLBasicSample
             }
 
 
-            if (keyboardState.IsKeyDown(Key.KeypadAdd))
+            if (keyboardState.IsKeyDown(Key.Up))
             {
                 y += 2f;
             }
-            if (keyboardState.IsKeyDown(Key.KeypadSubtract))
+            if (keyboardState.IsKeyDown(Key.Down))
             {
                 y -= 2f;
+            }
+            if (keyboardState.IsKeyDown(Key.Right))
+            {
+                if (index+1< models.Count)
+                index++;
+            }
+            if (keyboardState.IsKeyDown(Key.Left))
+            {
+                if (index > 0)
+                    index--;
             }
             Camera.Current.LookAt = Camera.Current.LookAt * new Vector3(1, 0, 1) + new Vector3(0, y, 0);
 
@@ -103,7 +113,7 @@ namespace SrkOpenGLBasicSample
             oldMouseState = mouseState;
             base.OnUpdateFrame(e);
         }
-        int index = 50;
+        int index = 0;
 
         double angle = 0;
         float y = 130;
@@ -114,7 +124,7 @@ namespace SrkOpenGLBasicSample
             GL.ClearColor(BackgroundColor);
             GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
 
-            map.Draw();
+            //map.Draw();
 
             for (int i = 0; i < models.Count; i++)
                 models[i].Draw();
@@ -140,16 +150,20 @@ namespace SrkOpenGLBasicSample
             br.BaseStream.Position = 0x10;
 
             Title = "Press E key to freeze light position";
-            map = new DAE(@"debug_files\BB00\BB00.dae").Parse();
+            map = new DAE(@"debug_files\BB00\BB00.dae");
             map.Compile();
 
-            for (int i = 0; i < 100; i++)
+            /*for (int i = 0; i < 100; i++)
             {
-                Model model = new DAE(@"debug_files\H_EX500\H_EX500.dae").Parse();
+                Model model = new DAE(@"debug_files\H_EX500\H_EX500.dae");
                 model.Compile();
                 model.Skeleton.TransformMatrix = Matrix4.CreateTranslation(-2500 + i*50,0,0);
                 models.Add(model);
-            }
+            }*/
+
+            Model model = new DAE(@"debug_files\H_EX500\H_EX500.dae");
+            model.Compile();
+            models.Add(model);
 
             OnUpdateFrame(null);
             base.OnLoad(e);
