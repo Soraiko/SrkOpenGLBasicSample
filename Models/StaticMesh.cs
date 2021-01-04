@@ -190,7 +190,7 @@ namespace SrkOpenGLBasicSample
 
         }
 
-        public void Draw()
+        public new void Draw()
         {
             GL.BindVertexArray(VertexArrayObject);
             GL.BindBuffer(BufferTarget.ElementArrayBuffer, this.IndexBufferObject);

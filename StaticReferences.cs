@@ -26,8 +26,8 @@ namespace SrkOpenGLBasicSample
         public static Texture bumpPixel1x1;
         public static void InitReferences()
         {
-            whitePixel1x1 = Texture.LoadTexture(@"resources\whitePixel1x1.png", TextureMinFilter.Nearest, TextureWrapMode.Repeat, TextureWrapMode.Repeat);
-            bumpPixel1x1 = Texture.LoadTexture(@"resources\bumpPixel1x1.png", TextureMinFilter.Nearest, TextureWrapMode.Repeat, TextureWrapMode.Repeat);
+            whitePixel1x1 = Texture.LoadTexture(@"resources\whitePixel1x1.png", null, TextureMinFilter.Nearest, TextureWrapMode.Repeat, TextureWrapMode.Repeat);
+            bumpPixel1x1 = Texture.LoadTexture(@"resources\bumpPixel1x1.png", null, TextureMinFilter.Nearest, TextureWrapMode.Repeat, TextureWrapMode.Repeat);
 
             Camera.Current = new Camera(400f);
             Camera.Current.LookAt = new OpenTK.Vector3(0,0,100);

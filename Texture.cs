@@ -26,10 +26,10 @@ namespace SrkOpenGLBasicSample
 
         public int Integer;
         public string Filename;
-        public static Texture LoadTexture(string filename, TextureMinFilter textureMinFilter, TextureWrapMode textureWrapS, TextureWrapMode textureWrapT)
+        public static Texture LoadTexture(string filename, System.Drawing.Bitmap bitmap, TextureMinFilter textureMinFilter, TextureWrapMode textureWrapS, TextureWrapMode textureWrapT)
         {
             Texture output = new Texture();
-            if (!File.Exists(filename))
+            if (!filename.Contains("::") && !File.Exists(filename))
                 return output;
             for (int i=0;i< Textures.Count;i++)
             {
@@ -43,12 +43,12 @@ namespace SrkOpenGLBasicSample
             output = new Texture();
             output.Filename = filename;
 
-            System.Drawing.Bitmap bitmap = (System.Drawing.Bitmap)System.Drawing.Image.FromFile(filename);
+            System.Drawing.Bitmap bmp = bitmap == null ? (System.Drawing.Bitmap)System.Drawing.Image.FromFile(filename) : bitmap;
 
-            int depth = System.Drawing.Bitmap.GetPixelFormatSize(bitmap.PixelFormat);
+            int depth = System.Drawing.Bitmap.GetPixelFormatSize(bmp.PixelFormat);
             if (depth != 32)
             {
-                bitmap = bitmap.Clone(new System.Drawing.Rectangle(0, 0, bitmap.Width, bitmap.Height), System.Drawing.Imaging.PixelFormat.Format32bppArgb);
+                bmp = bmp.Clone(new System.Drawing.Rectangle(0, 0, bmp.Width, bmp.Height), System.Drawing.Imaging.PixelFormat.Format32bppArgb);
             }
 
             GL.Hint(HintTarget.PerspectiveCorrectionHint, HintMode.Nicest);
@@ -57,17 +57,17 @@ namespace SrkOpenGLBasicSample
             GL.GenTextures(1, out textureID);
             GL.BindTexture(TextureTarget.Texture2D, textureID);
 
-            System.Drawing.Imaging.BitmapData data = bitmap.LockBits(new System.Drawing.Rectangle(0, 0, bitmap.Width, bitmap.Height), System.Drawing.Imaging.ImageLockMode.ReadOnly, bitmap.PixelFormat);
+            System.Drawing.Imaging.BitmapData data = bmp.LockBits(new System.Drawing.Rectangle(0, 0, bmp.Width, bmp.Height), System.Drawing.Imaging.ImageLockMode.ReadOnly, bmp.PixelFormat);
 
 
             PixelInternalFormat format = PixelInternalFormat.Rgba;
 
-            GL.TexImage2D(TextureTarget.Texture2D, 0, format, bitmap.Width, bitmap.Height, 0, OpenTK.Graphics.OpenGL.PixelFormat.Bgra, PixelType.UnsignedByte, data.Scan0);
+            GL.TexImage2D(TextureTarget.Texture2D, 0, format, bmp.Width, bmp.Height, 0, OpenTK.Graphics.OpenGL.PixelFormat.Bgra, PixelType.UnsignedByte, data.Scan0);
             GL.GenerateMipmap(GenerateMipmapTarget.Texture2D);
 
 
-            bitmap.UnlockBits(data);
-            bitmap.Dispose();
+            bmp.UnlockBits(data);
+            bmp.Dispose();
 
             output.TextureMinFilter = (int)textureMinFilter;
             output.TextureWrapS = (int)textureWrapS;

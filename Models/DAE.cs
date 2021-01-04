@@ -1718,13 +1718,13 @@ namespace SrkOpenGLBasicSample
                         int imageIndex = this.ImagesIDs.IndexOf(imageID);
                         if (imageIndex > -1)
                         {
-                            mesh.Texture = Texture.LoadTexture(this.ImagesFilenames[imageIndex], OpenTK.Graphics.OpenGL.TextureMinFilter.Linear,
+                            mesh.Texture = Texture.LoadTexture(this.ImagesFilenames[imageIndex], null, OpenTK.Graphics.OpenGL.TextureMinFilter.Linear,
                                 OpenTK.Graphics.OpenGL.TextureWrapMode.Repeat, OpenTK.Graphics.OpenGL.TextureWrapMode.Repeat);
 
                             string assumed_bump = Path.GetDirectoryName(this.ImagesFilenames[imageIndex]) + @"\" + Path.GetFileNameWithoutExtension(this.ImagesFilenames[imageIndex]) + "_bump" + Path.GetExtension(this.ImagesFilenames[imageIndex]);
                             if (File.Exists(assumed_bump))
                             {
-                                mesh.BumpMapping = Texture.LoadTexture(assumed_bump, OpenTK.Graphics.OpenGL.TextureMinFilter.Linear,
+                                mesh.BumpMapping = Texture.LoadTexture(assumed_bump, null, OpenTK.Graphics.OpenGL.TextureMinFilter.Linear,
                                     OpenTK.Graphics.OpenGL.TextureWrapMode.Repeat, OpenTK.Graphics.OpenGL.TextureWrapMode.Repeat);
                             }
                         }

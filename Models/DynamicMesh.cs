@@ -326,7 +326,7 @@ namespace SrkOpenGLBasicSample
             }
         }
 
-        public void Draw()
+        public new void Draw()
         {
             this.shader.Use();
 

@@ -39,6 +39,9 @@
     <None Update="KHDebug_files\anim.bin">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <None Update="KHDebug_files\binary_files\H_EX510\H_EX510.mdlx">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Update="KHDebug_files\debug_files\BB00\BB00.dae">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
@@ -564,6 +567,10 @@
     <None Update="KHDebug_files\resources\whitePixel1x1.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="KHDebug_files\binary_files\H_EX510\" />
   </ItemGroup>
 
 </Project>

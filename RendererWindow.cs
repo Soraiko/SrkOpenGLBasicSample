@@ -145,6 +145,7 @@ namespace SrkOpenGLBasicSample
             StaticReferences.InitReferences();
             models = new List<Model>(0);
 
+            MDLX test = new MDLX(@"binary_files\H_EX510\H_EX510.mdlx");
             FileStream raw_anim = new FileStream(@"binary_files\raw_anim.bin", FileMode.Open);
             br = new BinaryReader(raw_anim);
             br.BaseStream.Position = 0x10;
@@ -152,6 +153,7 @@ namespace SrkOpenGLBasicSample
             Title = "Press E key to freeze light position";
             map = new DAE(@"debug_files\BB00\BB00.dae");
             map.Compile();
+
 
             /*for (int i = 0; i < 100; i++)
             {

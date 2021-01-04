@@ -9,7 +9,6 @@ namespace SrkOpenGLBasicSample
         public string Name;
 
         public List<Joint> Children;
-        List<Joint> children;
 
         public Joint(string name)
         {
