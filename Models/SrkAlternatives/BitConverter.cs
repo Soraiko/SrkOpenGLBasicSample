@@ -8,8 +8,7 @@ namespace SrkAlternatives
     {
         public void Dispose()
         {
-            Array.Clear(this.Data, 0, this.Data.Length);
-            this.Data = null;
+
         }
 
         public BitConverter()
@@ -30,6 +29,10 @@ namespace SrkAlternatives
         public Int16 Int16(int position)
         {
             return global::System.BitConverter.ToInt16(this.Data, position);
+        }
+        public UInt16 UInt16(int position)
+        {
+            return global::System.BitConverter.ToUInt16(this.Data, position);
         }
 
         public Single Single(int position)

@@ -1,161 +1,176 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<COLLADA xmlns="http://www.collada.org/2005/11/COLLADASchema" version="1.4.1">
-   <asset>
-      <contributor>
-         <author>Soraiko</author>
-         <authoring_tool>SrkOpenGLBasicSample</authoring_tool>
-      </contributor>
-      <unit meter="0.010000" name="centimeter" />
-      <up_axis>Y_UP</up_axis>
-   </asset>
-   <library_images>
-      <image id="file@-image" name="file@">
-         <init_from>texture000.png</init_from>
-      </image>
-   </library_images>
-   <library_materials>
-      <material id="lambert@" name="lambert@">
-         <instance_effect url="#lambert@-fx" />
-      </material>
-   </library_materials>
-   <library_effects>
-      <effect id="lambert@-fx" name="lambert@">
-         <profile_COMMON>
-            <technique sid="standard">
-               <lambert>
-                  <emission>
-                     <color sid="emission">0.000000  0.000000 0.000000 1.000000</color>
-                  </emission>
-                  <ambient>
-                     <color sid="ambient">0.000000  0.000000 0.000000 1.000000</color>
-                  </ambient>
-                  <diffuse>
-                     <texture texture="file@-image" texcoord="CHANNEL0">
-                     </texture>
-                  </diffuse>
-               </lambert>
-            </technique>
-         </profile_COMMON>
-      </effect>
-   </library_effects>
-   <library_geometries>
-      <geometry id="polySurface?-lib" name="polySurface?Mesh">
-         <mesh>
-            <source id="polySurface?-POSITION">
-               <float_array id="polySurface?-POSITION-array" count="9">listeDeVertices</float_array>
-               <technique_common>
-                  <accessor source="#polySurface?-POSITION-array" count="3" stride="3">
-                     <param name="X" type="float" />
-                     <param name="Y" type="float" />
-                     <param name="Z" type="float" />
-                  </accessor>
-               </technique_common>
-            </source>
-            <source id="polySurface?-Normal0">
-               <float_array id="polySurface?-Normal0-array" count="9">listeDeNormals</float_array>
-               <technique_common>
-                  <accessor source="#polySurface?-Normal0-array" count="3" stride="3">
-                     <param name="X" type="float" />
-                     <param name="Y" type="float" />
-                     <param name="Z" type="float" />
-                  </accessor>
-               </technique_common>
-            </source>
-            <source id="polySurface?-UV0">
-               <float_array id="polySurface?-UV0-array" count="6">listeDeUvs</float_array>
-               <technique_common>
-                  <accessor source="#polySurface?-UV0-array" count="3" stride="2">
-                     <param name="S" type="float" />
-                     <param name="T" type="float" />
-                  </accessor>
-               </technique_common>
-            </source>
-			<source id="polySurface?-COLOR0">
-				<float_array id="polySurface?-COLOR0-array" count="12">listeDeColors</float_array>
-			  <technique_common>
-				<accessor source="#polySurface?-COLOR0-array" count="3" stride="4">
-				  <param name="R" type="double"/>
-				  <param name="G" type="double"/>
-				  <param name="B" type="double"/>
-				  <param name="A" type="double"/>
-				</accessor>
-			  </technique_common>
-			</source>
-            <vertices id="polySurface?-VERTEX">
-               <input semantic="POSITION" source="#polySurface?-POSITION" />
-               <input semantic="NORMAL" source="#polySurface?-Normal0" />
-            </vertices>
-            <triangles count="1" material="lambert@">
-               <input semantic="VERTEX" offset="0" source="#polySurface?-VERTEX" />
-               <input semantic="TEXCOORD" offset="1" set="0" source="#polySurface?-UV0" />
-			   <input semantic="COLOR" offset="2" set="0" source="#polySurface?-COLOR0"/>
-            </triangles>
-         </mesh>
-      </geometry>
-   </library_geometries>
-   <library_controllers>
-      <controller id="polySurface@Controller">
-         <skin source="#polySurface@-lib">
-            <bind_shape_matrix>1 0 0 0 0 1 0 0 0 0 1 0 0 0 0 1</bind_shape_matrix>
-            <source id="polySurface@Controller-Joints">
-               <Name_array id="polySurface@Controller-Joints-array" count="1">listeDeJoints</Name_array>
-               <technique_common>
-                  <accessor source="#polySurface@Controller-Joints-array" count="1">
-                     <param type="name" />
-                  </accessor>
-               </technique_common>
-            </source>
-            <source id="polySurface@Controller-Matrices">
-               <float_array id="polySurface@Controller-Matrices-array" count="16">listeDeMatrices</float_array>
-               <technique_common>
-                  <accessor source="#polySurface@Controller-Matrices-array" count="1" stride="16">
-                     <param type="float4x4" />
-                  </accessor>
-               </technique_common>
-            </source>
-            <source id="polySurface@Controller-Weights">
-               <float_array id="polySurface@Controller-Weights-array" count="4">listeDeWeigths</float_array>
-               <technique_common>
-                  <accessor source="#polySurface@Controller-Weights-array" count="4">
-                     <param type="float" />
-                  </accessor>
-               </technique_common>
-            </source>
-            <joints>
-               <input semantic="JOINT" source="#polySurface@Controller-Joints" />
-               <input semantic="INV_BIND_MATRIX" source="#polySurface@Controller-Matrices" />
-            </joints>
-            <vertex_weights count="3">
-               <input semantic="JOINT" offset="0" source="#polySurface@Controller-Joints" />
-               <input semantic="WEIGHT" offset="1" source="#polySurface@Controller-Weights" />
-               <vcount></vcount>
-               <v></v>
-            </vertex_weights>
-         </skin>
-      </controller>
-   </library_controllers>
-   <library_visual_scenes>
-      <visual_scene id="export" name="export">
-		  <node name="polySurface?" id="polySurface?" sid="polySurface?">
-			<instance_controller url="#polySurface?Controller">
-			  <bind_material>
-				<technique_common>
-				  <instance_material symbol="lambert@" target="#lambert@" />
-				</technique_common>
-			  </bind_material>
-			</instance_controller>
-		  </node>
-         <node name="joint000" id="joint000" sid="joint000" type="JOINT">
-            <matrix sid="matrix">myMatrix</matrix>
-            <extra>
-               <technique profile="FCOLLADA">
-                  <visibility>1.000000</visibility>
-               </technique>
-            </extra>
-         </node>
-      </visual_scene>
-   </library_visual_scenes>
-   <scene>
-      <instance_visual_scene url="#export" />
-   </scene>
+<?xml version="1.0" encoding="iso-8859-1"?>
+<COLLADA version="1.4.1">
+	<asset>
+		<contributor>
+			<author>Soraiko</author>
+			<authoring_tool>SrkOpenGLBasicSample</authoring_tool>
+		</contributor>
+		<unit meter="0.010000" name="centimeter" />
+		<up_axis>Y_UP</up_axis>
+	</asset>
+    <library_images>
+        <image id="file0-image" name="file0">
+            <init_from>texture.png</init_from>
+        </image>
+    </library_images>
+    <library_materials>
+        <material id="lambert" name="lambert">
+            <instance_effect url="#lambert-fx" />
+        </material>
+    </library_materials>
+    <library_effects>
+        <effect id="lambert-fx" name="lambert">
+            <profile_COMMON>
+                <technique sid="standard">
+                    <lambert>
+                        <diffuse>
+                            <texture texture="file0-image" texcoord="CHANNEL0">
+                            </texture>
+                        </diffuse>
+                    </lambert>
+                </technique>
+            </profile_COMMON>
+        </effect>
+    </library_effects>
+    <library_geometries>
+        <geometry id="polySurface0-lib" name="polySurface0Mesh">
+            <mesh>
+                <source id="polySurface0-POSITION">
+                    <float_array id="polySurface0-POSITION-array" count="9">
+0.000000 0.000000 0.000000
+0.000000 0.000000 -1.000000
+1.000000 0.000000 0.000000
+</float_array>
+                    <technique_common>
+                        <accessor source="#polySurface0-POSITION-array" count="3" stride="3">
+                            <param name="X" type="float" />
+                            <param name="Y" type="float" />
+                            <param name="Z" type="float" />
+                        </accessor>
+                    </technique_common>
+                </source>
+                <source id="polySurface0-UV0">
+                    <float_array id="polySurface0-UV0-array" count="6">
+0.000000 0.000000
+1.000000 0.000000
+0.000000 1.000000
+</float_array>
+                    <technique_common>
+                        <accessor source="#polySurface0-UV0-array" count="3" stride="2">
+                            <param name="S" type="float" />
+                            <param name="T" type="float" />
+                        </accessor>
+                    </technique_common>
+                </source>
+                <source id="polySurface0-VERTEX_COLOR0">
+                    <float_array id="polySurface0-VERTEX_COLOR0-array" count="12">
+1.000000 1.000000 1.000000 1.000000
+1.000000 1.000000 1.000000 1.000000
+1.000000 1.000000 1.000000 1.000000
+</float_array>
+                    <technique_common>
+                        <accessor source="#polySurface0-VERTEX_COLOR0-array" count="3" stride="4">
+                            <param name="R" type="double" />
+                            <param name="G" type="double" />
+                            <param name="B" type="double" />
+                            <param name="A" type="double" />
+                        </accessor>
+                    </technique_common>
+                </source>
+                <vertices id="polySurface0-VERTEX">
+                    <input semantic="POSITION" source="#polySurface0-POSITION" />
+                </vertices>
+                <triangles count="1" material="lambert">
+                    <input semantic="VERTEX" offset="0" source="#polySurface0-VERTEX" />
+                    <input semantic="TEXCOORD" offset="1" set="0" source="#polySurface0-UV0" />
+                    <input semantic="COLOR" offset="2" set="0" source="#polySurface0-VERTEX_COLOR0" />
+                    <p>0 0 0 2 2 1 1 1 2</p>
+                </triangles>
+            </mesh>
+        </geometry>
+    </library_geometries>
+    <library_controllers>
+        <controller id="polySurface0Controller">
+            <skin source="#polySurface0-lib">
+                <bind_shape_matrix>
+				1.000000 -0.000000 0.000000 0.000000 0.000000 1.000000 -0.000000 0.000000 0.000000 0.000000 1.000000 0.000000 0.000000 0.000000 0.000000 1.000000
+				</bind_shape_matrix>
+                <source id="polySurface0Controller-Joints">
+                    <Name_array id="polySurface0Controller-Joints-array" count="3">
+ joint0 joint1 joint2</Name_array>
+                    <technique_common>
+                        <accessor source="#polySurface0Controller-Joints-array" count="3">
+                            <param type="name" />
+                        </accessor>
+                    </technique_common>
+                </source>
+                <source id="polySurface0Controller-Matrices">
+                    <float_array id="polySurface0Controller-Matrices-array" count="48">
+
+1.000000 0.000000 0.000000 -0.000000 -0.000000 1.000000 0.000000 -0.000000 0.000000 -0.000000 1.000000 -0.000000 0.000000 0.000000 0.000000 1.000000
+1.000000 0.000000 0.000000 -0.000000 -0.000000 1.000000 0.000000 -0.000000 0.000000 -0.000000 1.000000 1.000000 0.000000 0.000000 0.000000 1.000000
+1.000000 0.000000 0.000000 -1.000000 -0.000000 1.000000 0.000000 -0.000000 0.000000 -0.000000 1.000000 -0.000000 0.000000 0.000000 0.000000 1.000000</float_array>
+                    <technique_common>
+                        <accessor source="#polySurface0Controller-Matrices-array" count="3" stride="16">
+                            <param type="float4x4" />
+                        </accessor>
+                    </technique_common>
+                </source>
+                <source id="polySurface0Controller-Weights">
+                    <float_array id="polySurface0Controller-Weights-array" count="4">
+
+1.000000 1.000000 1.000000 1.000000</float_array>
+                    <technique_common>
+                        <accessor source="#polySurface0Controller-Weights-array" count="4">
+                            <param type="float" />
+                        </accessor>
+                    </technique_common>
+                </source>
+                <joints>
+                    <input semantic="JOINT" source="#polySurface0Controller-Joints" />
+                    <input semantic="INV_BIND_MATRIX" source="#polySurface0Controller-Matrices" />
+                </joints>
+                <vertex_weights count="3">
+                    <input semantic="JOINT" offset="0" source="#polySurface0Controller-Joints" />
+                    <input semantic="WEIGHT" offset="1" source="#polySurface0Controller-Weights" />
+                    <vcount>1 1 1</vcount>
+                    <v>0 1 1 2 2 3</v>
+                </vertex_weights>
+            </skin>
+        </controller>
+    </library_controllers>
+    <library_visual_scenes>
+        <visual_scene id="sample" name="sample">
+            <node name="polySurface0" id="polySurface0" sid="polySurface0">
+                <instance_controller url="#polySurface0Controller">
+                    <bind_material>
+                        <technique_common>
+                            <instance_material symbol="lambert" target="#lambert" />
+                        </technique_common>
+                    </bind_material>
+                </instance_controller>
+            </node>
+            <node name="polySurface0" id="polySurface0" sid="polySurface0">
+                <instance_geometry url="#polySurface0-lib">
+                    <bind_material>
+                        <technique_common>
+                            <instance_material symbol="lambert" target="#lambert" />
+                        </technique_common>
+                    </bind_material>
+                </instance_geometry>
+            </node>
+            <node name="joint0" id="joint0" sid="joint0" type="JOINT">
+                <matrix sid="matrix">1.000000 0.000000 0.000000 0.000000 0.000000 1.000000 0.000000 0.000000 0.000000 0.000000 1.000000 0.000000 0.000000 0.000000 0.000000 1.000000</matrix>
+            </node>
+            <node name="joint1" id="joint1" sid="joint1" type="JOINT">
+                <matrix sid="matrix">1.000000 0.000000 0.000000 0.000000 0.000000 1.000000 0.000000 0.000000 0.000000 0.000000 1.000000 -1.000000 0.000000 0.000000 0.000000 1.000000</matrix>
+            </node>
+            <node name="joint2" id="joint2" sid="joint2" type="JOINT">
+                <matrix sid="matrix">1.000000 0.000000 0.000000 1.000000 0.000000 1.000000 0.000000 0.000000 0.000000 0.000000 1.000000 0.000000 0.000000 0.000000 0.000000 1.000000</matrix>
+            </node>
+        </visual_scene>
+    </library_visual_scenes>
+    <scene>
+        <instance_visual_scene url="#sample"></instance_visual_scene>
+    </scene>
 </COLLADA>

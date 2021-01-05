@@ -46,10 +46,11 @@ namespace SrkOpenGLBasicSample
 
             //StaticReferences.Light0_Position.X = (float)(3000 * Math.Cos(angle));
             //StaticReferences.Light0_Position.Z = (float)(3000 * Math.Sin(angle));
-            //if (keyboardState.IsKeyDown(Key.R))
+
             angle += 0.01f;
 
             map.Update();
+
             for (int i = 0; i < models[0].Skeleton.Joints.Count; i++)
             {
                 Matrix4 m = Matrix4.Identity;
@@ -72,8 +73,11 @@ namespace SrkOpenGLBasicSample
                 m.M42 = br.ReadSingle();
                 m.M43 = br.ReadSingle();
                 m.M44 = br.ReadSingle();
-                models[index].Skeleton.Joints[i].Matrix = m;
+                models[0].Skeleton.Joints[i].Matrix = m;
             }
+
+            models[1].Skeleton.TransformMatrix = Matrix4.CreateTranslation(0, -50, 0) * Matrix4.CreateRotationY(angle);
+            models[2].Skeleton.TransformMatrix = Matrix4.CreateTranslation(0,50,0) * Matrix4.CreateRotationY(angle);
 
 
             if (keyboardState.IsKeyDown(Key.Up))
@@ -84,22 +88,11 @@ namespace SrkOpenGLBasicSample
             {
                 y -= 2f;
             }
-            if (keyboardState.IsKeyDown(Key.Right))
-            {
-                if (index+1< models.Count)
-                index++;
-            }
-            if (keyboardState.IsKeyDown(Key.Left))
-            {
-                if (index > 0)
-                    index--;
-            }
+
             Camera.Current.LookAt = Camera.Current.LookAt * new Vector3(1, 0, 1) + new Vector3(0, y, 0);
 
             if (keyboardState.IsKeyUp(Key.E))
-            {
                 StaticReferences.Light0_Position = Camera.Current.LookAt;
-            }
 
             if (br.BaseStream.Position >= br.BaseStream.Length)
                 br.BaseStream.Position = 0x10;
@@ -113,9 +106,8 @@ namespace SrkOpenGLBasicSample
             oldMouseState = mouseState;
             base.OnUpdateFrame(e);
         }
-        int index = 0;
 
-        double angle = 0;
+        float angle = 0;
         float y = 130;
 
         public static Color BackgroundColor = new Color(50, 50, 50, 255);
@@ -124,7 +116,7 @@ namespace SrkOpenGLBasicSample
             GL.ClearColor(BackgroundColor);
             GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
 
-            //map.Draw();
+            map.Draw();
 
             for (int i = 0; i < models.Count; i++)
                 models[i].Draw();
@@ -145,7 +137,7 @@ namespace SrkOpenGLBasicSample
             StaticReferences.InitReferences();
             models = new List<Model>(0);
 
-            MDLX test = new MDLX(@"binary_files\H_EX510\H_EX510.mdlx");
+
             FileStream raw_anim = new FileStream(@"binary_files\raw_anim.bin", FileMode.Open);
             br = new BinaryReader(raw_anim);
             br.BaseStream.Position = 0x10;
@@ -154,6 +146,23 @@ namespace SrkOpenGLBasicSample
             map = new DAE(@"debug_files\BB00\BB00.dae");
             map.Compile();
 
+            Model model = new DAE(@"debug_files\H_EX500\H_EX500.dae");
+            model.Compile();
+            model.Skeleton.TransformMatrix = Matrix4.CreateTranslation(-100, 0, 0);
+            models.Add(model);
+
+            model = new DAE(@"debug_files\cube\cube.dae");
+            model.Compile();
+            models.Add(model);
+
+            model = new DAE(@"debug_files\sphere\sphere.dae");
+            model.Compile();
+            models.Add(model);
+
+            model = new MDLX(@"binary_files\H_EX510\H_EX510.mdlx");
+            model.Compile();
+            model.Skeleton.TransformMatrix = Matrix4.CreateTranslation(100, 0, 0);
+            models.Add(model);
 
             /*for (int i = 0; i < 100; i++)
             {
@@ -161,11 +170,8 @@ namespace SrkOpenGLBasicSample
                 model.Compile();
                 model.Skeleton.TransformMatrix = Matrix4.CreateTranslation(-2500 + i*50,0,0);
                 models.Add(model);
-            }*/
-
-            Model model = new DAE(@"debug_files\H_EX500\H_EX500.dae");
-            model.Compile();
-            models.Add(model);
+            }
+*/
 
             OnUpdateFrame(null);
             base.OnLoad(e);

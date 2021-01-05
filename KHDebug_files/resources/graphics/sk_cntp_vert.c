@@ -2,7 +2,7 @@
 layout (location = 0) in vec3 v_position;
 layout (location = 1) in vec2 v_texcoord;
 layout (location = 2) in vec3 v_normal;
-layout (location = 3) in vec3 v_color;
+layout (location = 3) in vec4 v_color;
 layout (location = 8) in uint v_infCount;
 layout (location = 9) in uint inf0;
 layout (location = 10) in uint inf1;
@@ -15,7 +15,7 @@ layout (location = 15) in uint inf6;
 out vec3 f_position;
 out vec2 f_texcoord;
 out vec3 f_normal;
-out vec3 f_color;
+out vec4 f_color;
 
 layout(std140) uniform transform_data
 {

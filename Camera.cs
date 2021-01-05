@@ -134,7 +134,7 @@ namespace SrkOpenGLBasicSample
             }
         }
 
-        float Speed = 20f;
+        float Speed = 30f;
         public void KeyboardControl(KeyboardState keyboardState, KeyboardState oldKeyboardState)
         {
             if (keyboardState.IsKeyDown(Key.Keypad4))

@@ -9,6 +9,21 @@ namespace SrkAlternatives
 {
     public class Bar : BitConverter
     {
+        public new void Dispose()
+        {
+            if (this.Files.Count == 0)
+            Array.Clear(this.Data, 0, this.Data.Length);
+            else
+            {
+
+                for (int i = 0; i < this.Files.Count; i++)
+                    this.Files[i].Dispose();
+            }
+            this.Files.Clear();
+            this.Data = null;
+            base.Dispose();
+        }
+
         public ushort Type;
         public string Name;
         public int Length;

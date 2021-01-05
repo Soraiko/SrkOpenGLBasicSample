@@ -53,9 +53,9 @@ namespace SrkOpenGLBasicSample
         {
             this.Matrix = 
             Matrix4.CreateScale(this.Scale) *
-            Matrix4.CreateFromAxisAngle(Vector3.UnitZ, this.Rotate.Z) *
-            Matrix4.CreateFromAxisAngle(Vector3.UnitY, this.Rotate.Y) *
             Matrix4.CreateFromAxisAngle(Vector3.UnitX, this.Rotate.X) *
+            Matrix4.CreateFromAxisAngle(Vector3.UnitY, this.Rotate.Y) *
+            Matrix4.CreateFromAxisAngle(Vector3.UnitZ, this.Rotate.Z) *
             Matrix4.CreateTranslation(this.Translate);
         }
 

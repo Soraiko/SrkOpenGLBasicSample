@@ -1,31 +1,32 @@
-﻿#define read_mdlx_from_ram_feature
-using System;
+﻿using System;
 using System.Xml;
 using System.IO;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using System.Drawing;
-using OpenTK;
-using OpenTK.Graphics;
 using OpenTK.Graphics.ES11;
-using System.Drawing.Drawing2D;
+
+using OpenTK;
 
 namespace SrkAlternatives
 {
     public class Mdlx : Bar
     {
-
-#if read_mdlx_from_ram_feature
+        public new void Dispose()
+        {
+            for (int i = 0; i < this.models.Count; i++)
+            {
+                this.models[i].Dispose();
+            }
+            base.Dispose();
+        }
 
         public const long RAM_PARTY_POINTER_PLAYER = 0x00341708;
         public const long RAM_PARTY_POINTER_PARTNER1 = 0x0034170C;
         public const long RAM_PARTY_POINTER_PARTNER2 = 0x00341710;
         public const long RAM_PARTY_POINTER_LOCK_ON_TARGET = 0x01C5FFF4;
         public const long RAM_MAP_POINTER = 0x00348D00;
-
-#endif
         public Mdlx(Stream stream) : base(stream, 0, "", 0)
         {
             this.models = new List<Model>(0);
@@ -40,7 +41,7 @@ namespace SrkAlternatives
             {
                 XmlDocument output = new XmlDocument();
                 output.PreserveWhitespace = false;
-                output.Load("sample.dae");
+                output.Load(@"resources\sample.dae");
                 XmlNode image = output.SelectSingleNode("COLLADA/library_images/image"); image.ParentNode.RemoveChild(image);
 
                 XmlNode effect = output.SelectSingleNode("//effect"); effect.ParentNode.RemoveChild(effect);
@@ -70,11 +71,14 @@ namespace SrkAlternatives
                 if (h > 1)
                     inside_name += (h-2).ToString();
 
-                if (!Directory.Exists(Path.GetDirectoryName(filename) + @"\" + inside_name + @"_textures"))
-                    Directory.CreateDirectory(Path.GetDirectoryName(filename) + @"\" + inside_name + @"_textures");
+                string texturesDirectory = Path.GetDirectoryName(filename);
+                if (texturesDirectory.Length > 0)
+                    texturesDirectory += @"\";
+                if (!Directory.Exists(texturesDirectory + inside_name + @"_textures"))
+                    Directory.CreateDirectory(texturesDirectory + inside_name + @"_textures");
 
 
-                int textureCount = this.models[h].TexturekhiiMapv.tex.pics.Length;
+                int textureCount = this.models[h].Textures.Length;
                 for (int j = 0; j < textureCount; j++)
                 {
                     XmlNode image_new = image.Clone();
@@ -97,9 +101,9 @@ namespace SrkAlternatives
                     texture_node.Attributes["texture"].Value = "file" + (total_image_files + j) + "-image";
                     output.SelectSingleNode("//library_effects").AppendChild(effect_new);
                     
-                    this.models[h].TexturekhiiMapv.tex.pics[j].Clone(new System.Drawing.Rectangle(0, 0, this.models[h].TexturekhiiMapv.tex.pics[j].Width, this.models[h].TexturekhiiMapv.tex.pics[j].Height), this.models[h].TexturekhiiMapv.tex.pics[j].PixelFormat).Save(Path.GetDirectoryName(filename) + @"\" + inside_name + @"_textures\texture" + j.ToString("d3") + ".png");
-                    
+                    this.models[h].Textures[j].Clone(new System.Drawing.Rectangle(0, 0, this.models[h].Textures[j].Width, this.models[h].Textures[j].Height), this.models[h].Textures[j].PixelFormat).Save(texturesDirectory + inside_name + @"_textures\texture" + j.ToString("d3") + ".png");
                 }
+
                 if (this.models[h].Skeleton != null)
                 for (int k = 0; k < this.models[h].Skeleton.Joints.Count; k++)
                 {
@@ -482,7 +486,7 @@ namespace SrkAlternatives
                     {
                         /*if (this.Files[i].Name.Contains("MAP") ||
                         this.Files[i].Name.Contains("SK"))*/
-                            model.TexturekhiiMapv = new KenunoTim(this.Files[i + 1].Data);
+                            model.Textures = KenunoTim.GetTextures(this.Files[i + 1].Data);
                         /*else
                             model.Texture = new ModelTexture(new MemoryStream(this.Files[i + 1].Data));*/
                     }
@@ -496,21 +500,21 @@ namespace SrkAlternatives
         public class Mesh
         {
             public int TextureIndex;
-            public List<OpenTK.Color> colors;
+            public List<Color> colors;
             public List<Vector2> textureCoordinates;
             public List<Vector4[]> reverseVertices;
-            public List<int[]> influences;
+            public List<ushort[]> influences;
             public List<int> triangleFlags;
             public List<ushort> vertexIndices;
             public List<int> colorIndices;
 
             public Mesh()
             {
-                this.colors = new List<OpenTK.Color>(0);
-                this.colors.Add(OpenTK.Color.White);
+                this.colors = new List<Color>(0);
+                this.colors.Add(Color.White);
                 this.textureCoordinates = new List<Vector2>(0);
                 this.reverseVertices = new List<Vector4[]>(0);
-                this.influences = new List<int[]>(0);
+                this.influences = new List<ushort[]>(0);
                 this.triangleFlags = new List<int>(0);
                 this.vertexIndices = new List<ushort>(0);
                 this.colorIndices = new List<int>(0);
@@ -521,11 +525,53 @@ namespace SrkAlternatives
         {
             static byte[] vu_memory = new byte[0x1030];
             public SrkOpenGLBasicSample.Skeleton Skeleton;
-            public KenunoTim TexturekhiiMapv;
+            public System.Drawing.Bitmap[] Textures;
             public string Name;
 
             public List<Mesh> Meshes;
             public List<Mesh> ShadowMeshes;
+
+            public new void Dispose()
+            {
+                Array.Clear(this.Textures, 0, Textures.Length);
+                this.Textures = null;
+                for (int i = 0; i < this.Meshes.Count; i++)
+                {
+                    this.Meshes[i].colors.Clear();
+                    this.Meshes[i].colors = null;
+                    this.Meshes[i].textureCoordinates.Clear();
+                    this.Meshes[i].textureCoordinates = null;
+                    this.Meshes[i].reverseVertices.Clear();
+                    this.Meshes[i].reverseVertices = null;
+                    this.Meshes[i].influences.Clear();
+                    this.Meshes[i].influences = null;
+                    this.Meshes[i].triangleFlags.Clear();
+                    this.Meshes[i].triangleFlags = null;
+                    this.Meshes[i].vertexIndices.Clear();
+                    this.Meshes[i].vertexIndices = null;
+                    this.Meshes[i].colorIndices.Clear();
+                    this.Meshes[i].colorIndices = null;
+                }
+                for (int i = 0; i < this.ShadowMeshes.Count; i++)
+                {
+                    this.ShadowMeshes[i].colors.Clear();
+                    this.ShadowMeshes[i].colors = null;
+                    this.ShadowMeshes[i].textureCoordinates.Clear();
+                    this.ShadowMeshes[i].textureCoordinates = null;
+                    this.ShadowMeshes[i].reverseVertices.Clear();
+                    this.ShadowMeshes[i].reverseVertices = null;
+                    this.ShadowMeshes[i].influences.Clear();
+                    this.ShadowMeshes[i].influences = null;
+                    this.ShadowMeshes[i].triangleFlags.Clear();
+                    this.ShadowMeshes[i].triangleFlags = null;
+                    this.ShadowMeshes[i].vertexIndices.Clear();
+                    this.ShadowMeshes[i].vertexIndices = null;
+                    this.ShadowMeshes[i].colorIndices.Clear();
+                    this.ShadowMeshes[i].colorIndices = null;
+                }
+
+                base.Dispose();
+            }
 
             public Model(ref byte[] data)
             {
@@ -554,7 +600,7 @@ namespace SrkAlternatives
                             int index = this.Int16(pos + 0x00);
                             int parent_index = this.Int16(pos + 0x04);
 
-                            SrkOpenGLBasicSample.Joint bone = new SrkOpenGLBasicSample.Joint("bone"+i.ToString("d3"));
+                            SrkOpenGLBasicSample.Joint bone = new SrkOpenGLBasicSample.Joint("bone" + i.ToString("d3"));
                             parentIndices.Add(parent_index);
                             bone.Scale.X = this.Single(pos + 0x10);
                             bone.Scale.Y = this.Single(pos + 0x14);
@@ -576,7 +622,7 @@ namespace SrkAlternatives
                             if (parentIndices[i] > -1)
                                 this.Skeleton.Joints[i].Parent = this.Skeleton.Joints[parentIndices[i]];
                         }
-                        this.Skeleton.ComputeMatrices();
+                        this.Skeleton.Compile();
 
                         int ikOffset = s + this.Int16(s + 0x18);
                         //this.ikData = new byte[bonesOffset - ikOffset];
@@ -857,7 +903,7 @@ namespace SrkAlternatives
 
             void decode_unpacked(ref Mesh mesh, ref int mati_cursor)
             {
-                List<int> all_influences = new List<int>(0);
+                List<ushort> all_influences = new List<ushort>(0);
 
                 int vif_type = global::System.BitConverter.ToInt32(vu_memory, 0x00);
 
@@ -898,7 +944,7 @@ namespace SrkAlternatives
                 {
                     int cnt = global::System.BitConverter.ToInt32(vu_memory, offset_per_mat_verts + i * 4);
                     for (int j = 0; j < cnt; j++)
-                        all_influences.Add(this.Int32(mati_cursor));
+                        all_influences.Add(this.UInt16(mati_cursor));
                     mati_cursor += 4;
                 }
                 mati_cursor += 4;
@@ -916,7 +962,7 @@ namespace SrkAlternatives
 
                         mesh.reverseVertices.Add(new Vector4[] { new Vector4(x, y, z, 1f) });
                         if (count_per_mat_verts > 0)
-                        mesh.influences.Add(new int[] { all_influences[i] });
+                        mesh.influences.Add(new ushort[] { all_influences[i] });
                     }
                 }
                 else
@@ -937,7 +983,7 @@ namespace SrkAlternatives
                         {
                             byte inf_count = (byte)(i + 1);
                             Vector4[] vec = new Vector4[inf_count];
-                            int[] inf = new int[inf_count];
+                            ushort[] inf = new ushort[inf_count];
 
                             for (int k = 0; k < inf_count; k++)
                             {
@@ -966,7 +1012,7 @@ namespace SrkAlternatives
                     int g = global::System.BitConverter.ToInt32(vu_memory, offset_color + i * 0x10 + 0x04) / 128;
                     int b = global::System.BitConverter.ToInt32(vu_memory, offset_color + i * 0x10 + 0x08) / 128;
                     int a = global::System.BitConverter.ToInt32(vu_memory, offset_color + i * 0x10 + 0x0C) / 128;
-                    mesh.colors.Add(new OpenTK.Color(r, g, b, a));
+                    mesh.colors.Add(new Color(r, g, b, a));
                 }
                 for (int i = 0; i < count_texcoo_ind_strips; i++)
                 {
@@ -980,7 +1026,7 @@ namespace SrkAlternatives
                         vert_flag_off_in_mem += 0x08;
                     }
 
-                    ushort vertexIndex = (ushort)(relative_output_vert_index + global::System.BitConverter.ToInt32(vu_memory, offset_texcoo_ind_strips + i * 0x10 + vert_flag_off_in_mem));
+                    ushort vertexIndex = (ushort)(relative_output_vert_index + global::System.BitConverter.ToUInt16(vu_memory, offset_texcoo_ind_strips + i * 0x10 + vert_flag_off_in_mem));
                     int triangle_strip = global::System.BitConverter.ToInt32(vu_memory, offset_texcoo_ind_strips + i * 0x10 + vert_flag_off_in_mem + 0x04);
                     
                     int colorIndex = 1;

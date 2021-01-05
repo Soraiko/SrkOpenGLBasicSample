@@ -12,28 +12,9 @@ namespace SrkAlternatives
 {
     public class KenunoTim
     {
-        byte[] data_;
-        public MTex tex;
-        public KenunoTim(byte[] data)
+        public static Bitmap[] GetTextures(byte[] tim2data)
         {
-            this.data_ = data;
-            this.tex = ParseTex();
-        }
-
-        public class MTex
-        {
-            public Bitmap[] pics;
-            public int[] alIndirIndex = new int[0];
-
-            public MTex(List<Bitmap> pics)
-            {
-                this.pics = pics.ToArray();
-            }
-        }
-
-        private MTex ParseTex()
-        {
-            MemoryStream si = new MemoryStream(this.data_, false);
+            MemoryStream si = new MemoryStream(tim2data, false);
             BinaryReader br = new BinaryReader(si);
 
             int v00 = br.ReadInt32();
@@ -49,29 +30,31 @@ namespace SrkAlternatives
                 int v04 = br.ReadInt32();
 
                 List<int> aloff = new List<int>();
-                for (int x = 0; x < v04; x++)
+                for (int x = 0; x<v04; x++)
                     aloff.Add(br.ReadInt32());
 
-                aloff.Add(this.data_.Length);
+                aloff.Add(tim2data.Length);
 
-                List<MTex> alres = new List<MTex>();
+                List<Bitmap[]> alres = new List<Bitmap[]>();
 
-                for (int x = 0; x < v04; x++)
+                for (int x = 0; x<v04; x++)
                 {
                     si.Position = aloff[x];
                     byte[] bin = br.ReadBytes(aloff[x + 1] - aloff[x]);
-                    
+
                     MemoryStream siF = new MemoryStream(bin, false);
                     BinaryReader brF = new BinaryReader(siF);
 
                     alres.Add(ParseTex_TIMf(siF, brF));
                 }
-                return alres.Count != 0 ? alres[0] : null;
+                return alres.Count != 0 ? alres[0] : new Bitmap[0];
             }
             else throw new NotSupportedException("Unknown v00 .. " + v00);
-        }
+        }  
 
-        public MTex ParseTex_TIMf(MemoryStream si, BinaryReader br)
+    
+
+        public static Bitmap[] ParseTex_TIMf(MemoryStream si, BinaryReader br)
         {
             int v00 = br.ReadInt32();
             int v04 = br.ReadInt32();
@@ -123,7 +106,7 @@ namespace SrkAlternatives
                 
                 pics.Add(st.Generate());
             }
-            return new MTex(pics);
+            return pics.ToArray();
         }
 
         class MI
@@ -360,7 +343,7 @@ namespace SrkAlternatives
                         int x3 = p.Width, y3 = p.Height;
                         cv.CompositingMode = global::System.Drawing.Drawing2D.CompositingMode.SourceCopy;
 
-#if true
+
                         //TL
                         cv.FillRectangle(
                             new SolidBrush(p.GetPixel(x1, y1)),
@@ -426,16 +409,7 @@ namespace SrkAlternatives
                             new SolidBrush(p.GetPixel(x2, y2)),
                             Rectangle.FromLTRB(x2, y2, x3, y3)
                             );
-#else
-                    cv.FillRectangle(Brushes.Blue, Rectangle.FromLTRB(x0, y0, x1, y1));
-                    cv.FillRectangle(Brushes.Green, Rectangle.FromLTRB(x1, y0, x2, y1));
-                    cv.FillRectangle(Brushes.Red, Rectangle.FromLTRB(x2, y0, x3, y1));
-                    cv.FillRectangle(Brushes.Orange, Rectangle.FromLTRB(x0, y1, x1, y2));
-                    cv.FillRectangle(Brushes.Tomato, Rectangle.FromLTRB(x2, y1, x3, y2));
-                    cv.FillRectangle(Brushes.Purple, Rectangle.FromLTRB(x0, y2, x1, y3));
-                    cv.FillRectangle(Brushes.Cyan, Rectangle.FromLTRB(x1, y2, x2, y3));
-                    cv.FillRectangle(Brushes.Yellow, Rectangle.FromLTRB(x2, y2, x3, y3));
-#endif
+
 
                     }
 
