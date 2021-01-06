@@ -39,6 +39,9 @@
     <None Update="KHDebug_files\anim.bin">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <None Update="KHDebug_files\binary_files\bb00.map">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Update="KHDebug_files\binary_files\H_EX510\H_EX510.mdlx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>

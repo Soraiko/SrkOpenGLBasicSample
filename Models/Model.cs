@@ -59,13 +59,8 @@ namespace SrkOpenGLBasicSample
 
         public void Update()
         {
-            /*Matrix4[] matrices = new Matrix4[0];
-            if (this.Skeleton != null && this.Skeleton.Matrices != null && this.Skeleton.Matrices.Length > 0)
-            {
-                matrices = new Matrix4[this.Skeleton.Matrices.Length];
-                Array.Copy(this.Skeleton.Matrices, matrices, matrices.Length);
-            }*/
-            this.Skeleton.ComputeMatrices();
+            if (this.Skeleton!=null)
+                this.Skeleton.ComputeMatrices();
         }
 
         static int lastTexture = -1;

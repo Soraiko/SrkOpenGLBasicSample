@@ -47,7 +47,7 @@ namespace SrkOpenGLBasicSample
             //StaticReferences.Light0_Position.X = (float)(3000 * Math.Cos(angle));
             //StaticReferences.Light0_Position.Z = (float)(3000 * Math.Sin(angle));
 
-            angle += 0.01f;
+            //angle += 0.01f;
 
             map.Update();
 
@@ -143,7 +143,7 @@ namespace SrkOpenGLBasicSample
             br.BaseStream.Position = 0x10;
 
             Title = "Press E key to freeze light position";
-            map = new DAE(@"debug_files\BB00\BB00.dae");
+            map = new MDLX(@"binary_files\bb00.map");
             map.Compile();
 
             Model model = new DAE(@"debug_files\H_EX500\H_EX500.dae");

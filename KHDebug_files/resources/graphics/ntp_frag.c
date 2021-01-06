@@ -21,9 +21,8 @@ void main()
 	normal = normalize(normal);
 
 	vec3 tangent = cross(f_normal, vec3(1, 0, 0));
-    if (dot(tangent, tangent) < 0.01 && f_normal.z>=0)
+    if (dot(tangent, tangent) < 0.01)
 	{
-		col = vec3(1,0,0);
 		tangent = cross(f_normal, vec3(0, 1, 0));
 	}
     tangent = normalize(tangent);

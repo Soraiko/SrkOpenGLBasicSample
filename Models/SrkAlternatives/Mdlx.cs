@@ -199,9 +199,7 @@ namespace SrkAlternatives
                         {
                             Vector4 v4 = mesh.reverseVertices[k][l];
                             if (this.models[h].Skeleton != null)
-                            {
                                 v4 = Vector4.Transform(v4, this.models[h].Skeleton.Joints[mesh.influences[k][l]].ComputedMatrix);
-                            }
                             v.X += v4.X;
                             v.Y += v4.Y;
                             v.Z += v4.Z;
@@ -231,10 +229,10 @@ namespace SrkAlternatives
                     bool has_color = false;
                     for (int k = 0; k < mesh.colors.Count; k++)
                     {
-                        if (mesh.colors[k].R < 1 ||
-                            mesh.colors[k].G < 1 ||
-                            mesh.colors[k].B < 1 ||
-                            mesh.colors[k].A < 1)
+                        if (mesh.colors[k].R < 255 ||
+                            mesh.colors[k].G < 255 ||
+                            mesh.colors[k].B < 255 ||
+                            mesh.colors[k].A < 255)
                         {
                             has_color = true;
                         }
@@ -247,7 +245,7 @@ namespace SrkAlternatives
                         array_node.InnerText = "\n";
                         for (int k = 0; k < mesh.colors.Count; k++)
                         {
-                            array_node.InnerText += mesh.colors[k].R + " " + mesh.colors[k].G + " "+ mesh.colors[k].B+" "+ mesh.colors[k].A + "\n";
+                            array_node.InnerText += mesh.colors[k].R/255f + " " + mesh.colors[k].G / 255f + " "+ mesh.colors[k].B / 255f + " "+ mesh.colors[k].A / 255f + "\n";
                         }
                     }
                     else
@@ -511,7 +509,6 @@ namespace SrkAlternatives
             public Mesh()
             {
                 this.colors = new List<Color>(0);
-                this.colors.Add(Color.White);
                 this.textureCoordinates = new List<Vector2>(0);
                 this.reverseVertices = new List<Vector4[]>(0);
                 this.influences = new List<ushort[]>(0);
@@ -641,11 +638,11 @@ namespace SrkAlternatives
                             int pos = s + 0x20 + poly_index * 0x10;
                             int newTextureIndex = this.Int16(pos + 0x04);
                             mesh = null;
-                            for (int m=0;m<this.Meshes.Count;m++)
+                            /*for (int m=0;m<this.Meshes.Count;m++)
                             {
                                 if (this.Meshes[m].TextureIndex == newTextureIndex)
                                     mesh = this.Meshes[m];
-                            }
+                            }*/
                             bool new_mesh = false;
                             if (mesh==null)
                             {
@@ -1008,10 +1005,14 @@ namespace SrkAlternatives
 
                 for (int i = 0; i < count_color; i++)
                 {
-                    int r = global::System.BitConverter.ToInt32(vu_memory, offset_color + i * 0x10 + 0x00) / 128;
-                    int g = global::System.BitConverter.ToInt32(vu_memory, offset_color + i * 0x10 + 0x04) / 128;
-                    int b = global::System.BitConverter.ToInt32(vu_memory, offset_color + i * 0x10 + 0x08) / 128;
-                    int a = global::System.BitConverter.ToInt32(vu_memory, offset_color + i * 0x10 + 0x0C) / 128;
+                    int r = global::System.BitConverter.ToInt32(vu_memory, offset_color + i * 0x10 + 0x00) * 2;
+                    int g = global::System.BitConverter.ToInt32(vu_memory, offset_color + i * 0x10 + 0x04) * 2;
+                    int b = global::System.BitConverter.ToInt32(vu_memory, offset_color + i * 0x10 + 0x08) * 2;
+                    int a = global::System.BitConverter.ToInt32(vu_memory, offset_color + i * 0x10 + 0x0C) * 2;
+                    if (r > 255) r = 255;
+                    if (g > 255) g = 255;
+                    if (b > 255) b = 255;
+                    if (a > 255) a = 255;
                     mesh.colors.Add(new Color(r, g, b, a));
                 }
                 for (int i = 0; i < count_texcoo_ind_strips; i++)
@@ -1029,12 +1030,10 @@ namespace SrkAlternatives
                     ushort vertexIndex = (ushort)(relative_output_vert_index + global::System.BitConverter.ToUInt16(vu_memory, offset_texcoo_ind_strips + i * 0x10 + vert_flag_off_in_mem));
                     int triangle_strip = global::System.BitConverter.ToInt32(vu_memory, offset_texcoo_ind_strips + i * 0x10 + vert_flag_off_in_mem + 0x04);
                     
-                    int colorIndex = 1;
-                    if (count_color > 0)
-                        colorIndex = relative_output_color_index + i;
+                    int colorIndex = relative_output_color_index + i;
 
                     mesh.vertexIndices.Add(vertexIndex);
-                    if (vif_type < 2)
+                    if (vif_type < 2 && count_color > 0)
                         mesh.colorIndices.Add(colorIndex);
                     mesh.triangleFlags.Add(triangle_strip);
                 }

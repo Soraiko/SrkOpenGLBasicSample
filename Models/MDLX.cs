@@ -14,7 +14,6 @@ namespace SrkOpenGLBasicSample
                 return;
             FileStream fs = new FileStream(filename, FileMode.Open);
             SrkAlternatives.Mdlx mdlx = new SrkAlternatives.Mdlx(fs);
-
             List<Mesh> meshes = new List<Mesh>(0);
             for (int i=0;i<1;i++)//for (int i = mdlx.models.Count-1; i>=0;i++)
             {
@@ -28,7 +27,7 @@ namespace SrkOpenGLBasicSample
                     if (hasController)
                         mesh = new DynamicMesh(this);
                     else
-                        new StaticMesh(this);
+                        mesh = new StaticMesh(this);
 
                     mesh.Texture = Texture.LoadTexture(
                         this.Name + "::texture" + alternativeMesh.TextureIndex.ToString("d3") + ".png",
@@ -84,7 +83,10 @@ namespace SrkOpenGLBasicSample
                     List<OpenTK.Color> colors_triBuffer = new List<OpenTK.Color>(0);
 
                     bool hasColor = alternativeMesh.colors.Count > 1;
-
+                    if (hasColor)
+                    {
+                        Console.WriteLine("");
+                    }
                     List<ushort> indices = new List<ushort>(0);
 
                     for (int k=0;k<alternativeMesh.triangleFlags.Count;k++)
@@ -142,7 +144,12 @@ namespace SrkOpenGLBasicSample
                         Vector2 textureCoord = textureCoords_unIndexed[l];
                         Vector3 normal = Vector3.UnitZ;
                         Color color = Color.White;
-                        List<KeyValuePair<ushort, float>> weight_influence = weight_influences[vertexIndex];
+                        if (hasColor)
+                            color = colors_unIndexed[l];
+
+                        List<KeyValuePair<ushort, float>> weight_influence = null;
+                        if (hasController)
+                            weight_influence = weight_influences[vertexIndex];
 
                         int foundIndex = -1;
                         for (int k = 0; k < positions.Count; k++)
