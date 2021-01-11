@@ -7,18 +7,17 @@ using System.Text;
 
 namespace SrkOpenGLBasicSample
 {
-    public class Model
+    public class Model : Controllable
     {
         public int UniformBufferObject = -1;
         public int matrices_loc = -1;
 
         public string Directory;
         public string Name;
-        public Skeleton Skeleton;
         public Mesh[] Meshes;
-        static List<Model> References;
-
         public Model Reference;
+
+        static List<Model> References;
 
         static Model()
         {
@@ -32,35 +31,37 @@ namespace SrkOpenGLBasicSample
 
             for (int i=0;i< References.Count;i++)
             {
-                if (References[i].Name == this.Name &&
-                    References[i].Directory == this.Directory)
+                if (References[i].Name == this.Name && References[i].Directory == this.Directory)
                 {
                     this.Reference = References[i];
                     break;
                 }
             }
+
             if (this.Reference == null)
                 References.Add(this);
             else
             {
                 this.Meshes = Reference.Meshes;
                 this.Skeleton = Reference.Skeleton.Clone();
-                this.Skeleton.Compile();
+                this.Skeleton.Compile(this);
             }
         }
 
         public void Compile()
         {
             for (int i = 0; i < this.Meshes.Length; i++)
-            {
                 this.Meshes[i].Compile(this.Skeleton);
-            }
         }
 
         public void Update()
         {
-            if (this.Skeleton!=null)
-                this.Skeleton.ComputeMatrices();
+            var skeleton = this.Skeleton;
+            if (skeleton != null)
+            {
+                skeleton.UpdateRotate();
+                skeleton.ComputeMatrices();
+            }
         }
 
         static int lastTexture = -1;

@@ -14,11 +14,16 @@ namespace SrkOpenGLBasicSample
                 return;
             FileStream fs = new FileStream(filename, FileMode.Open);
             SrkAlternatives.Mdlx mdlx = new SrkAlternatives.Mdlx(fs);
+
             List<Mesh> meshes = new List<Mesh>(0);
             for (int i=0;i<1;i++)//for (int i = mdlx.models.Count-1; i>=0;i++)
             {
-                this.Skeleton = mdlx.models[i].Skeleton;
-                
+                var skeleton = mdlx.models[i].Skeleton;
+                if (skeleton != null)
+                {
+                    this.Skeleton = skeleton;
+                    this.Skeleton.Compile(this);
+                }
                 for (int j=0;j< mdlx.models[i].Meshes.Count;j++)
                 {
                     var alternativeMesh = mdlx.models[i].Meshes[j];

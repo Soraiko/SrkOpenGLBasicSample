@@ -1813,7 +1813,7 @@ namespace SrkOpenGLBasicSample
 
             /* Computing Joints */
 
-            this.Skeleton.Compile();
+            this.Skeleton.Compile(this);
             return transformCount;
         }
 

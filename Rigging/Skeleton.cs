@@ -7,9 +7,37 @@ namespace SrkOpenGLBasicSample
     public class Skeleton
     {
         public float[] MatricesBuffer;
-
         public List<Joint> Joints;
-        public Matrix4 TransformMatrix;
+        Matrix4 TransformMatrix;
+
+        Vector3 rotation;
+
+        Vector3 direction = Vector3.UnitX;
+        Vector3 dest_direction;
+
+        public void SetDirection(Vector3 direction)
+        {
+            this.dest_direction = direction;
+        }
+
+        public void UpdateRotate()
+        {
+
+        }
+
+        public float RotationX { get { return MathHelper.PrincipalAngle(this.rotation.X); } }
+        public float RotationY { get { return MathHelper.PrincipalAngle(this.rotation.Y); } }
+        public float RotationZ { get { return MathHelper.PrincipalAngle(this.rotation.Z); } }
+
+        public Vector3 Rotation
+        {
+            get
+            {
+                return this.rotation;
+            }
+        }
+        public Vector3 Location;
+
         public Skeleton()
         {
             this.TransformMatrix = Matrix4.CreateScale(1f);
@@ -37,14 +65,23 @@ namespace SrkOpenGLBasicSample
             return -1;
         }
 
-        public void Compile()
+        public void Compile(Controllable controllable)
         {
             for (int i = 0; i < this.Joints.Count; i++)
+            {
                 this.Joints[i].DummyMatrix = this.Joints[i].Matrix * 1f;
-
+            }
+            
             this.ComputeMatrices();
             for (int i = 0; i < this.Joints.Count; i++)
             {
+                switch (this.Joints[i].Name)
+                {
+                    case "bone_head":
+                        controllable.bone_head = this.Joints[i];
+                        controllable.HeadPosition = this.Joints[i].ComputedMatrix.ExtractTranslation();
+                    break;
+                }
                 Matrix4 mat = Matrix4.Invert(this.Joints[i].ComputedMatrix);
                 int pos = 512 * 16 + i * 16;
                 this.MatricesBuffer[pos++] = mat.M11;
@@ -71,6 +108,12 @@ namespace SrkOpenGLBasicSample
 
         public void ComputeMatrices()
         {
+            this.TransformMatrix = 
+            Matrix4.CreateFromAxisAngle(Vector3.UnitX, this.Rotation.X) *
+            Matrix4.CreateFromAxisAngle(Vector3.UnitY, this.Rotation.Y) *
+            Matrix4.CreateFromAxisAngle(Vector3.UnitZ, this.Rotation.Z) *
+            Matrix4.CreateTranslation(this.Location);
+
             for (int i = 0; i < this.Joints.Count; i++)
             {
                 this.Joints[i].ComputedMatrix = this.Joints[i].Matrix * 1f;

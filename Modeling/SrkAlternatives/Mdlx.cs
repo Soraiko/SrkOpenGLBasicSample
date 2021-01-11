@@ -619,7 +619,6 @@ namespace SrkAlternatives
                             if (parentIndices[i] > -1)
                                 this.Skeleton.Joints[i].Parent = this.Skeleton.Joints[parentIndices[i]];
                         }
-                        this.Skeleton.Compile();
 
                         int ikOffset = s + this.Int16(s + 0x18);
                         //this.ikData = new byte[bonesOffset - ikOffset];

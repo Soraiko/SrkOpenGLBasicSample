@@ -35,6 +35,7 @@ namespace SrkOpenGLBasicSample
 
         public static Camera Current;
 
+        public Model Target;
         public Vector3 Position;
 
         Vector3 lookAt;
@@ -134,7 +135,6 @@ namespace SrkOpenGLBasicSample
             }
         }
 
-        float Speed = 30f;
         public void KeyboardControl(KeyboardState keyboardState, KeyboardState oldKeyboardState)
         {
             if (keyboardState.IsKeyDown(Key.Keypad4))
@@ -147,7 +147,25 @@ namespace SrkOpenGLBasicSample
             if (keyboardState.IsKeyDown(Key.Keypad2))
                 this.RotationX = this.dest_rotation.X - 0.1f;
 
-            Matrix3 rotation = Matrix3.Identity;
+            if (this.Type != CameraType.Grounded)
+            {
+                if (keyboardState.IsKeyDown(Key.Keypad1))
+                    this.RotationZ = this.dest_rotation.Z + 0.1f;
+                if (keyboardState.IsKeyDown(Key.Keypad9))
+                    this.RotationZ = this.dest_rotation.Z - 0.1f;
+            }
+        }
+
+        public void ControlTarget(KeyboardState keyboardState, KeyboardState oldKeyboardState)
+        {
+            var target = this.Target;
+            if (target == null)
+                return;
+            var skeleton = target.Skeleton;
+            if (skeleton == null)
+                return;
+
+            Matrix3 rotation;
             if (this.Type == CameraType.Grounded)
             {
                 rotation = Matrix3.CreateRotationY(this.RotationY);
@@ -155,37 +173,45 @@ namespace SrkOpenGLBasicSample
             else
             {
                 rotation = this.RotationMatrix;
-
-                if (keyboardState.IsKeyDown(Key.Keypad1))
-                    this.RotationZ = this.dest_rotation.Z + 0.1f;
-                if (keyboardState.IsKeyDown(Key.Keypad9))
-                    this.RotationZ = this.dest_rotation.Z - 0.1f;
-
             }
+
+            Vector3 locationBefore = skeleton.Location;
+
             if (keyboardState.IsKeyDown(Compatibility.FirstPerson_Left))
             {
                 LookAtMatrixDirty = true;
-                this.dest_lookAt += Vector3.Transform(-Vector3.UnitX * Speed, rotation);
+                skeleton.Location += Vector3.Transform(-Vector3.UnitX * target.WalkSpeed, rotation);
             }
 
             if (keyboardState.IsKeyDown(Compatibility.FirstPerson_Right))
             {
                 LookAtMatrixDirty = true;
-                this.dest_lookAt += Vector3.Transform(Vector3.UnitX * Speed, rotation);
+                skeleton.Location += Vector3.Transform(Vector3.UnitX * target.WalkSpeed, rotation);
             }
 
             if (keyboardState.IsKeyDown(Compatibility.FirstPerson_Backward))
             {
                 LookAtMatrixDirty = true;
-                this.dest_lookAt += Vector3.Transform(Vector3.UnitZ * Speed, rotation);
+                skeleton.Location += Vector3.Transform(Vector3.UnitZ * target.WalkSpeed, rotation);
             }
 
             if (keyboardState.IsKeyDown(Compatibility.FirstPerson_Forward))
             {
                 LookAtMatrixDirty = true;
-                this.dest_lookAt += Vector3.Transform(-Vector3.UnitZ * Speed, rotation);
+                skeleton.Location += Vector3.Transform(-Vector3.UnitZ * target.WalkSpeed, rotation);
             }
 
+            Vector3 locationAfter = skeleton.Location;
+            float distanceParcourue = Vector3.Distance(locationBefore, locationAfter);
+            if (distanceParcourue>0)
+            {
+                skeleton.SetDirection(((locationAfter - locationBefore) / distanceParcourue) * 100f);
+            }
+
+
+
+            if (this.LookAtMatrixDirty)
+                this.dest_lookAt = skeleton.Location + target.HeadPosition;
         }
 
 
