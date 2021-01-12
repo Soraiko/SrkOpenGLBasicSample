@@ -133,7 +133,6 @@ namespace SrkOpenGLBasicSample
                             colors_unIndexed.Add(colors_triBuffer[0]);
                         }
                     }
-                    bool otherThanZeroFound = false;
 
                     List<float[]> weights = new List<float[]>(0);
                     List<ushort[]> influences = new List<ushort[]>(0);

@@ -60,7 +60,7 @@ namespace SrkOpenGLBasicSample
             if (skeleton != null)
             {
                 skeleton.UpdateRotate();
-                skeleton.ComputeMatrices();
+                //skeleton.ComputeMatrices();
             }
         }
 

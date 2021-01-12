@@ -175,43 +175,45 @@ namespace SrkOpenGLBasicSample
                 rotation = this.RotationMatrix;
             }
 
-            Vector3 locationBefore = skeleton.Location;
+            Vector3 locationBefore = skeleton.Position;
 
             if (keyboardState.IsKeyDown(Compatibility.FirstPerson_Left))
             {
                 LookAtMatrixDirty = true;
-                skeleton.Location += Vector3.Transform(-Vector3.UnitX * target.WalkSpeed, rotation);
+                skeleton.Position += Vector3.Transform(-Vector3.UnitX * target.WalkSpeed, rotation);
             }
 
             if (keyboardState.IsKeyDown(Compatibility.FirstPerson_Right))
             {
                 LookAtMatrixDirty = true;
-                skeleton.Location += Vector3.Transform(Vector3.UnitX * target.WalkSpeed, rotation);
+                skeleton.Position += Vector3.Transform(Vector3.UnitX * target.WalkSpeed, rotation);
             }
 
             if (keyboardState.IsKeyDown(Compatibility.FirstPerson_Backward))
             {
                 LookAtMatrixDirty = true;
-                skeleton.Location += Vector3.Transform(Vector3.UnitZ * target.WalkSpeed, rotation);
+                skeleton.Position += Vector3.Transform(Vector3.UnitZ * target.WalkSpeed, rotation);
             }
 
             if (keyboardState.IsKeyDown(Compatibility.FirstPerson_Forward))
             {
                 LookAtMatrixDirty = true;
-                skeleton.Location += Vector3.Transform(-Vector3.UnitZ * target.WalkSpeed, rotation);
+                skeleton.Position += Vector3.Transform(-Vector3.UnitZ * target.WalkSpeed, rotation);
             }
 
-            Vector3 locationAfter = skeleton.Location;
+            Vector3 locationAfter = skeleton.Position;
             float distanceParcourue = Vector3.Distance(locationBefore, locationAfter);
             if (distanceParcourue>0)
             {
-                skeleton.SetDirection(((locationAfter - locationBefore) / distanceParcourue) * 100f);
+                Vector3 diff = (locationAfter - locationBefore) / distanceParcourue;
+                float newAngle = (float)Math.Atan2(diff.X, diff.Z);
+                skeleton.SetRotationY(newAngle);
             }
 
 
 
             if (this.LookAtMatrixDirty)
-                this.dest_lookAt = skeleton.Location + target.HeadPosition;
+                this.dest_lookAt = skeleton.Position + target.HeadPosition;
         }
 
 
@@ -262,7 +264,7 @@ namespace SrkOpenGLBasicSample
                 if (Math.Abs(diff.X) > EPSILON)
                     this.ProjectionMatrixDirty = true;
 
-                this.ProjectionMatrix = Matrix4.CreatePerspectiveFieldOfView(this.viewAngle, window.Width / (float)window.Height, 5f, 100000000f);
+                this.ProjectionMatrix = Matrix4.CreatePerspectiveFieldOfView(this.viewAngle, window.Width / (float)window.Height, 15f, 10000000f);
             }
         }
 

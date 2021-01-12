@@ -197,7 +197,7 @@ namespace OpenKh
 			return (SByte)buffer[0];
 		}
 
-		public Byte ReadByte()
+		public new Byte ReadByte()
 		{
 			byte[] buffer = new byte[1];
 			Read(buffer, 0, buffer.Length);
