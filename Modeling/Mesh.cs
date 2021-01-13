@@ -366,12 +366,13 @@ namespace SrkOpenGLBasicSample
             if (this is DynamicMesh)
                 (this as DynamicMesh).Update(skeleton.MatricesBuffer, skeleton.Joints.Count);
         }
-        public void Draw()
+        public void Draw(bool noReference)
         {
             if (this is StaticMesh)
-                (this as StaticMesh).Draw();
+                (this as StaticMesh).Draw(noReference);
+            else
             if (this is DynamicMesh)
-                (this as DynamicMesh).Draw();
+                (this as DynamicMesh).Draw(noReference);
         }
     }
 }

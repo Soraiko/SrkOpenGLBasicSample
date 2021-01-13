@@ -55,7 +55,7 @@ namespace SrkOpenGLBasicSample
 
             //StaticReferences.Light0_Position.X = (float)(3000 * Math.Cos(angle));
             //StaticReferences.Light0_Position.Z = (float)(3000 * Math.Sin(angle));
-            StaticReferences.Light0_Position = Camera.Current.Target.Skeleton.Position + Camera.Current.Target.HeadPosition;
+            StaticReferences.Light0_Position = Camera.Current.Target.Skeleton.Position + Camera.Current.Target.Controller.HeadPosition;
 
             for (int i = 0; i < models.Count; i++)
                 models[i].Update();
@@ -73,10 +73,10 @@ namespace SrkOpenGLBasicSample
             GL.ClearColor(BackgroundColor);
             GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
 
-
             for (int i = 0; i < models.Count; i++)
                 models[i].Draw();
 
+            Title = this.RenderFrequency.ToString();
 
             Context.SwapBuffers();
             base.OnRenderFrame(e);
@@ -84,17 +84,13 @@ namespace SrkOpenGLBasicSample
 
         List<Model> models;
 
-        public BinaryReader br;
-        protected unsafe override void OnLoad(EventArgs e)
+        protected override void OnLoad(EventArgs e)
         {
+            var random = new Random();
+
             StaticReferences.GraphicsSettings();
             StaticReferences.InitReferences();
             models = new List<Model>(0);
-
-
-            FileStream raw_anim = new FileStream(@"binary_files\raw_anim.bin", FileMode.Open);
-            br = new BinaryReader(raw_anim);
-            br.BaseStream.Position = 0x10;
 
             Title = "Press E key to freeze light position";
 
@@ -102,11 +98,21 @@ namespace SrkOpenGLBasicSample
             model.Compile();
             models.Add(model); 
             
-            model = new DAE(@"debug_files\H_EX500\H_EX500.dae");
-            model.Compile();
-            model.Skeleton.Position = new Vector3(-100, 0, 0);
-            models.Add(model);
-            Camera.Current.Target = model;
+            for (int i=0;i<50;i++)
+            {
+                model = new DAE(@"debug_files\H_EX500\H_EX500.dae");
+                model.Compile();
+                model.Skeleton.Position = new Vector3(-100, 0, 0);
+                model.Controller.Moveset.AnimationFrame = random.Next(0, 200);
+                System.Threading.Thread.Sleep(1);
+                float x = random.Next(-500, 500);
+                System.Threading.Thread.Sleep(1);
+                float y = random.Next(-500, 500);
+                model.Skeleton.Position = new Vector3(x,0,y);
+
+                models.Add(model);
+                Camera.Current.Target = model;
+            }
 
             model = new MDLX(@"binary_files\H_EX510\H_EX510.mdlx");
             model.Compile();
@@ -114,7 +120,6 @@ namespace SrkOpenGLBasicSample
             models.Add(model);
 
 
-            var random = new Random();
             /*string[] mdlxes = Directory.GetFiles(@"E:\Jeux\KingdomHearts\app_KH2Tools\export\@KH2\obj\", "*.mdlx");
             int count = 0;
             while (count<50)

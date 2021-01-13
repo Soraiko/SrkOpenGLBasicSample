@@ -90,28 +90,28 @@ namespace SrkOpenGLBasicSample
         int light0_color = -1;
         int light0_ambiant_strength = -1;
         int bump_mapping = -1;
-        
+        bool locationsFound = false;
         public void Use()
         {
             GL.UseProgram(this.Handle);
 
-            if (light0_position < 0)
-                light0_position = GL.GetUniformLocation(this.Handle, "light0_position");
-            if (light0_color < 0)
-                light0_color = GL.GetUniformLocation(this.Handle, "light0_color");
-            if (light0_ambiant_strength < 0)
-                light0_ambiant_strength = GL.GetUniformLocation(this.Handle, "light0_ambiant_strength");
-            if (bump_mapping < 0)
-                bump_mapping = GL.GetUniformLocation(this.Handle, "bump_mapping");
-
-            if (light0_position > -1)
+            if (locationsFound)
+            {
                 GL.Uniform3(light0_position, StaticReferences.Light0_Position);
-            if (light0_color > -1)
                 GL.Uniform3(light0_color, StaticReferences.Light0_Color);
-            if (light0_ambiant_strength > -1)
                 GL.Uniform1(light0_ambiant_strength, StaticReferences.Light0_AmbientStrentgh);
-            if (bump_mapping > -1)
                 GL.Uniform1(bump_mapping, 1);
+            }
+            else
+            {
+                light0_position = GL.GetUniformLocation(this.Handle, "light0_position");
+                light0_color = GL.GetUniformLocation(this.Handle, "light0_color");
+                light0_ambiant_strength = GL.GetUniformLocation(this.Handle, "light0_ambiant_strength");
+                bump_mapping = GL.GetUniformLocation(this.Handle, "bump_mapping");
+                if (light0_position>-1 && light0_color>-1 && light0_ambiant_strength>-1 && bump_mapping > -1)
+                    locationsFound = true;
+            }
+
         }
 
         private bool disposedValue = false;

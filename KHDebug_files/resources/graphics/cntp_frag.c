@@ -1,6 +1,5 @@
 #version 330 compatibility
 uniform sampler2D texture0;
-
 uniform sampler2D bump_mapping;
 
 in vec3 f_position;  

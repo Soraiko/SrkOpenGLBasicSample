@@ -6,19 +6,37 @@ using OpenTK.Input;
 
 namespace SrkOpenGLBasicSample
 {
-    public class Controllable
+    public class ModelController
     {
-        public Skeleton Skeleton;
+        public Model Controlled;
+        public Moveset Moveset;
+        public Matrix4[] rememberMatrices;
+
         public Joint bone_head;
         public Vector3 HeadPosition;
         public float WalkSpeed = 100f /* cm/s */ / 30.0f /* FPS */;
         public float RunSpeed = 180f /* cm/s */ / 30.0f /* FPS */;
 
+        public ModelController(Model controlled)
+        {
+            this.Controlled = controlled;
+            if (System.IO.Directory.Exists(controlled.Directory.Replace("debug_files","binary_files") + @"\Moveset"))
+            {
+                this.Moveset = new Moveset(controlled.Directory.Replace("debug_files", "binary_files") + @"\Moveset");
+            }
+            this.rememberMatrices = new Matrix4[controlled.Skeleton.Joints.Count];
+        }
+
+        public void RenderNextFrame()
+        {
+            this.Moveset.GetNextFrame(ref this.rememberMatrices, this.Controlled.Skeleton.Joints);
+        }
 
         ChangingVector3 Position;
         public void ProceedCalculations()
         {
-            this.Position.Value = this.Skeleton.Position;
+            var controlledSkeleton = this.Controlled.Skeleton;
+            this.Position.Value = controlledSkeleton.Position;
 
             if (this.Position.Initialized)
             {

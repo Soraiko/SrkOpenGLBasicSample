@@ -10,6 +10,28 @@ using System.Diagnostics;
 
 namespace SrkAlternatives
 {
+    public static class XDebug
+    {
+        public static void Assert(bool boolean, string message)
+        {
+
+        }
+        public static void Fail(string message)
+        {
+
+        }
+        public static void WriteLine(string message)
+        {
+
+        }
+    }
+    public static class XTrace
+    {
+        public static void Assert(bool test)
+        {
+
+        }
+    }
     public class KenunoTim
     {
         public static Bitmap[] GetTextures(byte[] tim2data)
@@ -130,40 +152,40 @@ namespace SrkAlternatives
                 BinaryReader br = new BinaryReader(si);
                 UInt64 cm;
 
-                UInt64 r50 = br.ReadUInt64(); cm = br.ReadUInt64(); Debug.Assert(0x50 == cm, cm.ToString("X16") + " ≠ 0x50"); // 0x50 BITBLTBUF
+                UInt64 r50 = br.ReadUInt64(); cm = br.ReadUInt64(); XDebug.Assert(0x50 == cm, cm.ToString("X16") + " ≠ 0x50"); // 0x50 BITBLTBUF
                 int SBP = ((int)(r50)) & 0x3FFF;
                 int SBW = ((int)(r50 >> 16)) & 0x3F;
                 int SPSM = ((int)(r50 >> 24)) & 0x3F;
                 int DBP = ((int)(r50 >> 32)) & 0x3FFF;
                 int DBW = ((int)(r50 >> 48)) & 0x3F;
                 int DPSM = ((int)(r50 >> 56)) & 0x3F;
-                Trace.Assert(SBP == 0);
-                Trace.Assert(SBW == 0);
-                Trace.Assert(SPSM == 0);
-                Trace.Assert(DPSM == 0 || DPSM == 19 || DPSM == 20);
+                XTrace.Assert(SBP == 0);
+                XTrace.Assert(SBW == 0);
+                XTrace.Assert(SPSM == 0);
+                XTrace.Assert(DPSM == 0 || DPSM == 19 || DPSM == 20);
 
-                UInt64 r51 = br.ReadUInt64(); cm = br.ReadUInt64(); Debug.Assert(0x51 == cm, cm.ToString("X16") + " ≠ 0x51"); // 0x51 TRXPOS
+                UInt64 r51 = br.ReadUInt64(); cm = br.ReadUInt64(); XDebug.Assert(0x51 == cm, cm.ToString("X16") + " ≠ 0x51"); // 0x51 TRXPOS
                 int SSAX = ((int)(r51)) & 0x7FF;
                 int SSAY = ((int)(r51 >> 16)) & 0x7FF;
                 int DSAX = ((int)(r51 >> 32)) & 0x7FF;
                 int DSAY = ((int)(r51 >> 48)) & 0x7FF;
                 int DIR = ((int)(r51 >> 59)) & 3;
-                Trace.Assert(SSAX == 0);
-                Trace.Assert(SSAY == 0); //!
-                Trace.Assert(DSAX == 0); //!
-                Trace.Assert(DSAY == 0); //!
-                Trace.Assert(DIR == 0); //!
+                XTrace.Assert(SSAX == 0);
+                XTrace.Assert(SSAY == 0); //!
+                XTrace.Assert(DSAX == 0); //!
+                XTrace.Assert(DSAY == 0); //!
+                XTrace.Assert(DIR == 0); //!
 
-                UInt64 r52 = br.ReadUInt64(); cm = br.ReadUInt64(); Debug.Assert(0x52 == cm, cm.ToString("X16") + " ≠ 0x52"); // 0x52 TRXREG
+                UInt64 r52 = br.ReadUInt64(); cm = br.ReadUInt64(); XDebug.Assert(0x52 == cm, cm.ToString("X16") + " ≠ 0x52"); // 0x52 TRXREG
                 int RRW = ((int)(r52 >> 0)) & 0xFFF;
                 int RRH = ((int)(r52 >> 32)) & 0xFFF;
 
-                UInt64 r53 = br.ReadUInt64(); cm = br.ReadUInt64(); Debug.Assert(0x53 == cm, cm.ToString("X16") + " ≠ 0x53"); // 0x53 TRXDIR
+                UInt64 r53 = br.ReadUInt64(); cm = br.ReadUInt64(); XDebug.Assert(0x53 == cm, cm.ToString("X16") + " ≠ 0x53"); // 0x53 TRXDIR
                 int XDIR = ((int)(r53)) & 2;
-                Trace.Assert(XDIR == 0);
+                XTrace.Assert(XDIR == 0);
 
                 int eop = br.ReadUInt16();
-                Trace.Assert(8 != (eop & 0x8000));
+                XTrace.Assert(8 != (eop & 0x8000));
 
                 si.Position += 18;
                 offBin = br.ReadInt32();
@@ -195,7 +217,7 @@ namespace SrkAlternatives
                     Array.Copy(binDec, 0, gs, 256 * DBP, cbTex);
                 }
 
-                Debug.WriteLine(string.Format("# p1 {0:x4}      {1,6} {2}", DBP, cbTex, DPSM));
+                XDebug.WriteLine(string.Format("# p1 {0:x4}      {1,6} {2}", DBP, cbTex, DPSM));
             }
 
             public STim Do2(Stream si)
@@ -203,23 +225,23 @@ namespace SrkAlternatives
                 BinaryReader br = new BinaryReader(si);
                 UInt64 command;
 
-                UInt64 r3f = br.ReadUInt64(); Trace.Assert((command = br.ReadUInt64()) == 0x3F); // 0x3F TEXFLUSH
-                UInt64 r34 = br.ReadUInt64(); Trace.Assert((command = br.ReadUInt64()) == 0x34); // 0x34 MIPTBP1_1
-                UInt64 r36 = br.ReadUInt64(); Trace.Assert((command = br.ReadUInt64()) == 0x36); // 0x36 MIPTBP2_1
-                UInt64 r16 = br.ReadUInt64(); Trace.Assert((command = br.ReadUInt64()) == 0x16); // 0x16 TEX2_1
+                UInt64 r3f = br.ReadUInt64(); XTrace.Assert((command = br.ReadUInt64()) == 0x3F); // 0x3F TEXFLUSH
+                UInt64 r34 = br.ReadUInt64(); XTrace.Assert((command = br.ReadUInt64()) == 0x34); // 0x34 MIPTBP1_1
+                UInt64 r36 = br.ReadUInt64(); XTrace.Assert((command = br.ReadUInt64()) == 0x36); // 0x36 MIPTBP2_1
+                UInt64 r16 = br.ReadUInt64(); XTrace.Assert((command = br.ReadUInt64()) == 0x16); // 0x16 TEX2_1
                 int t2PSM = ((int)(r16 >> 20)) & 0x3F;
                 int t2CBP = ((int)(r16 >> 37)) & 0x3FFF;
                 int t2CPSM = ((int)(r16 >> 51)) & 0xF;
                 int t2CSM = ((int)(r16 >> 55)) & 0x1;
                 int t2CSA = ((int)(r16 >> 56)) & 0x1F;
                 int t2CLD = ((int)(r16 >> 61)) & 0x7;
-                Trace.Assert(t2PSM == 19); // PSMT8
-                Trace.Assert(t2CPSM == 0); // PSMCT32
-                Trace.Assert(t2CSM == 0); // CSM1
-                Trace.Assert(t2CSA == 0);
-                Trace.Assert(t2CLD == 4);
+                XTrace.Assert(t2PSM == 19); // PSMT8
+                XTrace.Assert(t2CPSM == 0); // PSMCT32
+                XTrace.Assert(t2CSM == 0); // CSM1
+                XTrace.Assert(t2CSA == 0);
+                XTrace.Assert(t2CLD == 4);
 
-                UInt64 r14 = br.ReadUInt64(); Trace.Assert((command = br.ReadUInt64()) == 0x14);// 0x14 TEX1_1
+                UInt64 r14 = br.ReadUInt64(); XTrace.Assert((command = br.ReadUInt64()) == 0x14);// 0x14 TEX1_1
                 int t1LCM = ((int)(r14 >> 0)) & 1;
                 int t1MXL = ((int)(r14 >> 2)) & 7;
                 int t1MMAG = ((int)(r14 >> 5)) & 1;
@@ -228,7 +250,7 @@ namespace SrkAlternatives
                 int t1L = ((int)(r14 >> 19)) & 3;
                 int t1K = ((int)(r14 >> 32)) & 0xFFF;
 
-                UInt64 r06 = br.ReadUInt64(); Trace.Assert((command = br.ReadUInt64()) == 0x06);// 0x06 TEX0_1
+                UInt64 r06 = br.ReadUInt64(); XTrace.Assert((command = br.ReadUInt64()) == 0x06);// 0x06 TEX0_1
                 int t0TBP0 = ((int)(r06 >> 0)) & 0x3FFF;
                 int t0TBW = ((int)(r06 >> 14)) & 0x3F;
                 t0PSM = ((int)(r06 >> 20)) & 0x3F;
@@ -241,14 +263,14 @@ namespace SrkAlternatives
                 int t0CSM = ((int)(r06 >> 55)) & 0x1;
                 int t0CSA = ((int)(r06 >> 56)) & 0x1F;
                 int t0CLD = ((int)(r06 >> 61)) & 0x7;
-                Trace.Assert(t0PSM == 19 || t0PSM == 20);
-                Trace.Assert(t0TCC == 1);
-                Trace.Assert(t0CPSM == 0);
-                Trace.Assert(t0CSM == 0);
-                //Trace.Assert(t0CSA == 0);
-                Trace.Assert(t0CLD == 0);
+                XTrace.Assert(t0PSM == 19 || t0PSM == 20);
+                XTrace.Assert(t0TCC == 1);
+                XTrace.Assert(t0CPSM == 0);
+                XTrace.Assert(t0CSM == 0);
+                //XTrace.Assert(t0CSA == 0);
+                XTrace.Assert(t0CLD == 0);
 
-                UInt64 r08 = br.ReadUInt64(); Trace.Assert((command = br.ReadUInt64()) == 0x08);// 0x08 CLAMP_1
+                UInt64 r08 = br.ReadUInt64(); XTrace.Assert((command = br.ReadUInt64()) == 0x08);// 0x08 CLAMP_1
                 int c1WMS = ((int)(r08 >> 0)) & 0x3;
                 int c1WMT = ((int)(r08 >> 2)) & 0x3;
                 int c1MINU = ((int)(r08 >> 4)) & 0x3FF;
@@ -262,7 +284,7 @@ namespace SrkAlternatives
                 byte[] bufcbpX = new byte[8192];
                 Array.Copy(gs, 256 * t0CBP, bufcbpX, 0, bufcbpX.Length);
 
-                Debug.WriteLine(string.Format("# p2 {0:x4} {1:x4} {2,2}", t0TBP0, t0CBP, t0CSA));
+                XDebug.WriteLine(string.Format("# p2 {0:x4} {1:x4} {2,2}", t0TBP0, t0CBP, t0CSA));
 
                 STim st = null;
                 if (t0PSM == 0x13) st = TexUt2.Decode8(buftbp0, bufcbpX, t0TBW, 1 << t0TW, 1 << t0TH);
@@ -417,7 +439,7 @@ namespace SrkAlternatives
                 }
                 else if (wms != wmt)
                 {
-                    Debug.Fail(wms + " ≠ " + wmt);
+                    XDebug.Fail(wms + " ≠ " + wmt);
                 }
                 return pic;
             }
@@ -429,7 +451,7 @@ namespace SrkAlternatives
             {
                 Bitmap pic = new Bitmap(cx, cy, global::System.Drawing.Imaging.PixelFormat.Format8bppIndexed);
                 tbw /= 2;
-                Debug.Assert(tbw != 0, "Invalid");
+                XDebug.Assert(tbw != 0, "Invalid");
                 byte[] bin = OpenKh.Kh2.Ps2.Decode8(picbin, tbw, Math.Max(1, picbin.Length / 8192 / tbw));
                 BitmapData bd = pic.LockBits(Rectangle.FromLTRB(0, 0, pic.Width, pic.Height), ImageLockMode.WriteOnly, global::System.Drawing.Imaging.PixelFormat.Format8bppIndexed);
 
@@ -612,7 +634,7 @@ namespace SrkAlternatives
             {
                 Bitmap pic = new Bitmap(cx, cy, global::System.Drawing.Imaging.PixelFormat.Format4bppIndexed);
                 tbw /= 2;
-                Debug.Assert(tbw != 0, "Invalid");
+                XDebug.Assert(tbw != 0, "Invalid");
                 byte[] bin = OpenKh.Kh2.Ps2.Decode4(picbin, tbw, Math.Max(1, picbin.Length / 8192 / tbw));
                 BitmapData bd = pic.LockBits(Rectangle.FromLTRB(0, 0, pic.Width, pic.Height), ImageLockMode.WriteOnly, global::System.Drawing.Imaging.PixelFormat.Format4bppIndexed);
 
@@ -645,7 +667,7 @@ namespace SrkAlternatives
             {
                 Bitmap pic = new Bitmap(cx, cy, global::System.Drawing.Imaging.PixelFormat.Format4bppIndexed);
                 tbw = Math.Max(1, tbw / 2);
-                Debug.Assert(tbw != 0, "Invalid");
+                XDebug.Assert(tbw != 0, "Invalid");
                 byte[] bin = OpenKh.Kh2.Ps2.Decode4(picbin, tbw, Math.Max(1, picbin.Length / 8192 / tbw));
                 BitmapData bd = pic.LockBits(Rectangle.FromLTRB(0, 0, pic.Width, pic.Height), ImageLockMode.WriteOnly, global::System.Drawing.Imaging.PixelFormat.Format4bppIndexed);
 

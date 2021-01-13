@@ -17,7 +17,7 @@ namespace SrkOpenGLBasicSample
         {
             this.dest_rotation.Y = angle;
             float diff = dest_rotation.Y - rotation.Y;
-            if (Math.Abs(diff)> Math.PI)
+            if (Math.Abs(diff) > Math.PI)
             {
                 float diff_plus_TwoPi = dest_rotation.Y - (rotation.Y + OpenTK.MathHelper.TwoPi);
                 if (Math.Abs(diff_plus_TwoPi) < Math.PI)
@@ -69,25 +69,49 @@ namespace SrkOpenGLBasicSample
             return -1;
         }
 
-        public void Compile(Controllable controllable)
+        public void Compile(Model model)
         {
+            if (this.Joints.Count > 512)
+                throw new Exception("Soraiko's skeleton class allows 512 bones maximum. (" + this.Joints.Count + " bones found.)");
+            model.Controller = new ModelController(model);
+
+            if (model is DAE) /* Is sorted in MDLXes, but not necessarly in DAEs */
+            {
+                List<Joint> hierarchy_sorted_joints = new List<Joint>(0);
+                while (this.Joints.Count > 0)
+                {
+                    for (int i = 0; i < this.Joints.Count; i++)
+                    {
+                        Joint currentJoint = this.Joints[i];
+                        if (currentJoint.Parent == null || hierarchy_sorted_joints.Contains(currentJoint.Parent))
+                        {
+                            this.Joints.RemoveAt(i);
+                            hierarchy_sorted_joints.Add(currentJoint);
+                            i--;
+                        }
+                    }
+                }
+                this.Joints = hierarchy_sorted_joints;
+            }
+
             for (int i = 0; i < this.Joints.Count; i++)
             {
                 this.Joints[i].DummyMatrix = this.Joints[i].Matrix * 1f;
             }
-            
+
             this.ComputeMatrices();
+            int pos = 512 * 16;
             for (int i = 0; i < this.Joints.Count; i++)
             {
                 switch (this.Joints[i].Name)
                 {
                     case "bone_head":
-                        controllable.bone_head = this.Joints[i];
-                        controllable.HeadPosition = this.Joints[i].ComputedMatrix.ExtractTranslation();
-                    break;
+                        model.Controller.bone_head = this.Joints[i];
+                        model.Controller.HeadPosition = this.Joints[i].ComputedMatrix.ExtractTranslation();
+                        break;
                 }
                 Matrix4 mat = Matrix4.Invert(this.Joints[i].ComputedMatrix);
-                int pos = 512 * 16 + i * 16;
+
                 this.MatricesBuffer[pos++] = mat.M11;
                 this.MatricesBuffer[pos++] = mat.M21;
                 this.MatricesBuffer[pos++] = mat.M31;
@@ -110,60 +134,52 @@ namespace SrkOpenGLBasicSample
             }
         }
 
-        public void ComputeMatrices()
+
+        public bool ComputeMatrices()
         {
-            this.TransformMatrix = 
+            this.TransformMatrix =
             Matrix4.CreateFromAxisAngle(Vector3.UnitX, this.rotation.X) *
             Matrix4.CreateFromAxisAngle(Vector3.UnitY, this.rotation.Y) *
             Matrix4.CreateFromAxisAngle(Vector3.UnitZ, this.rotation.Z) *
             Matrix4.CreateTranslation(this.Position);
 
+            int pos = 0;
+
             for (int i = 0; i < this.Joints.Count; i++)
             {
                 this.Joints[i].ComputedMatrix = this.Joints[i].Matrix * 1f;
-                this.Joints[i].Dirty = true;
+
                 if (this.Joints[i].Parent == null)
                     this.Joints[i].ComputedMatrix *= this.TransformMatrix;
+                else
+                    this.Joints[i].ComputedMatrix *= this.Joints[i].Parent.ComputedMatrix;
+
+                Matrix4 mat = this.Joints[i].ComputedMatrix;
+                this.MatricesBuffer[pos++] = mat.M11;
+                this.MatricesBuffer[pos++] = mat.M21;
+                this.MatricesBuffer[pos++] = mat.M31;
+                this.MatricesBuffer[pos++] = mat.M41;
+
+                this.MatricesBuffer[pos++] = mat.M12;
+                this.MatricesBuffer[pos++] = mat.M22;
+                this.MatricesBuffer[pos++] = mat.M32;
+                this.MatricesBuffer[pos++] = mat.M42;
+
+                this.MatricesBuffer[pos++] = mat.M13;
+                this.MatricesBuffer[pos++] = mat.M23;
+                this.MatricesBuffer[pos++] = mat.M33;
+                this.MatricesBuffer[pos++] = mat.M43;
+
+                this.MatricesBuffer[pos++] = mat.M14;
+                this.MatricesBuffer[pos++] = mat.M24;
+                this.MatricesBuffer[pos++] = mat.M34;
+                this.MatricesBuffer[pos++] = mat.M44;
             }
-            int dirtyCount;
-            do
-            {
-                dirtyCount = this.Joints.Count;
-                for (int i = 0; i < this.Joints.Count; i++)
-                {
-                    if (this.Joints[i].Parent == null || !this.Joints[i].Parent.Dirty)
-                    {
-                        if (this.Joints[i].Parent != null)
-                            this.Joints[i].ComputedMatrix *= this.Joints[i].Parent.ComputedMatrix;
-
-                        Matrix4 mat = this.Joints[i].ComputedMatrix;
-                        int pos = i * 16;
-                        this.MatricesBuffer[pos++] = mat.M11;
-                        this.MatricesBuffer[pos++] = mat.M21;
-                        this.MatricesBuffer[pos++] = mat.M31;
-                        this.MatricesBuffer[pos++] = mat.M41;
-
-                        this.MatricesBuffer[pos++] = mat.M12;
-                        this.MatricesBuffer[pos++] = mat.M22;
-                        this.MatricesBuffer[pos++] = mat.M32;
-                        this.MatricesBuffer[pos++] = mat.M42;
-
-                        this.MatricesBuffer[pos++] = mat.M13;
-                        this.MatricesBuffer[pos++] = mat.M23;
-                        this.MatricesBuffer[pos++] = mat.M33;
-                        this.MatricesBuffer[pos++] = mat.M43;
-
-                        this.MatricesBuffer[pos++] = mat.M14;
-                        this.MatricesBuffer[pos++] = mat.M24;
-                        this.MatricesBuffer[pos++] = mat.M34;
-                        this.MatricesBuffer[pos++] = mat.M44;
-
-                        this.Joints[i].Dirty = false;
-                        dirtyCount--;
-                    }
-                }
-            }
-            while (dirtyCount > 0);
+            Vector4 zero = new Vector4(0, 0, 0, 1);
+            zero = Vector4.Transform(zero, this.TransformMatrix);
+            zero = Vector4.Transform(zero, Camera.Current.LookAtMatrix);
+            zero = Vector4.Transform(zero, Camera.Current.ProjectionMatrix);
+            return zero.Z < -100;
         }
 
         Matrix4 Multiply(Matrix4 left, Matrix4 right)

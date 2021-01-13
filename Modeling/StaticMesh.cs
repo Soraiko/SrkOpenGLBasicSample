@@ -14,18 +14,20 @@ namespace SrkOpenGLBasicSample
 
         }
 
-        public new void Draw()
+        public new void Draw(bool noReference)
         {
             GL.BindVertexArray(VertexArrayObject);
-            GL.BindBuffer(BufferTarget.ElementArrayBuffer, this.IndexBufferObject);
+            if (noReference)
+            {
+                this.shader.Use();
+                if (IndexBufferObject > 0)
+                    GL.BindBuffer(BufferTarget.ElementArrayBuffer, this.IndexBufferObject);
+            }
 
-            this.shader.Use();
-            if (IndexBufferObject>0)
+            if (IndexBufferObject > 0)
                 GL.DrawElements(PrimitiveType.Triangles, PrimitiveCount, DrawElementsType.UnsignedShort, 0);
             else
                 GL.DrawArrays(PrimitiveType.Triangles, 0, PrimitiveCount);
-
-            GL.UseProgram(0);
         }
     }
 }

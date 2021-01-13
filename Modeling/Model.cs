@@ -7,45 +7,19 @@ using System.Text;
 
 namespace SrkOpenGLBasicSample
 {
-    public class Model : Controllable
+    public class Model : Resource
     {
         public int UniformBufferObject = -1;
         public int matrices_loc = -1;
+        public bool locationsFound = false;
 
-        public string Directory;
-        public string Name;
+        public ModelController Controller;
+        public Skeleton Skeleton;
         public Mesh[] Meshes;
-        public Model Reference;
 
-        static List<Model> References;
-
-        static Model()
+        public Model(string filename) : base(filename)
         {
-            References = new List<Model>(0);
-        }
 
-        public Model(string filename)
-        {
-            this.Name = Path.GetFileNameWithoutExtension(filename);
-            this.Directory = Path.GetDirectoryName(filename);
-
-            for (int i=0;i< References.Count;i++)
-            {
-                if (References[i].Name == this.Name && References[i].Directory == this.Directory)
-                {
-                    this.Reference = References[i];
-                    break;
-                }
-            }
-
-            if (this.Reference == null)
-                References.Add(this);
-            else
-            {
-                this.Meshes = Reference.Meshes;
-                this.Skeleton = Reference.Skeleton.Clone();
-                this.Skeleton.Compile(this);
-            }
         }
 
         public void Compile()
@@ -59,8 +33,19 @@ namespace SrkOpenGLBasicSample
             var skeleton = this.Skeleton;
             if (skeleton != null)
             {
+                var controller = this.Controller;
+                if (controller != null)
+                {
+                    var moveset = controller.Moveset;
+                    if (moveset != null)
+                        controller.RenderNextFrame();
+                }
                 skeleton.UpdateRotate();
-                //skeleton.ComputeMatrices();
+                this.SkipRender = skeleton.ComputeMatrices();
+                if (controller != null)
+                {
+                    controller.ProceedCalculations();
+                }
             }
         }
 
@@ -68,6 +53,9 @@ namespace SrkOpenGLBasicSample
         static int lastBump = -1;
         public void Draw()
         {
+            if (this.SkipRender)
+                return;
+
             GL.Enable(EnableCap.Texture2D);
             if (this.Meshes.Length>0)
                 this.Meshes[0].Update(this.Skeleton);
@@ -99,7 +87,7 @@ namespace SrkOpenGLBasicSample
                 lastTexture = this.Meshes[i].Texture.Integer;
                 lastBump = this.Meshes[i].BumpMapping.Integer;
 
-                this.Meshes[i].Draw();
+                this.Meshes[i].Draw(this.Reference == null || this.Reference.SkipRender);
             }
         }
     }

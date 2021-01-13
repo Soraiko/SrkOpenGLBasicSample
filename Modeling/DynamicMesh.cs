@@ -22,29 +22,34 @@ namespace SrkOpenGLBasicSample
             System.Runtime.InteropServices.Marshal.Copy(matricesBuffer, 0, matricesPtr, bonesCount*16);
             GL.UnmapBuffer(BufferTarget.UniformBuffer);
 
-            if (this.Model.matrices_loc < 0)
-                this.Model.matrices_loc = GL.GetUniformBlockIndex(this.shader.Handle, "transform_data");
-
-            if (this.Model.matrices_loc > -1)
+            if (this.Model.locationsFound)
             {
                 GL.UniformBlockBinding(this.shader.Handle, this.Model.matrices_loc, 0);
                 GL.BindBufferBase(BufferRangeTarget.UniformBuffer, 0, this.Model.UniformBufferObject);
             }
+            else
+            {
+                this.Model.matrices_loc = GL.GetUniformBlockIndex(this.shader.Handle, "transform_data");
+
+                if (this.Model.matrices_loc > -1)
+                    this.Model.locationsFound = true;
+            }
         }
 
-        public new void Draw()
+        public new void Draw(bool noReference)
         {
-            this.shader.Use();
-
             GL.BindVertexArray(VertexArrayObject);
-            GL.BindBuffer(BufferTarget.ElementArrayBuffer, this.IndexBufferObject);
+            if (noReference)
+            {
+                this.shader.Use();
+                GL.BindBuffer(BufferTarget.ElementArrayBuffer, this.IndexBufferObject);
+            }
 
             if (IndexBufferObject>0)
                 GL.DrawElements(PrimitiveType.Triangles, PrimitiveCount, DrawElementsType.UnsignedShort, 0);
             else
                 GL.DrawArrays(PrimitiveType.Triangles, 0, PrimitiveCount);
 
-            GL.UseProgram(0);
         }
     }
 }

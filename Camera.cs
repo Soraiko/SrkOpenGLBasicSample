@@ -161,6 +161,11 @@ namespace SrkOpenGLBasicSample
             var target = this.Target;
             if (target == null)
                 return;
+
+            var modelController = target.Controller;
+            if (modelController == null)
+                return;
+
             var skeleton = target.Skeleton;
             if (skeleton == null)
                 return;
@@ -180,25 +185,25 @@ namespace SrkOpenGLBasicSample
             if (keyboardState.IsKeyDown(Compatibility.FirstPerson_Left))
             {
                 LookAtMatrixDirty = true;
-                skeleton.Position += Vector3.Transform(-Vector3.UnitX * target.WalkSpeed, rotation);
+                skeleton.Position += Vector3.Transform(-Vector3.UnitX * modelController.WalkSpeed, rotation);
             }
 
             if (keyboardState.IsKeyDown(Compatibility.FirstPerson_Right))
             {
                 LookAtMatrixDirty = true;
-                skeleton.Position += Vector3.Transform(Vector3.UnitX * target.WalkSpeed, rotation);
+                skeleton.Position += Vector3.Transform(Vector3.UnitX * modelController.WalkSpeed, rotation);
             }
 
             if (keyboardState.IsKeyDown(Compatibility.FirstPerson_Backward))
             {
                 LookAtMatrixDirty = true;
-                skeleton.Position += Vector3.Transform(Vector3.UnitZ * target.WalkSpeed, rotation);
+                skeleton.Position += Vector3.Transform(Vector3.UnitZ * modelController.WalkSpeed, rotation);
             }
 
             if (keyboardState.IsKeyDown(Compatibility.FirstPerson_Forward))
             {
                 LookAtMatrixDirty = true;
-                skeleton.Position += Vector3.Transform(-Vector3.UnitZ * target.WalkSpeed, rotation);
+                skeleton.Position += Vector3.Transform(-Vector3.UnitZ * modelController.WalkSpeed, rotation);
             }
 
             Vector3 locationAfter = skeleton.Position;
@@ -213,7 +218,7 @@ namespace SrkOpenGLBasicSample
 
 
             if (this.LookAtMatrixDirty)
-                this.dest_lookAt = skeleton.Position + target.HeadPosition;
+                this.dest_lookAt = skeleton.Position + modelController.HeadPosition;
         }
 
 
