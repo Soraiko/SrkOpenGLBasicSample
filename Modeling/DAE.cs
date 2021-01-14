@@ -1546,9 +1546,26 @@ namespace SrkOpenGLBasicSample
             }*/
 
             this.Meshes = new Mesh[this.GeometryIDs.Count];
+            int[] mesh_order = null;
+            bool ignore_normals = false;
 
-            for (int i=0;i<this.GeometryIDs.Count;i++)
+            if (this.Configuration != null)
             {
+                mesh_order = this.Configuration.mesh_order;
+                ignore_normals = this.Configuration.ignore_normals;
+            }
+            else
+            {
+                mesh_order = new int[this.Meshes.Length];
+                for (int i=0;i< mesh_order.Length;i++)
+                {
+                    mesh_order[i] = i;
+                }
+            }
+
+            for (int i_=0;i_<this.GeometryIDs.Count;i_++)
+            {
+                int i = mesh_order[i_];
                 int controllerIndex = -1;
                 for (int j=0;j< this.PerControllerGeometry.Count;j++)
                 {
@@ -1562,19 +1579,15 @@ namespace SrkOpenGLBasicSample
 
                 bool hasController = controllerIndex > -1;
 
-                Mesh mesh = null;
-                if (hasController)
-                    mesh = new DynamicMesh(this);
-                else
-                    mesh = new StaticMesh(this);
-
+                Mesh mesh = new Mesh(this);
                 mesh.Name = this.GeometryIDs[i];
 
                 bool hasTexCoords = this.GeometryDataTexcoordinates[i].Length > 0;
-                bool hasNormals = this.GeometryDataNormals[i].Length > 0;
+                bool hasNormals = !ignore_normals && this.GeometryDataNormals[i].Length > 0;
                 bool hasColors = this.GeometryDataColors[i].Length > 0;
 
                 bool otherThanZeroFound = false;
+                bool otherThanWhiteFound = false;
 
                 List<float[]> weights = new List<float[]>(0);
                 List<ushort[]> influences = new List<ushort[]>(0);
@@ -1594,7 +1607,6 @@ namespace SrkOpenGLBasicSample
                     Vector3 normal = Vector3.Zero;
                     Color color = Color.White;
                     List<KeyValuePair<ushort, float>> weight_influence = new List<KeyValuePair<ushort, float>>(0);
-
 
                     if (hasTexCoords)
                     {
@@ -1616,7 +1628,11 @@ namespace SrkOpenGLBasicSample
                     {
                         int colorIndex = this.GeometryDataColors_i[i][j];
                         if (colorIndex < this.GeometryDataColors[i].Length)
+                        {
                             color = this.GeometryDataColors[i][colorIndex];
+                            if (!otherThanWhiteFound && (color.R != 255 || color.G != 255 || color.B != 255 || color.A != 255))
+                                otherThanWhiteFound = true;
+                        }
                     }
                     if (hasController)
                     {
@@ -1695,7 +1711,7 @@ namespace SrkOpenGLBasicSample
                     mesh.TextureCoords.AddRange(textureCoords);
                 if (hasNormals && otherThanZeroFound)
                     mesh.Normals.AddRange(normals);
-                if (hasColors)
+                if (hasColors && otherThanWhiteFound)
                     mesh.Colors.AddRange(colors);
 
                 if (hasController)

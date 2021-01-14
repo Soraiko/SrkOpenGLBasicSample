@@ -19,7 +19,9 @@ namespace SrkOpenGLBasicSample
             FileStream fs = new FileStream(filename, FileMode.Open);
             BinaryReader br = new BinaryReader(fs);
             this.MaxFrame = br.ReadInt32();
+
             //this.MaxFrame = br.ReadInt32();
+
             fs.Position = 0x10;
             this.Data = new Matrix4[(fs.Length-0x10)/0x40];
             int position = 0;

@@ -38,6 +38,8 @@ namespace SrkOpenGLBasicSample
         public Model Target;
         public Vector3 Position;
 
+        public float NearPlan = 15f;
+        public float FarPlan = 1000000f;
         Vector3 lookAt;
         Vector3 dest_lookAt;
         public Vector3 LookAt
@@ -269,7 +271,7 @@ namespace SrkOpenGLBasicSample
                 if (Math.Abs(diff.X) > EPSILON)
                     this.ProjectionMatrixDirty = true;
 
-                this.ProjectionMatrix = Matrix4.CreatePerspectiveFieldOfView(this.viewAngle, window.Width / (float)window.Height, 15f, 10000000f);
+                this.ProjectionMatrix = Matrix4.CreatePerspectiveFieldOfView(this.viewAngle, window.Width / (float)window.Height, this.NearPlan, this.FarPlan);
             }
         }
 

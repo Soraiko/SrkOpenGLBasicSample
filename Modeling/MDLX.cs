@@ -14,7 +14,7 @@ namespace SrkOpenGLBasicSample
                 return;
             FileStream fs = new FileStream(filename, FileMode.Open);
             SrkAlternatives.Mdlx mdlx = new SrkAlternatives.Mdlx(fs);
-
+            //mdlx.ExportDAE(@"debug_files\BB00\BB00.dae");
             List<Mesh> meshes = new List<Mesh>(0);
             for (int i=0;i<1;i++)//for (int i = mdlx.models.Count-1; i>=0;i++)
             {
@@ -28,11 +28,7 @@ namespace SrkOpenGLBasicSample
                 {
                     var alternativeMesh = mdlx.models[i].Meshes[j];
                     bool hasController = alternativeMesh.influences.Count > 0 && alternativeMesh.influences[0].Length > 0;
-                    Mesh mesh = null;
-                    if (hasController)
-                        mesh = new DynamicMesh(this);
-                    else
-                        mesh = new StaticMesh(this);
+                    Mesh mesh = new Mesh(this);
 
                     mesh.Texture = Texture.LoadTexture(
                         this.Name + "::texture" + alternativeMesh.TextureIndex.ToString("d3") + ".png",

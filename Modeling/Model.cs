@@ -24,8 +24,20 @@ namespace SrkOpenGLBasicSample
 
         public void Compile()
         {
-            for (int i = 0; i < this.Meshes.Length; i++)
-                this.Meshes[i].Compile(this.Skeleton);
+            if (this.Reference == null)
+            {
+                for (int i = 0; i < this.Meshes.Length; i++)
+                    this.Meshes[i].Compile();
+            }
+
+            var skeleton = this.Skeleton;
+            if (skeleton!= null)
+            {
+                this.UniformBufferObject = GL.GenBuffer();
+                GL.BindBuffer(BufferTarget.UniformBuffer, this.UniformBufferObject);
+                GL.BufferData(BufferTarget.UniformBuffer, skeleton.MatricesBuffer.Length * sizeof(float), skeleton.MatricesBuffer, BufferUsageHint.DynamicCopy);
+                GL.BindBuffer(BufferTarget.UniformBuffer, 0);
+            }
         }
 
         public void Update()
@@ -46,6 +58,13 @@ namespace SrkOpenGLBasicSample
                 {
                     controller.ProceedCalculations();
                 }
+
+
+                GL.BindBuffer(BufferTarget.UniformBuffer, this.UniformBufferObject);
+                IntPtr matricesPtr = GL.MapBuffer(BufferTarget.UniformBuffer, BufferAccess.WriteOnly);
+                System.Runtime.InteropServices.Marshal.Copy(skeleton.MatricesBuffer, 0, matricesPtr, skeleton.Joints.Count * 16);
+                GL.UnmapBuffer(BufferTarget.UniformBuffer);
+
             }
         }
 
@@ -56,9 +75,19 @@ namespace SrkOpenGLBasicSample
             if (this.SkipRender)
                 return;
 
+            if (this.locationsFound)
+            {
+                GL.UniformBlockBinding(this.Meshes[0].shader.Handle, this.matrices_loc, 0);
+                GL.BindBufferBase(BufferRangeTarget.UniformBuffer, 0, this.UniformBufferObject);
+            }
+            else
+            {
+                this.matrices_loc = GL.GetUniformBlockIndex(this.Meshes[0].shader.Handle, "transform_data");
+
+                if (this.matrices_loc > -1)
+                    this.locationsFound = true;
+            }
             GL.Enable(EnableCap.Texture2D);
-            if (this.Meshes.Length>0)
-                this.Meshes[0].Update(this.Skeleton);
 
             for (int i = 0; i < this.Meshes.Length; i++)
             {
@@ -87,7 +116,7 @@ namespace SrkOpenGLBasicSample
                 lastTexture = this.Meshes[i].Texture.Integer;
                 lastBump = this.Meshes[i].BumpMapping.Integer;
 
-                this.Meshes[i].Draw(this.Reference == null || this.Reference.SkipRender);
+                this.Meshes[i].Draw();
             }
         }
     }

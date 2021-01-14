@@ -11,6 +11,7 @@ namespace SrkOpenGLBasicSample
         public string Directory;
         public string Name;
 
+        public Configuration Configuration;
         public Resource Reference;
         static List<Resource> References;
 
@@ -36,9 +37,15 @@ namespace SrkOpenGLBasicSample
             if (this.Reference == null)
             {
                 References.Add(this);
+
+                if (File.Exists(this.Directory + @"\" + this.Name + ".conf"))
+                {
+                    this.Configuration = new Configuration(this.Directory + @"\" + this.Name + ".conf");
+                }
             }
             else
             {
+                this.Configuration = this.Reference.Configuration;
                 if (this is Model)
                 {
                     var model = this as Model;

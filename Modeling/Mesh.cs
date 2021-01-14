@@ -7,7 +7,7 @@ using System.IO;
 
 namespace SrkOpenGLBasicSample
 {
-    public abstract class Mesh
+    public class Mesh
     {
         public string Name;
         public int IndexBufferObject;
@@ -47,9 +47,9 @@ namespace SrkOpenGLBasicSample
         public const int COLORS_SIZE = 4 * sizeof(byte);
         public const int NORMALS_SIZE = 3 * sizeof(float);
 
-        public void Compile(Skeleton skeleton)
+        public void Compile()
         {
-            bool skinned = skeleton != null && skeleton.Joints.Count>0;
+            bool skinned = this.Influences.Count>0;
             int maxInfCount = 0;
             if (skinned)
             {
@@ -349,30 +349,26 @@ namespace SrkOpenGLBasicSample
             if (this.PrimitiveCount == 0)
                 this.PrimitiveCount = this.Data.Length / VertexStride;
 
-            if (skinned && this.Model.UniformBufferObject < 0)
-            {
-                this.Model.UniformBufferObject = GL.GenBuffer();
-                GL.BindBuffer(BufferTarget.UniformBuffer, this.Model.UniformBufferObject);
-                GL.BufferData(BufferTarget.UniformBuffer, skeleton.MatricesBuffer.Length * sizeof(float), skeleton.MatricesBuffer, BufferUsageHint.DynamicCopy);
-                GL.BindBuffer(BufferTarget.UniformBuffer, 0);
-            }
+
             GL.BindBuffer(BufferTarget.ArrayBuffer, 0);
             GL.BindBuffer(BufferTarget.ElementArrayBuffer, 0);
             GL.BindVertexArray(0);
         }
+        
 
-        public void Update(Skeleton skeleton)
+        public void Draw()
         {
-            if (this is DynamicMesh)
-                (this as DynamicMesh).Update(skeleton.MatricesBuffer, skeleton.Joints.Count);
-        }
-        public void Draw(bool noReference)
-        {
-            if (this is StaticMesh)
-                (this as StaticMesh).Draw(noReference);
+            GL.BindVertexArray(VertexArrayObject);
+
+            this.shader.Use();
+            if (IndexBufferObject > 0)
+                GL.BindBuffer(BufferTarget.ElementArrayBuffer, this.IndexBufferObject);
+
+
+            if (IndexBufferObject > 0)
+                GL.DrawElements(PrimitiveType.Triangles, PrimitiveCount, DrawElementsType.UnsignedShort, 0);
             else
-            if (this is DynamicMesh)
-                (this as DynamicMesh).Draw(noReference);
+                GL.DrawArrays(PrimitiveType.Triangles, 0, PrimitiveCount);
         }
     }
 }

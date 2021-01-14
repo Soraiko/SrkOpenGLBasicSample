@@ -36,7 +36,6 @@ namespace SrkOpenGLBasicSample
             Preferences.SetPreference(Preferences.PrefName.SCREEN_LOCATION, "1,0");
             Preferences.SetPreference(Preferences.PrefName.START_IN_FULLSCREEN,"true");*/
 
-
             using (var renderer_window = new RendererWindow(
                 (int)(Preferences.StartX * OpenTK.DisplayDevice.Default.Width),
                 (int)(Preferences.StartY * OpenTK.DisplayDevice.Default.Width),

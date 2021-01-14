@@ -5,5 +5,6 @@ in vec2 f_texcoord;
 
 void main()
 {
-	gl_FragColor = texture(texture0, f_texcoord);
+	vec4 color = texture(texture0, f_texcoord);
+	gl_FragColor = color;
 }

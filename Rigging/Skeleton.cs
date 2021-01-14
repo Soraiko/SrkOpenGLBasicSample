@@ -176,10 +176,10 @@ namespace SrkOpenGLBasicSample
                 this.MatricesBuffer[pos++] = mat.M44;
             }
             Vector4 zero = new Vector4(0, 0, 0, 1);
-            zero = Vector4.Transform(zero, this.TransformMatrix);
+            zero = Vector4.Transform(zero, this.Joints[0].ComputedMatrix);
             zero = Vector4.Transform(zero, Camera.Current.LookAtMatrix);
             zero = Vector4.Transform(zero, Camera.Current.ProjectionMatrix);
-            return zero.Z < -100;
+            return zero.X< -Camera.Current.NearPlan*100 || zero.X > Camera.Current.NearPlan*100 ||  zero.Z < -Camera.Current.NearPlan;
         }
 
         Matrix4 Multiply(Matrix4 left, Matrix4 right)

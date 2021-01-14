@@ -33,6 +33,17 @@ namespace SrkOpenGLBasicSample
             if (keyboardState.IsKeyDown(Key.Escape))
                 Close();
 
+            if (keyboardState.IsKeyDown(Key.Left) && oldKeyboardState.IsKeyUp(Key.Left))
+            {
+                if (Camera.Current.Target.Controller.Moveset.AnimationIndex > 0)
+                    Camera.Current.Target.Controller.Moveset.AnimationIndex--;
+            }
+            if (keyboardState.IsKeyDown(Key.Right) && oldKeyboardState.IsKeyUp(Key.Right))
+            {
+                if (Camera.Current.Target.Controller.Moveset.AnimationIndex < 6)
+                    Camera.Current.Target.Controller.Moveset.AnimationIndex++;
+            }
+
             var camera = Camera.Current;
 
             if (camera != null)
@@ -55,7 +66,8 @@ namespace SrkOpenGLBasicSample
 
             //StaticReferences.Light0_Position.X = (float)(3000 * Math.Cos(angle));
             //StaticReferences.Light0_Position.Z = (float)(3000 * Math.Sin(angle));
-            StaticReferences.Light0_Position = Camera.Current.Target.Skeleton.Position + Camera.Current.Target.Controller.HeadPosition;
+
+            StaticReferences.Light0_Position = 0*Camera.Current.Target.Skeleton.Position + Camera.Current.Target.Controller.HeadPosition;
 
             for (int i = 0; i < models.Count; i++)
                 models[i].Update();
@@ -67,7 +79,7 @@ namespace SrkOpenGLBasicSample
         }
 
 
-        public static Color BackgroundColor = new Color(50, 50, 50, 255);
+        public static Color BackgroundColor = new Color(255, 0, 0, 255);
         protected override void OnRenderFrame(FrameEventArgs e)
         {
             GL.ClearColor(BackgroundColor);
@@ -92,18 +104,18 @@ namespace SrkOpenGLBasicSample
             StaticReferences.InitReferences();
             models = new List<Model>(0);
 
-            Title = "Press E key to freeze light position";
 
             Model model = new MDLX(@"binary_files\bb00.map");
             model.Compile();
-            models.Add(model); 
+            models.Add(model);
             
             for (int i=0;i<50;i++)
             {
-                model = new DAE(@"debug_files\H_EX500\H_EX500.dae");
+                model = new DAE(@"debug_files\P_EX100\P_EX100.dae");
                 model.Compile();
                 model.Skeleton.Position = new Vector3(-100, 0, 0);
-                model.Controller.Moveset.AnimationFrame = random.Next(0, 200);
+                model.Controller.Moveset.AnimationIndex = random.Next(0, model.Controller.Moveset.Animations.Count);
+                model.Controller.Moveset.AnimationFrame = random.Next(0, (int)(model.Controller.Moveset.Animations[model.Controller.Moveset.AnimationIndex].MaxFrame-1));
                 System.Threading.Thread.Sleep(1);
                 float x = random.Next(-500, 500);
                 System.Threading.Thread.Sleep(1);
@@ -114,10 +126,10 @@ namespace SrkOpenGLBasicSample
                 Camera.Current.Target = model;
             }
 
-            model = new MDLX(@"binary_files\H_EX510\H_EX510.mdlx");
+            /*model = new MDLX(@"binary_files\H_EX510\H_EX510.mdlx");
             model.Compile();
             model.Skeleton.Position = new Vector3(100, 0, 0);
-            models.Add(model);
+            models.Add(model);*/
 
 
             /*string[] mdlxes = Directory.GetFiles(@"E:\Jeux\KingdomHearts\app_KH2Tools\export\@KH2\obj\", "*.mdlx");

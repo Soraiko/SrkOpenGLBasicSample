@@ -26,6 +26,10 @@ namespace SrkOpenGLBasicSample
 
         public int Integer;
         public string Filename;
+
+        public static bool CountAlphaPixels = false;
+        public static ulong AlphaPercentage = 0;
+
         public static Texture LoadTexture(string filename, System.Drawing.Bitmap bitmap, TextureMinFilter textureMinFilter, TextureWrapMode textureWrapS, TextureWrapMode textureWrapT)
         {
             Texture output = new Texture();
@@ -62,6 +66,16 @@ namespace SrkOpenGLBasicSample
 
             PixelInternalFormat format = PixelInternalFormat.Rgba;
 
+
+            if (CountAlphaPixels)
+            {
+                byte[] pixelBytes = new byte[bmp.Width * bmp.Height * 4];
+                Marshal.Copy(data.Scan0, pixelBytes, 0, pixelBytes.Length);
+                AlphaPercentage = 0;
+                for (int i=0;i< pixelBytes.Length;i+=4)
+                    AlphaPercentage += pixelBytes[i + 3];
+                AlphaPercentage /= (ulong)(bmp.Width * bmp.Height);
+            }
             GL.TexImage2D(TextureTarget.Texture2D, 0, format, bmp.Width, bmp.Height, 0, OpenTK.Graphics.OpenGL.PixelFormat.Bgra, PixelType.UnsignedByte, data.Scan0);
             GL.GenerateMipmap(GenerateMipmapTarget.Texture2D);
 
