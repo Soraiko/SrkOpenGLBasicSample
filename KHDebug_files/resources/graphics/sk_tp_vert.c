@@ -27,7 +27,7 @@ void main()
 	if (uint(v_infCount)>uint(0))
 	{
 		uint inf0_index = (uint(inf0) & uint(65535));
-		float inf0_weighting = ((uint(inf0) & uint(4294901760)) >> 16) / 65535.0;
+		float inf0_weighting = float((uint(inf0) & uint(4294901760)) >> 16) / 65535.0;
 
 		mat4 inf0_matrix = matrices[uint(512) + inf0_index] * matrices[inf0_index] * inf0_weighting;
 		influenced_position += position_v4 * inf0_matrix;
@@ -35,7 +35,7 @@ void main()
 		if (uint(v_infCount)>uint(1))
 		{
 			uint inf1_index = (uint(inf1) & uint(65535));
-			float inf1_weighting = ((uint(inf1) & uint(4294901760)) >> 16) / 65535.0;
+			float inf1_weighting = float((uint(inf1) & uint(4294901760)) >> 16) / 65535.0;
 			
 			mat4 inf1_matrix = matrices[uint(512) + inf1_index] * matrices[inf1_index] * inf1_weighting;
 			influenced_position += position_v4 * inf1_matrix;
@@ -43,7 +43,7 @@ void main()
 			if (uint(v_infCount)>uint(2))
 			{
 				uint inf2_index = (uint(inf2) & uint(65535));
-				float inf2_weighting = ((uint(inf2) & uint(4294901760)) >> 16) / 65535.0;
+				float inf2_weighting = float((uint(inf2) & uint(4294901760)) >> 16) / 65535.0;
 			
 				mat4 inf2_matrix = matrices[uint(512) + inf2_index] * matrices[inf2_index] * inf2_weighting;
 				influenced_position += position_v4 * inf2_matrix;
@@ -51,7 +51,7 @@ void main()
 				if (uint(v_infCount)>uint(3))
 				{
 					uint inf3_index = (uint(inf3) & uint(65535));
-					float inf3_weighting = ((uint(inf3) & uint(4294901760)) >> 16) / 65535.0;
+					float inf3_weighting = float((uint(inf3) & uint(4294901760)) >> 16) / 65535.0;
 			
 					mat4 inf3_matrix = matrices[uint(512) + inf3_index] * matrices[inf3_index] * inf3_weighting;
 					influenced_position += position_v4 * inf3_matrix;
@@ -59,7 +59,7 @@ void main()
 					if (uint(v_infCount)>uint(4))
 					{
 						uint inf4_index = (uint(inf4) & uint(65535));
-						float inf4_weighting = ((uint(inf4) & uint(4294901760)) >> 16) / 65535.0;
+						float inf4_weighting = float((uint(inf4) & uint(4294901760)) >> 16) / 65535.0;
 						
 						mat4 inf4_matrix = matrices[uint(512) + inf4_index] * matrices[inf4_index] * inf4_weighting;
 						influenced_position += position_v4 * inf4_matrix;
@@ -67,7 +67,7 @@ void main()
 						if (uint(v_infCount)>uint(5))
 						{
 							uint inf5_index = (uint(inf5) & uint(65535));
-							float inf5_weighting = ((uint(inf5) & uint(4294901760)) >> 16) / 65535.0;
+							float inf5_weighting = float((uint(inf5) & uint(4294901760)) >> 16) / 65535.0;
 							
 							mat4 inf5_matrix = matrices[uint(512) + inf5_index] * matrices[inf5_index] * inf5_weighting;
 							influenced_position += position_v4 * inf5_matrix;
@@ -75,7 +75,7 @@ void main()
 							if (uint(v_infCount)>uint(6))
 							{
 								uint inf6_index = (uint(inf6) & uint(65535));
-								float inf6_weighting = ((uint(inf6) & uint(4294901760)) >> 16) / 65535.0;
+								float inf6_weighting = float((uint(inf6) & uint(4294901760)) >> 16) / 65535.0;
 								
 								mat4 inf6_matrix = matrices[uint(512) + inf6_index] * matrices[inf6_index] * inf6_weighting;
 								influenced_position += position_v4 * inf6_matrix;
