@@ -8,6 +8,7 @@ namespace SrkOpenGLBasicSample
 {
     public class Moveset
     {
+        public Animation Animation;
         public List<Animation> Animations;
         int animationIndex;
         public int AnimationIndex
@@ -20,12 +21,16 @@ namespace SrkOpenGLBasicSample
             {
                 if (this.animationIndex == value)
                     return;
-                this.Interpolation = 1f;
+                this.Interpolation = 0f;
                 this.AnimationFrame = 0;
                 this.animationIndex = value;
+                if (this.animationIndex > -1)
+                    this.Animation = this.Animations[this.animationIndex];
+                else
+                    this.Animation = null;
             }
         }
-        public int AnimationFrame = 0;
+        public float AnimationFrame = 0;
 
         public Moveset(string folderName)
         {
@@ -35,49 +40,71 @@ namespace SrkOpenGLBasicSample
                 this.Animations.Add(new Animation(animationsFileNames[i]));
         }
 
-        public float Interpolation = 0f;
+        public float Interpolation = 1f;
 
         public void GetNextFrame(ref Matrix4[] rememberMatrices, List<Joint> joints)
         {
+            if (this.Animation == null)
+                return;
             Animation animation = this.Animations[this.AnimationIndex];
             Matrix4[] animationData = animation.Data;
-            int position = this.AnimationFrame * rememberMatrices.Length;
 
-            bool interpolating = this.Interpolation > 0;
+            int current_frame = (int)Math.Floor(this.AnimationFrame);
+            int next_frame = (current_frame + 1) % (int)this.Animation.MaxFrame;
 
-            float interpolation = this.Interpolation;
-            float oneMinusInterpolation = 1f - this.Interpolation;
+            float decimals = this.AnimationFrame - current_frame;
+            bool decimal_ = decimals < 0.000001;
+            float decimal_one = decimals;
+            float decimal_one_minus = 1f - decimals;
+
+            int current_position = current_frame * rememberMatrices.Length;
+            int next_position = next_frame * rememberMatrices.Length;
+
+            bool interpolate_ = this.Interpolation < 1f;
+            float interpolate_one = this.Interpolation;
+            float interpolate_one_minus = 1f - this.Interpolation;
 
             for (int i=0;i< rememberMatrices.Length;i++)
             {
-                joints[i].Matrix = animationData[position++];
-                if (interpolating)
+                joints[i].Matrix = animationData[current_position++];
+                if (interpolate_)
                 {
-                    Vector3 rememberScale = rememberMatrices[i].ExtractScale();
-                    Vector3 scale = rememberScale * interpolation + joints[i].Matrix.ExtractScale() * oneMinusInterpolation;
+                    Matrix4 matrix_a = rememberMatrices[i];
+                    Matrix4 matrix_b = joints[i].Matrix;
 
-                    Vector3 rememberTranslation = rememberMatrices[i].ExtractTranslation();
-                    Vector3 translation = rememberTranslation * interpolation + joints[i].Matrix.ExtractTranslation() * oneMinusInterpolation;
+                    Matrix4 matrix_a_b = (matrix_a * interpolate_one_minus + matrix_b * interpolate_one);
 
-                    Quaternion rememberQuaternion = rememberMatrices[i].ExtractRotation();
-                    Quaternion quaternion = Quaternion.Slerp(rememberQuaternion, joints[i].Matrix.ExtractRotation(), oneMinusInterpolation);
+                    matrix_a_b = matrix_a_b.ClearScale();
+                    //matrix_a_b *= Matrix4.CreateScale(matrix_a.ExtractScale() * interpolate_one + matrix_b.ExtractScale() * interpolate_one_minus);
 
-                    joints[i].Matrix = Matrix4.CreateScale(scale) * Matrix4.CreateFromQuaternion(quaternion) * Matrix4.CreateTranslation(translation);
+                    joints[i].Matrix = matrix_a_b;
                 }
                 else
                 {
+                    if (!decimal_)
+                    {
+                        Matrix4 matrix_a = joints[i].Matrix;
+                        Matrix4 matrix_b = animationData[next_position++];
+
+                        Matrix4 matrix_a_b = (matrix_a * decimal_one_minus + matrix_b * decimal_one);
+
+                        matrix_a_b = matrix_a_b.ClearScale();
+                        //matrix_a_b *= Matrix4.CreateScale(matrix_a.ExtractScale() * decimal_one + matrix_b.ExtractScale() * decimal_one_minus);
+
+                        joints[i].Matrix = matrix_a_b;
+                    }
                     rememberMatrices[i] = joints[i].Matrix;
                 }
 
             }
 
-            if (interpolating)
-                this.Interpolation -= 0.1f;
+            if (interpolate_)
+                this.Interpolation += 0.1f;
 
-            this.AnimationFrame++;
-            if (AnimationFrame>= animation.MaxFrame)
+            this.AnimationFrame += 0.05f;
+            if (this.AnimationFrame >= animation.MaxFrame)
             {
-                this.AnimationFrame = (int)animation.MinFrame;
+                this.AnimationFrame = animation.MinFrame;
             }
         }
     }

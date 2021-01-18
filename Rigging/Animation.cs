@@ -19,6 +19,7 @@ namespace SrkOpenGLBasicSample
             FileStream fs = new FileStream(filename, FileMode.Open);
             BinaryReader br = new BinaryReader(fs);
             this.MaxFrame = br.ReadInt32();
+            this.MinFrame = br.ReadInt32();
 
             //this.MaxFrame = br.ReadInt32();
 
