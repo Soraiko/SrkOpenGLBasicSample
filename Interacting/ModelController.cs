@@ -25,6 +25,8 @@ namespace SrkOpenGLBasicSample
                 this.Moveset = new Moveset(controlled.Directory.Replace("debug_files", "binary_files") + @"\Moveset");
             }
             this.rememberMatrices = new Matrix4[controlled.Skeleton.Joints.Count];
+            for (int i = 0; i < this.rememberMatrices.Length; i++)
+                this.rememberMatrices[i] = controlled.Skeleton.Joints[i].Matrix;
         }
 
         public void RenderNextFrame()

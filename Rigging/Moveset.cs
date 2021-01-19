@@ -40,7 +40,8 @@ namespace SrkOpenGLBasicSample
                 this.Animations.Add(new Animation(animationsFileNames[i]));
         }
 
-        public float Interpolation = 1f;
+        float Interpolation = 1f;
+        public float FrameStep = 0.1f;
 
         public void GetNextFrame(ref Matrix4[] rememberMatrices, List<Joint> joints)
         {
@@ -101,11 +102,9 @@ namespace SrkOpenGLBasicSample
             if (interpolate_)
                 this.Interpolation += 0.1f;
 
-            this.AnimationFrame += 0.05f;
+            this.AnimationFrame += this.FrameStep;
             if (this.AnimationFrame >= animation.MaxFrame)
-            {
-                this.AnimationFrame = animation.MinFrame;
-            }
+                this.AnimationFrame = animation.MinFrame + (this.AnimationFrame%animation.MaxFrame);
         }
     }
 }
