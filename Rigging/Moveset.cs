@@ -41,7 +41,7 @@ namespace SrkOpenGLBasicSample
         }
 
         float Interpolation = 1f;
-        public float FrameStep = 0.1f;
+        public float FrameStep = 1f;
 
         public void GetNextFrame(ref Matrix4[] rememberMatrices, List<Joint> joints)
         {
@@ -72,12 +72,9 @@ namespace SrkOpenGLBasicSample
                 {
                     Matrix4 matrix_a = rememberMatrices[i];
                     Matrix4 matrix_b = joints[i].Matrix;
-
                     Matrix4 matrix_a_b = (matrix_a * interpolate_one_minus + matrix_b * interpolate_one);
-
                     matrix_a_b = matrix_a_b.ClearScale();
                     //matrix_a_b *= Matrix4.CreateScale(matrix_a.ExtractScale() * interpolate_one + matrix_b.ExtractScale() * interpolate_one_minus);
-
                     joints[i].Matrix = matrix_a_b;
                 }
                 else
@@ -86,12 +83,9 @@ namespace SrkOpenGLBasicSample
                     {
                         Matrix4 matrix_a = joints[i].Matrix;
                         Matrix4 matrix_b = animationData[next_position++];
-
                         Matrix4 matrix_a_b = (matrix_a * decimal_one_minus + matrix_b * decimal_one);
-
                         matrix_a_b = matrix_a_b.ClearScale();
                         //matrix_a_b *= Matrix4.CreateScale(matrix_a.ExtractScale() * decimal_one + matrix_b.ExtractScale() * decimal_one_minus);
-
                         joints[i].Matrix = matrix_a_b;
                     }
                     rememberMatrices[i] = joints[i].Matrix;

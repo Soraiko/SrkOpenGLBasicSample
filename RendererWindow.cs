@@ -109,7 +109,7 @@ namespace SrkOpenGLBasicSample
             model.Compile();
             models.Add(model);
             
-            for (int i=0;i<50;i++)
+            for (int i=0;i<1;i++)
             {
                 model = new DAE(@"debug_files\P_EX100\P_EX100.dae");
                 model.Compile();
