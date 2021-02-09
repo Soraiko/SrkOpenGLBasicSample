@@ -86,7 +86,7 @@ namespace SrkOpenGLBasicSample
             GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
 
             for (int i = 0; i < models.Count; i++)
-                models[i].Draw();
+                models[i].Draw(0);
 
             Title = this.RenderFrequency.ToString();
 
@@ -126,10 +126,12 @@ namespace SrkOpenGLBasicSample
                 Camera.Current.Target = model;
             }
 
-            /*model = new MDLX(@"binary_files\H_EX510\H_EX510.mdlx");
-            model.Compile();
-            model.Skeleton.Position = new Vector3(100, 0, 0);
-            models.Add(model);*/
+            /*
+                model = new MDLX(@"binary_files\H_EX510\H_EX510.mdlx");
+                model.Compile();
+                model.Skeleton.Position = new Vector3(100, 0, 0);
+                models.Add(model);
+            */
 
 
             /*string[] mdlxes = Directory.GetFiles(@"E:\Jeux\KingdomHearts\app_KH2Tools\export\@KH2\obj\", "*.mdlx");
@@ -149,7 +151,9 @@ namespace SrkOpenGLBasicSample
                     models.Add(model);
                     count++;
                 }
-            }*/
+            }
+            
+             */
 
 
             model = new DAE(@"debug_files\cube\cube.dae");

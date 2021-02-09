@@ -16,19 +16,24 @@ namespace SrkOpenGLBasicSample
         public ModelController Controller;
         public Skeleton Skeleton;
         public Mesh[] Meshes;
+        public List<int[]> meshGroups;
 
         public Model(string filename) : base(filename)
         {
-
+            this.meshGroups = new List<int[]>(0);
         }
 
         public void Compile()
         {
             if (this.Reference == null)
             {
+                if (this.meshGroups.Count == 0)
+                    this.meshGroups.Add(new int[] { 0, this.Meshes.Length });
                 for (int i = 0; i < this.Meshes.Length; i++)
                     this.Meshes[i].Compile();
             }
+            else
+                this.meshGroups = (this.Reference as Model).meshGroups;
 
             var skeleton = this.Skeleton;
             if (skeleton!= null)
@@ -70,7 +75,8 @@ namespace SrkOpenGLBasicSample
 
         static int lastTexture = -1;
         static int lastBump = -1;
-        public void Draw()
+
+        public void Draw(int groupIndex)
         {
             if (this.SkipRender)
                 return;
@@ -89,7 +95,10 @@ namespace SrkOpenGLBasicSample
             }
             GL.Enable(EnableCap.Texture2D);
 
-            for (int i = 0; i < this.Meshes.Length; i++)
+            int start = this.meshGroups[groupIndex][0];
+            int end = start + this.meshGroups[groupIndex][1];
+
+            for (int i = start; i < end; i++)
             {
                 if (this.Meshes[i].Texture.Integer != lastTexture)
                 {
